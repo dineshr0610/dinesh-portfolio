@@ -1,6 +1,13 @@
 <template>
-  <div class="p-10">
-    <h1 class="text-3xl font-bold">About Me</h1>
-    <p>About me content here.</p>
-  </div>
+  <section>
+    <h2>About Me</h2>
+    <!-- your resume content here -->
+    <div id="projects" class="mt-8">
+      <ProjectsSection />
+    </div>
+  </section>
 </template>
+
+<script setup>
+import ProjectsSection from '~/components/ProjectsSection.vue'
+</script>
