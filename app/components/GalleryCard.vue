@@ -11,7 +11,7 @@
       <div class="flex items-start justify-between">
         <div class="pr-4">
           <h3 class="font-semibold text-lg leading-snug">{{ item.title || 'Untitled' }}</h3>
-          <p class="text-sm text-slate-500 mt-1" v-if="item.short">{{ item.short }}</p>
+          <p class="text-sm text-slate-500 mt-1">{{ item.short || '' }}</p>
         </div>
 
         <div class="flex flex-col items-end gap-2">
