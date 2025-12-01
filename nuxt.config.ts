@@ -1,7 +1,37 @@
+// nuxt.config.ts
 import { defineNuxtConfig } from 'nuxt/config'
+import { resolve } from 'path'
 
 export default defineNuxtConfig({
-  modules: ['@nuxtjs/tailwindcss'],
+  ssr: true,
+  app: {
+    head: {
+      title: 'Dinesh Portfolio',
+      meta: [
+        { name: 'description', content: 'Portfolio of Dinesh R' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+      ]
+    }
+  },
 
-  compatibilityDate: '2025-11-29'
+  modules: [
+    '@nuxtjs/tailwindcss',
+    '@nuxt/content'
+  ],
+
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {}
+    }
+  },
+
+  // Vite alias for assets folder (fixes Windows resolution)
+  vite: {
+    resolve: {
+      alias: {
+        'assets': resolve(process.cwd(), 'assets')
+      }
+    }
+  }
 })

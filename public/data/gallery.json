@@ -1,0 +1,20 @@
+[
+  {
+    "id": "g1",
+    "title": "Hackathon — Winner",
+    "date": "2025-11-10",
+    "short": "Built an attendance bot using Node + OCR in 24hrs.",
+    "long": "<p>Detailed notes: we used Tesseract, socket.io for realtime, deployed on Vercel.</p>",
+    "tags": ["hackathon","node","ai"],
+    "image": "/gallery/placeholder.svg"
+  },
+  {
+    "id": "g2",
+    "title": "UI Redesign — Music Player",
+    "date": "2025-09-03",
+    "short": "Updated UI with accessible colors and micro-interactions.",
+    "long": "<p>Changes: improved contrast, added animations, optimized for mobile.</p>",
+    "tags": ["ui","design","accessibility"],
+    "image": "/gallery/placeholder.svg"
+  }
+]

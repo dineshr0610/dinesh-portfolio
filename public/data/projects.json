@@ -1,0 +1,24 @@
+[
+  {
+    "id": "heart-beart",
+    "title": "Heart Beart-Ashdify",
+    "short": "Responsive music player with playlists and search.",
+    "long": "<p>Detailed features: playlists, download option, playback speed, recently played.</p>",
+    "tech": ["HTML","CSS","JS","Cloudinary"],
+    "demo": "#",
+    "repo": "https://github.com/YOUR_USERNAME/heart-beart",
+    "image": "/projects/heart-beart.png",
+    "date": "2025-09-01"
+  }
+  ,{
+    "id": "task-master",
+    "title": "Task Master",
+    "short": "Task management app with deadlines and reminders.",
+    "long": "<p>Features: create, edit, delete tasks; set deadlines; email reminders.</p>",
+    "tech": ["React","Node.js","MongoDB"],
+    "demo": "#",
+    "repo": "https://github.com/YOUR_USERNAME/heart-beart",
+    "image": "/projects/taskmaster.png",
+    "date": "2025-09-01"}
+]
+  
