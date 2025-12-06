@@ -1,35 +1,164 @@
+<!-- app/pages/achievements.vue -->
 <template>
-  <section class="prose lg:prose-xl">
-    <h1>Achievements</h1>
-    <p>Certifications, awards and hackathons will be listed here.</p>
+  <section>
+    <h1 class="text-3xl font-bold">Achievements</h1>
+    <p class="mt-2 text-slate-600">Certifications, awards and hackathons are listed below.</p>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
-      <div class="p-4 bg-white rounded shadow">
-        <h3 class="font-semibold">Certificate Name</h3>
-        <p class="text-sm text-slate-600">Issuer • 2024</p>
-        <p class="mt-2">Short description of the certification or award.</p>
-      </div>
+    <div class="mt-6">
+      <div v-if="loading" class="py-8 text-center text-slate-500">Loading achievements…</div>
+      <div v-else-if="error" class="py-8 text-center text-red-600">Failed to load achievements: {{ error }}</div>
 
-      <div class="p-4 bg-white rounded shadow">
-        <h3 class="font-semibold">Hackathon Winner</h3>
-        <p class="text-sm text-slate-600">Event • 2023</p>
-        <p class="mt-2">Short description of the hackathon achievement.</p>
-      </div>
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <article
+          v-for="item in items"
+          :key="item.id"
+          class="bg-white rounded-lg shadow overflow-hidden"
+          :aria-labelledby="'ach-'+item.id"
+        >
+          <!-- media block -->
+          <div class="relative bg-slate-100" style="min-height:160px;">
+            <!-- video -->
+            <template v-if="item.media && item.media.type === 'video'">
+              <template v-if="playing[item.id]">
+                <video
+                  class="w-full h-auto block"
+                  controls
+                  :poster="item.media.poster || item.image || placeholder"
+                  preload="metadata"
+                >
+                  <source :src="item.media.src" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </template>
 
-      <div class="p-4 bg-white rounded shadow">
-        <h3 class="font-semibold">Another Recognition</h3>
-        <p class="text-sm text-slate-600">Issuer • 2022</p>
-        <p class="mt-2">Short description of the recognition.</p>
+              <template v-else>
+                <img
+                  :src="item.media.poster || item.image || placeholder"
+                  :alt="item.title"
+                  class="w-full h-40 object-cover"
+                  loading="lazy"
+                />
+                <button
+                  @click="play(item.id)"
+                  class="absolute inset-0 flex items-center justify-center focus:outline-none"
+                  :aria-label="`Play video for ${item.title}`"
+                >
+                  <span class="flex items-center justify-center w-14 h-14 rounded-full bg-black/60 text-white text-2xl">▶</span>
+                </button>
+              </template>
+            </template>
+
+            <!-- image -->
+            <template v-else-if="item.media && item.media.type === 'image'">
+              <img
+                :src="item.media.src || item.image || placeholder"
+                :alt="item.title"
+                class="w-full h-40 object-cover"
+                loading="lazy"
+              />
+            </template>
+
+            <!-- fallback image -->
+            <template v-else>
+              <img
+                :src="item.image || placeholder"
+                :alt="item.title"
+                class="w-full h-40 object-cover"
+                loading="lazy"
+              />
+            </template>
+          </div>
+
+          <!-- content -->
+          <div class="p-4">
+            <h3 :id="'ach-'+item.id" class="font-semibold text-lg">{{ item.title }}</h3>
+            <div class="text-sm text-slate-500 mt-1">{{ formatDate(item.date) }}</div>
+
+            <p v-if="item.short" class="mt-2 text-slate-700">{{ item.short }}</p>
+            <div v-if="item.long" class="mt-2 text-slate-700 prose" v-html="item.long"></div>
+
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <div class="text-xs text-slate-600 flex flex-wrap gap-2">
+                <span v-for="t in (item.tags || [])" :key="t" class="px-2 py-1 bg-slate-100 rounded">{{ t }}</span>
+              </div>
+
+              <div class="text-right">
+                <a v-if="item.link" :href="item.link" target="_blank" rel="noopener" class="text-sm underline">View</a>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <div v-if="items.length === 0" class="col-span-full text-center text-slate-500 py-12 bg-white rounded shadow">
+          No achievements found — add entries to <code>/public/data/achievements.json</code>
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <script setup>
-// no script needed yet; placeholder to avoid SFC errors
+import { ref, reactive, onMounted } from 'vue'
+
+const items = ref([])
+const loading = ref(true)
+const error = ref(null)
+const playing = reactive({})
+
+const placeholder = '/gallery/placeholder.svg' // consistent placeholder. :contentReference[oaicite:2]{index=2}
+
+function formatDate(d) {
+  if (!d) return ''
+  try {
+    const dt = new Date(d)
+    if (isNaN(dt.getTime())) return d
+    return dt.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+  } catch {
+    return d
+  }
+}
+
+async function loadAchievements() {
+  loading.value = true
+  error.value = null
+  try {
+    const res = await fetch('/data/achievements.json', { cache: 'no-store' })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    const json = await res.json()
+    if (!Array.isArray(json)) throw new Error('achievements.json must be an array')
+    items.value = json
+  } catch (err) {
+    console.error('Failed to load achievements.json', err)
+    error.value = err.message || String(err)
+    items.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+function play(id) {
+  playing[id] = true
+  // optional: scroll video into view
+  requestAnimationFrame(() => {
+    const el = document.querySelector(`[data-ach-id="${id}"] video`)
+    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  })
+}
+
+onMounted(() => loadAchievements())
 </script>
 
 <style scoped>
-/* small visual tweak */
-section { padding-top: 0.25rem; }
+/* small layout niceties */
+section { min-height: 60vh; }
+.prose { max-width: none; }
+
+/* ensure play overlay is clickable */
+.relative button { cursor: pointer; }
+
+/* maintain consistent card heights on grid */
+@media (min-width: 1024px) {
+  article { display: flex; flex-direction: column; height: 100%; }
+  article > .p-4 { flex: 1; }
+}
 </style>

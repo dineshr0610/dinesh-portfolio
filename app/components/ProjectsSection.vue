@@ -1,59 +1,42 @@
 <!-- components/ProjectsSection.vue -->
 <template>
-  <section>
-    <div class="flex items-center justify-between">
-      <h2 class="text-2xl font-semibold">Projects</h2>
-      <NuxtLink to="/about#projects" class="text-sm underline">See all</NuxtLink>
-    </div>
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
-      <ProjectCard v-for="p in projectsPreview" :key="p.id || p.title" :project="p" @open="openModal" />
-    </div>
-
-    <!-- Modal for project details -->
-    <div v-if="active" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div class="bg-white max-w-2xl w-full rounded shadow-lg p-6 overflow-auto max-h-[90vh]">
-        <div class="flex justify-between items-start">
-          <h3 class="text-xl font-bold">{{ active.title }}</h3>
-          <button @click="active=null" class="text-slate-500">Close</button>
+  <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <article v-for="p in shown" :key="p.id" class="bg-white rounded shadow p-4 flex flex-col">
+      <div class="h-36 overflow-hidden rounded">
+        <img v-if="p.image" :src="p.image" class="w-full h-full object-cover" alt="" />
+      </div>
+      <h3 class="mt-3 font-semibold">{{ p.title }}</h3>
+      <p class="text-sm text-slate-600 mt-1 line-clamp-3" v-html="p.short"></p>
+      <div class="mt-3 flex items-center justify-between">
+        <div class="text-xs flex gap-2">
+          <span v-for="t in (p.tech || []).slice(0,3)" :key="t" class="px-2 py-1 bg-slate-100 rounded">{{ t }}</span>
         </div>
-        <p class="mt-3 text-slate-700">{{ active.long || active.short }}</p>
-        <div class="mt-4 flex gap-3">
-          <a v-if="active.demo" :href="active.demo" target="_blank" class="px-3 py-1 bg-indigo-600 text-white rounded">Demo</a>
-          <a v-if="active.repo" :href="active.repo" target="_blank" class="px-3 py-1 border rounded">Repo</a>
+        <div>
+          <button @click="$emit('open', p)" class="text-sm px-3 py-1 border rounded">Read</button>
         </div>
       </div>
-    </div>
-  </section>
+    </article>
+  </div>
 </template>
 
 <script setup>
-import ProjectCard from '~/components/ProjectCard.vue'
-import { ref, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+const props = defineProps({ limit: { type: Number, default: 6 } })
+const projects = ref([])
 
-// Load projects: simple local JSON or markdown parsing later.
-// For now we try to fetch /data/projects.json (create it) or fallback to inline demo.
-
-let projects = ref([])
-
-try {
-  // try fetch a small json file in /public/data/projects.json
-  const res = await fetch('/data/projects.json').catch(()=>null)
-  if (res && res.ok) projects.value = await res.json()
-} catch(e) {
-  projects.value = []
+async function load(){
+  try {
+    const res = await fetch('/data/projects.json', { cache: 'no-store' })
+    projects.value = await res.json()
+  } catch (e) { projects.value = [] }
 }
 
-// fallback demo if empty
-if (!projects.value || projects.value.length === 0) {
-  projects.value = [
-    { id:1, title: 'Heart Beart-Ashdify', short: 'Responsive music player', long: 'Full description...', tech: ['HTML','JS','Cloudinary'], demo:'#', repo:'#', image: '/placeholder-project.jpg' },
-    { id:2, title: 'Project Two', short: 'Short description', long: 'Long description', tech: ['Vue','Tailwind'], demo:'#', repo:'#' }
-  ]
-}
+onMounted(load)
 
-const active = ref(null)
-const projectsPreview = computed(()=> projects.value.slice(0,6)) // show first 6
-
-function openModal(p){ active.value = p }
+const shown = computed(() => projects.value.slice(0, props.limit))
 </script>
+
+<style scoped>
+/* requires line-clamp plugin or simple fallback */
+.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+</style>

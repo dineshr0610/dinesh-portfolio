@@ -1,0 +1,32 @@
+[
+  {
+    "id": "a2025-hackathon-winner",
+    "title": "Hackathon — Winner",
+    "date": "2025-11-10",
+    "short": "Built an attendance bot using Node + OCR in 24hrs.",
+    "long": "<p>Used Tesseract for OCR and socket.io for realtime features. Deployed prototype to Vercel.</p>",
+    "image": "/gallery/placeholder.svg",
+    "link": "https://github.com/dineshr0610/hackathon-attendance",
+    "tags": ["hackathon","node","ocr"],
+    "media": {
+      "type": "video",
+      "src": "/media/hackathon-demo.mp4",
+      "poster": "/gallery/placeholder.svg"
+    }
+  },
+  {
+    "id": "a2024-responsive-cert",
+    "title": "Responsive Website Certificate — NxtWave",
+    "date": "2024-05-20",
+    "short": "Completed course on responsive web design.",
+    "long": null,
+    "image": "/gallery/placeholder.svg",
+    "link": null,
+    "tags": ["certificate"],
+    "media": {
+      "type": "image",
+      "src": "/gallery/cert-nxtwave.jpg",
+      "poster": null
+    }
+  }
+]

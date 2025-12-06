@@ -1,0 +1,40 @@
+[
+  {
+    "id": "t2023-08-01-ssn",
+    "title": "Joined SSN College — M.Tech (Integrated)",
+    "date": "2023-08-01",
+    "subtitle": "Computer Science & Engineering",
+    "description": "Started integrated M.Tech program focused on systems and ML.",
+    "image": "/gallery/placeholder.svg",
+    "tags": ["education"],
+    "media": null
+  },
+  {
+    "id": "t2024-06-15-intern",
+    "title": "Frontend Intern — Acme Labs",
+    "date": "2024-06-15",
+    "subtitle": "UI & Accessibility",
+    "description": "Worked on accessible components and performance improvements.",
+    "image": "/gallery/placeholder.svg",
+    "tags": ["internship","frontend"],
+    "media": {
+      "type": "video",
+      "src": "/media/acme-internship-showcase.mp4",
+      "poster": "/media/acme-internship-thumb.jpg"
+    }
+  },
+  {
+    "id": "t2025-02-01-open-source",
+    "title": "Contributed to open-source — UI library",
+    "date": "2025-02-01",
+    "subtitle": "Contributor",
+    "description": "Submitted accessibility fixes and improved component docs.",
+    "image": "/gallery/placeholder.svg",
+    "tags": ["open-source"],
+    "media": {
+      "type": "image",
+      "src": "/gallery/oss-contrib-screenshot.jpg",
+      "poster": null
+    }
+  }
+]

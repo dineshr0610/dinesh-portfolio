@@ -1,24 +1,56 @@
 [
   {
-    "id": "heart-beart",
-    "title": "Heart Beart-Ashdify",
-    "short": "Responsive music player with playlists and search.",
-    "long": "<p>Detailed features: playlists, download option, playback speed, recently played.</p>",
-    "tech": ["HTML","CSS","JS","Cloudinary"],
-    "demo": "#",
-    "repo": "https://github.com/YOUR_USERNAME/heart-beart",
-    "image": "/projects/heart-beart.png",
-    "date": "2025-09-01"
+    "id": "p0",
+    "title": "Personal Portfolio + AI Assistant",
+    "short": "A modern Nuxt portfolio with an AI chatbot that answers questions about me using RAG.",
+    "long": "<p>A full-stack personal portfolio built with Nuxt 3 and Tailwind CSS. Includes an AI assistant that answers questions about my education, projects, achievements, skills and daily updates using RAG (Retrieval Augmented Generation). Features multiple dynamic sections like About, Timeline, Achievements, Gallery, and a unique <strong>Dinesh Now</strong> page for daily logs. An Admin Dashboard (in progress) will allow updating content securely.</p>",
+    "tech": ["Nuxt 3", "Vue", "Tailwind CSS", "Node API", "Supabase (planned)", "OpenAI API"],
+    "demo": "/",
+    "repo": "https://github.com/dineshr0610",
+    "image": "/gallery/placeholder.svg"
+  },
+
+  {
+    "id": "p1",
+    "title": "VibeSync — Full-Stack Music Player with AI",
+    "short": "A music streaming app with AI recommendations using collaborative filtering.",
+    "long": "<p>VibeSync is a full-stack music streaming platform powered by an ML recommendation engine. Users can stream songs, manage playlists, view recently played tracks, and get personalized recommendations. AI suggestions are generated using collaborative filtering (Surprise library) served via a Python + Flask microservice.</p><p>The backend is built with Node.js + Express and MongoDB for storing tracks and playlists. The responsive frontend is built with HTML, CSS (Bootstrap), and JavaScript, featuring a real-time audio player.</p>",
+    "tech": ["Node.js", "Express", "MongoDB", "Flask", "Python", "HTML", "CSS", "JavaScript"],
+    "demo": "",
+    "repo": "https://github.com/dineshr0610/vibesync",
+    "image": "/gallery/placeholder.svg"
+  },
+
+  {
+    "id": "p2",
+    "title": "HEART BEAT — Responsive Music Player",
+    "short": "A feature-rich, cross-device responsive music player built with Bootstrap and Cloudinary.",
+    "long": "<p>HEART BEAT is a responsive music website with playlist creation, download option, playback speed control, advanced search, and a recently played list. Designed for all screen sizes, from smartphones to desktops. Focused on UI clarity, accessibility, and performance.</p>",
+    "tech": ["HTML", "CSS", "JavaScript", "Bootstrap", "Cloudinary"],
+    "demo": "https://projectheart.ccbp.tech/",
+    "repo": "",
+    "image": "/gallery/placeholder.svg"
+  },
+
+  {
+    "id": "p3",
+    "title": "Hearti — Todo App with Authentication",
+    "short": "A simple but clean todo app with authentication and task management features.",
+    "long": "<p>Hearti is a basic task management web application with a focus on clean UI, simple UX, and authentication flow. Designed as a practice project for consistent state management and component reuse.</p>",
+    "tech": ["HTML", "CSS", "JavaScript"],
+    "demo": "",
+    "repo": "",
+    "image": "/gallery/placeholder.svg"
+  },
+
+  {
+    "id": "p4",
+    "title": "Music UI — Player Redesign",
+    "short": "Redesigned a music player UI focusing on accessibility and micro-interactions.",
+    "long": "<p>A UI/UX redesign project for a music player. Focused on improving color contrast, adding smooth micro-interactions, and optimizing mobile layout. Demonstrates design thinking and frontend refinement.</p>",
+    "tech": ["HTML", "CSS", "JavaScript", "UI/UX"],
+    "demo": "",
+    "repo": "",
+    "image": "/gallery/placeholder.svg"
   }
-  ,{
-    "id": "task-master",
-    "title": "Task Master",
-    "short": "Task management app with deadlines and reminders.",
-    "long": "<p>Features: create, edit, delete tasks; set deadlines; email reminders.</p>",
-    "tech": ["React","Node.js","MongoDB"],
-    "demo": "#",
-    "repo": "https://github.com/YOUR_USERNAME/heart-beart",
-    "image": "/projects/taskmaster.png",
-    "date": "2025-09-01"}
 ]
-  

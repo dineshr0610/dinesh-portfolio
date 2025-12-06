@@ -1,0 +1,26 @@
+[
+  {
+    "id": "u2025-11-10-audit",
+    "title": "Deployed Portfolio v1.2 — UI polish",
+    "date": "2025-11-10",
+    "short": "Updated header, made profile image crisp, added project highlights.",
+    "body": "<p>Polished the header, improved image handling (webp + srcset) and fixed layout on mobile.</p>",
+    "image": "/gallery/placeholder.svg",
+    "media": null,
+    "tags": ["release","ui","deploy"]
+  },
+  {
+    "id": "u2025-10-01-ai-proto",
+    "title": "Started RAG pipeline for Ask AI",
+    "date": "2025-10-01",
+    "short": "Prototype for embeddings + vector search started. Backend sketch in progress.",
+    "body": "<p>Implemented a small serverless endpoint that creates embeddings for project docs.</p>",
+    "image": "/gallery/ai-snapshot.jpg",
+    "media": {
+      "type": "video",
+      "src": "/media/rag-demo.mp4",
+      "poster": "/media/rag-demo-thumb.jpg"
+    },
+    "tags": ["ai","backend"]
+  }
+]

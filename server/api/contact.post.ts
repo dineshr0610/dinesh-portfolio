@@ -1,6 +1,10 @@
-// server/api/contact.post.ts
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
-  // In production we'll send email; stub just returns ok
-  return { ok: true, received: { name: body?.name, email: body?.email } }
+  try {
+    const body = await readBody(event)
+    // TODO: validate & send email here
+    return { ok: true, message: 'Message received' }
+  } catch (err) {
+    console.error(err)
+    return createError({ statusCode: 500, statusMessage: 'Server error' })
+  }
 })
