@@ -1,174 +1,170 @@
 <template>
-  <header class="py-4 border-b bg-white/80 backdrop-blur-sm">
+  <header class="py-3 border-b bg-white/70 backdrop-blur-sm sticky top-0 z-50">
     <div class="container mx-auto flex items-center justify-between px-4 lg:px-8">
-      <!-- Brand -->
       <NuxtLink to="/" class="text-xl font-bold">Dinesh R</NuxtLink>
 
-      <!-- Desktop nav -->
-      <nav class="hidden md:flex items-center gap-6 text-sm" aria-label="Main navigation">
+      <nav class="hidden md:flex items-center gap-6 text-sm" role="navigation" aria-label="Main nav">
         <NuxtLink to="/" class="hover:underline">Home</NuxtLink>
         <NuxtLink to="/about" class="hover:underline">About</NuxtLink>
-        <NuxtLink to="/ask" class="hover:underline">Ask AI</NuxtLink>
         <NuxtLink to="/achievements" class="hover:underline">Achievements</NuxtLink>
         <NuxtLink to="/timeline" class="hover:underline">Timeline</NuxtLink>
         <NuxtLink to="/gallery" class="hover:underline">Gallery</NuxtLink>
-        <NuxtLink to="/updates" class="hover:underline">Dinesh Now</NuxtLink>
+
+        <!-- FORCE router navigation; button has type="button" to avoid submit -->
+        <button type="button" @click.stop="goUpdates" class="hover:underline">Dinesh Now</button>
+
         <NuxtLink to="/contact" class="hover:underline">Contact</NuxtLink>
       </nav>
 
-      <!-- Right side: desktop avatar + CTA -->
       <div class="hidden md:flex items-center gap-3 relative">
-        <NuxtLink to="/contact" class="text-sm px-3 py-1 rounded border hover:bg-slate-50">Hire</NuxtLink>
+        <NuxtLink to="/contact" class="text-sm px-3 py-1 rounded bg-indigo-600 text-white hover:opacity-95">Hire</NuxtLink>
 
-        <button
-          @click="toggleDropdown"
-          :aria-expanded="dropdownOpen"
-          aria-haspopup="menu"
-          class="flex items-center gap-2 p-1 rounded hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-300"
-          ref="avatarBtn"
-        >
-          <div class="w-9 h-9">
-            <ProfileImage class="w-9 h-9 rounded-full" alt="Dinesh R headshot" />
-          </div>
-          <span class="text-sm hidden lg:inline">Dinesh</span>
-          <svg class="w-4 h-4 ml-1" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.292l3.71-4.06a.75.75 0 111.14.98l-4 4.375a.75.75 0 01-1.08 0l-4-4.375a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-          </svg>
+        <button type="button" ref="avatarBtn" @click="toggleMenu" :aria-expanded="menuOpen" aria-controls="profile-popover" aria-label="Open profile menu" class="flex items-center gap-2 p-1 rounded hover:bg-slate-100 focus:outline-none">
+          <ProfileImage class="w-9 h-9 rounded-full ring-1 ring-slate-200" />
+          <span class="hidden lg:inline text-sm">Dinesh</span>
         </button>
 
-        <!-- Avatar dropdown -->
         <transition name="fade">
-          <div
-            v-if="dropdownOpen"
-            ref="dropdown"
-            tabindex="-1"
-            class="origin-top-right absolute right-0 mt-12 w-48 rounded-md shadow-lg bg-white ring-1 ring-black/5 z-50"
-            role="menu"
-            aria-label="User menu"
-          >
-            <div class="py-1">
-              <a @click.prevent="navTo('/about')" class="block px-4 py-2 text-sm hover:bg-slate-50" role="menuitem">About</a>
-              <a @click.prevent="navTo('/ask')" class="block px-4 py-2 text-sm hover:bg-slate-50" role="menuitem">Ask AI</a>
-              <a @click.prevent="navTo('/resume')" class="block px-4 py-2 text-sm hover:bg-slate-50" role="menuitem">Resume</a>
-              <a @click.prevent="navTo('/contact')" class="block px-4 py-2 text-sm hover:bg-slate-50" role="menuitem">Contact</a>
+          <div v-if="menuOpen" id="profile-popover" ref="menu" :style="popoverStyle" class="fixed w-72 bg-white rounded-xl shadow-2xl ring-1 ring-black/5 p-4 z-[9999]" tabindex="-1" role="dialog">
+            <div class="flex items-start gap-3">
+              <ProfileImage class="w-14 h-14 rounded-full ring-2 ring-slate-100" />
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <div>
+                    <div class="text-sm font-semibold">Dinesh R</div>
+                    <div class="text-xs text-slate-500">Frontend • Full-Stack • AI</div>
+                  </div>
+                  <button type="button" @click="menuOpen = false" class="p-1 rounded hover:bg-slate-100" aria-label="Close">
+                    ✕
+                  </button>
+                </div>
+
+                <p class="mt-2 text-xs text-slate-600">I build responsive web apps and experiment with applied AI.</p>
+
+                <div class="mt-3 flex gap-2">
+                  <a ref="resumeLink" href="/resume.pdf" target="_blank" rel="noopener noreferrer" class="flex-1 inline-flex items-center justify-center px-3 py-2 rounded-md bg-slate-900 text-white text-sm">View Resume</a>
+                  <NuxtLink to="/contact" @click.native="menuOpen = false" class="inline-flex items-center justify-center px-3 py-2 rounded-md border text-sm text-slate-700">Contact</NuxtLink>
+                </div>
+              </div>
             </div>
           </div>
         </transition>
       </div>
 
-      <!-- Mobile: hamburger -->
-      <div class="md:hidden flex items-center gap-2">
-        <button @click="toggleMobile" :aria-expanded="mobileOpen" aria-label="Toggle menu" class="p-2 rounded hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-300">
-          <svg v-if="!mobileOpen" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-          </svg>
-          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
+      <!-- Mobile buttons -->
+      <button type="button" class="md:hidden p-2 rounded hover:bg-slate-100" @click="toggleMobile" :aria-expanded="mobileOpen" aria-label="Toggle navigation">
+        <svg v-if="!mobileOpen" class="w-6 h-6" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" d="M4 8h16M4 16h16"/></svg>
+        <svg v-else class="w-6 h-6" fill="none" stroke="currentColor"><path stroke-width="2" stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
     </div>
 
-    <!-- Mobile menu panel -->
-    <transition name="slide-down">
-      <div v-if="mobileOpen" class="md:hidden border-t bg-white">
-        <div class="container mx-auto px-4 py-4">
-          <ul class="flex flex-col gap-2">
-            <li><NuxtLink @click.native="closeMobile" to="/" class="block px-2 py-2">Home</NuxtLink></li>
-            <li><NuxtLink @click.native="closeMobile" to="/about" class="block px-2 py-2">About</NuxtLink></li>
-            <li><NuxtLink @click.native="closeMobile" to="/ask" class="block px-2 py-2">Ask AI</NuxtLink></li>
-            <li><NuxtLink @click.native="closeMobile" to="/achievements" class="block px-2 py-2">Achievements</NuxtLink></li>
-            <li><NuxtLink @click.native="closeMobile" to="/timeline" class="block px-2 py-2">Timeline</NuxtLink></li>
-            <li><NuxtLink @click.native="closeMobile" to="/gallery" class="block px-2 py-2">Gallery</NuxtLink></li>
-            <li><NuxtLink @click.native="closeMobile" to="/updates" class="block px-2 py-2">Dinesh Now</NuxtLink></li>
-            <li><NuxtLink @click.native="closeMobile" to="/contact" class="block px-2 py-2">Contact</NuxtLink></li>
+    <transition name="slide">
+      <div v-if="mobileOpen" class="md:hidden bg-white border-t pt-2 pb-4 px-4">
+        <ul class="flex flex-col gap-2 text-sm">
+          <NuxtLink @click="closeMobile" to="/" class="mobile-item">Home</NuxtLink>
+          <NuxtLink @click="closeMobile" to="/about" class="mobile-item">About</NuxtLink>
+          <NuxtLink @click="closeMobile" to="/achievements" class="mobile-item">Achievements</NuxtLink>
+          <NuxtLink @click="closeMobile" to="/timeline" class="mobile-item">Timeline</NuxtLink>
+          <NuxtLink @click="closeMobile" to="/gallery" class="mobile-item">Gallery</NuxtLink>
 
-            <li class="border-t mt-2 pt-2">
-              <div class="flex items-center gap-3 px-2">
-                <div class="w-10 h-10">
-                  <ProfileImage class="w-10 h-10 rounded-full" alt="Dinesh R headshot" />
-                </div>
-                <div>
-                  <div class="text-sm font-medium">Dinesh R</div>
-                  <NuxtLink to="/contact" @click.native="closeMobile" class="text-xs text-slate-600 hover:underline">Contact</NuxtLink>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
+          <!-- Mobile navigation uses same router push -->
+          <button type="button" @click="goUpdatesAndClose" class="mobile-item text-left">Dinesh Now</button>
+
+          <NuxtLink @click="closeMobile" to="/contact" class="mobile-item">Contact</NuxtLink>
+
+          <hr class="my-2" />
+
+          <div class="flex items-center gap-3 px-1">
+            <ProfileImage class="w-10 h-10 rounded-full ring-1 ring-slate-200" />
+            <div>
+              <div class="text-sm font-medium">Dinesh R</div>
+              <div class="text-xs text-slate-500">Frontend • AI</div>
+            </div>
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" class="ml-auto text-xs underline">Resume</a>
+          </div>
+        </ul>
       </div>
     </transition>
   </header>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from '#imports'
 import ProfileImage from '~/components/ProfileImage.vue'
 
-const mobileOpen = ref(false)
-const dropdownOpen = ref(false)
-const dropdown = ref<HTMLElement | null>(null)
-const avatarBtn = ref<HTMLElement | null>(null)
 const router = useRouter()
+const mobileOpen = ref(false)
+const menuOpen = ref(false)
+const menu = ref<HTMLElement | null>(null)
+const avatarBtn = ref<HTMLElement | null>(null)
+const resumeLink = ref<HTMLAnchorElement | null>(null)
+const popoverStyle = ref<Record<string,string>>({})
 
-function toggleMobile() {
-  mobileOpen.value = !mobileOpen.value
-  // close dropdown if mobile opens
-  if (mobileOpen.value) dropdownOpen.value = false
+function computePopoverPosition() {
+  const btn = avatarBtn.value
+  if (!btn) return
+  const rect = btn.getBoundingClientRect()
+  const gap = 8
+  const top = Math.max(rect.bottom + gap, 8)
+  const right = Math.max(window.innerWidth - rect.right, 8)
+  popoverStyle.value = { top: `${top}px`, right: `${right}px`, transform: 'translateZ(0)' }
 }
 
-function closeMobile() {
-  mobileOpen.value = false
-}
-
-function toggleDropdown() {
-  dropdownOpen.value = !dropdownOpen.value
-  if (dropdownOpen.value) {
-    nextTick(() => dropdown.value?.focus())
+function toggleMenu() {
+  menuOpen.value = !menuOpen.value
+  if (menuOpen.value) {
+    computePopoverPosition()
+    nextTick(() => resumeLink.value?.focus?.({ preventScroll: true }))
   }
 }
 
-function navTo(path: string) {
-  router.push(path)
-  dropdownOpen.value = false
+function goUpdates(e?: Event) {
+  if (e) e.stopPropagation()
+  console.log('Header: navigating to /updates')
+  router.push('/updates').catch(() => {})
 }
+
+function goUpdatesAndClose() {
+  mobileOpen.value = false
+  goUpdates()
+}
+
+function toggleMobile() { mobileOpen.value = !mobileOpen.value; if (mobileOpen.value) menuOpen.value = false }
+function closeMobile() { mobileOpen.value = false }
 
 function onDocClick(e: MouseEvent) {
   const t = e.target as Node
-  if (dropdown.value && dropdown.value.contains(t)) return
+  if (!menuOpen.value) return
+  if (menu.value && menu.value.contains(t)) return
   if (avatarBtn.value && avatarBtn.value.contains(t)) return
-  dropdownOpen.value = false
+  menuOpen.value = false
 }
-
 function onKey(e: KeyboardEvent) {
-  if (e.key === 'Escape') {
-    dropdownOpen.value = false
-    mobileOpen.value = false
-  }
+  if (e.key === 'Escape') { menuOpen.value = false; mobileOpen.value = false }
 }
+function onWindowResizeOrScroll() { if (menuOpen.value) computePopoverPosition() }
 
 onMounted(() => {
   document.addEventListener('click', onDocClick)
   document.addEventListener('keydown', onKey)
+  window.addEventListener('resize', onWindowResizeOrScroll)
+  window.addEventListener('scroll', onWindowResizeOrScroll, true)
 })
-
 onBeforeUnmount(() => {
   document.removeEventListener('click', onDocClick)
   document.removeEventListener('keydown', onKey)
+  window.removeEventListener('resize', onWindowResizeOrScroll)
+  window.removeEventListener('scroll', onWindowResizeOrScroll, true)
 })
 </script>
 
 <style scoped>
-/* simple transitions */
-.fade-enter-active, .fade-leave-active { transition: opacity .12s ease; }
-.fade-enter-from, .fade-leave-to { opacity: 0; }
-
-.slide-down-enter-active { animation: slideDownIn .18s ease forwards; }
-.slide-down-leave-active { animation: slideDownOut .16s ease forwards; }
-@keyframes slideDownIn { from { opacity: 0; transform: translateY(-6px) } to { opacity: 1; transform: translateY(0) } }
-@keyframes slideDownOut { from { opacity: 1; transform: translateY(0) } to { opacity: 0; transform: translateY(-6px) } }
-
-/* hide v-cloak usage if needed */
-[v-cloak] { display:none; }
+.mobile-item { padding:.45rem .25rem; display:block; }
+.fade-enter-active, .fade-leave-active { transition: opacity .12s ease }
+.fade-enter-from, .fade-leave-to { opacity: 0 }
+.slide-enter-active { animation: slideDown .18s ease forwards }
+.slide-leave-active { animation: slideUp .16s ease forwards }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-6px) } to { opacity: 1; transform: translateY(0) } }
+@keyframes slideUp { from { opacity: 1 } to { opacity: 0; transform: translateY(-6px) } }
 </style>

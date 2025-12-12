@@ -26,18 +26,15 @@
             </NuxtLink>
 
             <!-- Resume actions -->
-            <NuxtLink to="/resume" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-400">
-              View Resume
-            </NuxtLink>
-
             <a
-              href="/resume.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-            >
-              Download Resume
-            </a>
+  href="/resume.pdf"
+  target="_blank"
+  rel="noopener noreferrer"
+  class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+>
+  View Resume (PDF)
+</a>
+
           </div>
 
           <!-- small highlights -->
