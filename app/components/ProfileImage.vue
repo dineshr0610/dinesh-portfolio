@@ -29,12 +29,27 @@ function onError(e: Event) {
     t.srcset = props.fallback
   }
 }
+
+/**
+ * AI reactions for profile focus
+ */
+function react(type: 'resume' | 'idle') {
+  window.dispatchEvent(
+    new CustomEvent('ai:react', { detail: type })
+  )
+}
 </script>
 
 <template>
-  <!-- forward any attrs (like class) to the wrapper so your classes apply) -->
-  <picture v-bind="attrs" class="inline-block">
+  <!-- Profile image wrapper -->
+  <picture
+    v-bind="attrs"
+    class="inline-block"
+    @mouseenter="react('resume')"
+    @mouseleave="react('idle')"
+  >
     <source v-if="srcWebp" :srcset="srcWebp" type="image/webp" />
+
     <img
       :src="errored ? props.fallback : props.src"
       :alt="props.alt"
@@ -42,13 +57,15 @@ function onError(e: Event) {
       :height="props.height"
       decoding="async"
       loading="lazy"
-      :class="['object-cover', 'block']"
+      :class="['object-cover', 'block', 'transition-transform', 'duration-300']"
       @error="onError"
     />
   </picture>
 </template>
 
 <style scoped>
-/* neutral base — visual sizing is controlled via the class you pass in */
-img { display: block; }
+/* subtle polish */
+img {
+  display: block;
+}
 </style>

@@ -37,33 +37,13 @@
 
 <script setup>
 import GalleryCard from '~/components/GalleryCard.vue'
-import { ref, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 
-const items = ref([])
-const loading = ref(true)
-const error = ref(null)
 const active = ref(null)
 
-async function loadGallery(){
-  loading.value = true
-  error.value = null
-  try {
-    const res = await fetch('/data/gallery.json', { cache: 'no-store' })
-    if (!res.ok) throw new Error(HTTP )
-    const json = await res.json()
-    if (!Array.isArray(json)) throw new Error('gallery JSON is not an array')
-    items.value = json
-    console.log('gallery loaded:', items.value) // debug
-  } catch (err) {
-    console.error('Failed to load gallery.json', err)
-    error.value = err.message || String(err)
-    items.value = []
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(() => loadGallery())
+const { data: itemsData, pending: loading, error: fetchError } = await useFetch('/data/gallery.json')
+const items = computed(() => Array.isArray(itemsData.value) ? itemsData.value : [])
+const error = computed(() => fetchError.value?.message || null)
 
 function openModal(item){
   active.value = item

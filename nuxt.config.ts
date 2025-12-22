@@ -48,14 +48,26 @@ export default defineNuxtConfig({
 
   // keep your global css - adjust to your current path if different
   css: [
-     resolve(process.cwd(), 'assets/css/tailwind.css')
-   
+    resolve(process.cwd(), 'assets/css/tailwind.css')
+
   ],
 
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {}
+    }
+  },
+
+  runtimeConfig: {
+    OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_KEY: process.env.SUPABASE_KEY,
+    public: {
+      emailjsPublic: 'KgxuGl9u3L8YeZd72',
+      emailjsService: 'service_uqr7bau',
+      emailjsAdminTemplate: 'template_ykdoosr',
+      emailjsUserTemplate: 'template_7jt4rmf'
     }
   },
 

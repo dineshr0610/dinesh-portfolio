@@ -98,14 +98,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed } from 'vue'
 
-const items = ref([])
-const loading = ref(true)
-const error = ref(null)
 const playing = reactive({})
+const placeholder = '/gallery/placeholder.svg'
 
-const placeholder = '/gallery/placeholder.svg' // consistent placeholder. :contentReference[oaicite:2]{index=2}
+const { data: itemsData, pending: loading, error: fetchError } = await useFetch('/data/achievements.json')
+const items = computed(() => Array.isArray(itemsData.value) ? itemsData.value : [])
+const error = computed(() => fetchError.value?.message || null)
 
 function formatDate(d) {
   if (!d) return ''
@@ -118,24 +118,6 @@ function formatDate(d) {
   }
 }
 
-async function loadAchievements() {
-  loading.value = true
-  error.value = null
-  try {
-    const res = await fetch('/data/achievements.json', { cache: 'no-store' })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const json = await res.json()
-    if (!Array.isArray(json)) throw new Error('achievements.json must be an array')
-    items.value = json
-  } catch (err) {
-    console.error('Failed to load achievements.json', err)
-    error.value = err.message || String(err)
-    items.value = []
-  } finally {
-    loading.value = false
-  }
-}
-
 function play(id) {
   playing[id] = true
   // optional: scroll video into view
@@ -144,8 +126,6 @@ function play(id) {
     if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' })
   })
 }
-
-onMounted(() => loadAchievements())
 </script>
 
 <style scoped>

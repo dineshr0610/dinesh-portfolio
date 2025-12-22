@@ -3,13 +3,11 @@ import { ref, onMounted } from 'vue'
 import emailjs from '@emailjs/browser'
 
 // EmailJS public config (safe on client)
-const EMAILJS_PUBLIC = 'KgxuGl9u3L8YeZd72'
-const EMAILJS_SERVICE = 'service_uqr7bau'
-const EMAILJS_ADMIN_TEMPLATE = 'template_ykdoosr'
-const EMAILJS_USER_TEMPLATE = 'template_7jt4rmf'
+const config = useRuntimeConfig()
+// Access keys via config.public.emailjsPublic, etc.
 
 onMounted(() => {
-  try { emailjs.init(EMAILJS_PUBLIC) } catch (e) { console.warn('EmailJS init:', e) }
+  try { emailjs.init(config.public.emailjsPublic) } catch (e) { console.warn('EmailJS init:', e) }
 })
 
 const name = ref('')
@@ -69,7 +67,7 @@ async function handleSubmit() {
 
   // 1) Send admin email (critical)
   try {
-    await emailjs.send(EMAILJS_SERVICE, EMAILJS_ADMIN_TEMPLATE, paramsForAdmin)
+    await emailjs.send(config.public.emailjsService, config.public.emailjsAdminTemplate, paramsForAdmin)
   } catch (err: any) {
     console.error('Admin email failed:', err)
     loading.value = false
@@ -87,7 +85,7 @@ async function handleSubmit() {
 
   // fire-and-forget: attempt retries but do NOT show failure to user
   sendWithRetry(
-    () => emailjs.send(EMAILJS_SERVICE, EMAILJS_USER_TEMPLATE, paramsForUser),
+    () => emailjs.send(config.public.emailjsService, config.public.emailjsUserTemplate, paramsForUser),
     2,
     [200, 500]
   ).then(result => {

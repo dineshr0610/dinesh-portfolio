@@ -1,0 +1,1 @@
+Day 1: Deployed site to Vercel

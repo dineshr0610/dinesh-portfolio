@@ -7,13 +7,19 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "reindex": "node scripts/reindex.js",
+    "reindex-gemini": "node scripts/reindex-gemini.js"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
     "@heroicons/vue": "^2.1.5",
     "@nuxt/content": "^2.13.4",
+    "@supabase/supabase-js": "^2.87.1",
+    "@xenova/transformers": "^2.17.2",
+    "dotenv": "^17.2.3",
     "nuxt": "^4.2.1",
+    "openai": "^6.14.0",
     "vue": "^3.5.25",
     "vue-router": "^4.6.3"
   },

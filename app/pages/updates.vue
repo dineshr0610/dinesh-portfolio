@@ -59,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, computed } from 'vue'
 
 type UpdateItem = {
   id: string
@@ -72,9 +72,9 @@ type UpdateItem = {
   tags?: string[]
 }
 
-const updates = ref<UpdateItem[]>([])
-const loading = ref(true)
-const error = ref<string | null>(null)
+const { data: updatesData, pending: loading, error: fetchError } = await useFetch<UpdateItem[]>('/data/updates.json')
+const updates = computed(() => Array.isArray(updatesData.value) ? updatesData.value : [])
+const error = computed(() => fetchError.value?.message || null)
 
 function formatDate(d?: string) {
   if (!d) return ''
@@ -93,28 +93,6 @@ const sorted = computed(() => {
     const db = b.date ? +new Date(b.date) : 0
     return db - da
   })
-})
-
-async function loadUpdates() {
-  loading.value = true
-  error.value = null
-  try {
-    const res = await fetch('/data/updates.json', { cache: 'no-store' })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const json = await res.json()
-    if (!Array.isArray(json)) throw new Error('updates.json is not an array')
-    updates.value = json
-  } catch (err: any) {
-    console.error('loadUpdates error', err)
-    error.value = err?.message ?? String(err)
-    updates.value = []
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(() => {
-  loadUpdates()
 })
 </script>
 

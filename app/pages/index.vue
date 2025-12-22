@@ -158,15 +158,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { computed } from 'vue'
 import ProfileImage from '~/components/ProfileImage.vue'
 
-const projects = ref([])
-const featured = ref([])
-const gallery = ref([])
+const { data: projectsData } = await useFetch('/data/projects.json')
+const projects = computed(() => projectsData.value || [])
+
+const featured = computed(() => {
+  const all = projects.value
+  const fav = all.filter(p => p.featured).slice(0,2)
+  if (fav.length > 0) return fav
+  return all.slice(0,2)
+})
+
+const { data: galleryData } = await useFetch('/data/gallery.json')
+const gallery = computed(() => galleryData.value || [])
 const galleryThumbs = computed(() => gallery.value.slice(0, 3))
-const latestUpdate = ref(null)
-const updateLoading = ref(true)
+
+const { data: updatesData, pending: updateLoading } = await useFetch('/data/updates.json')
+const latestUpdate = computed(() => {
+  const json = updatesData.value
+  if (Array.isArray(json) && json.length > 0) {
+    return json[0]
+  }
+  return null
+})
 
 function formatDate(d) {
   if (!d) return ''
@@ -178,62 +194,6 @@ function formatDate(d) {
     return d
   }
 }
-
-async function loadProjects() {
-  try {
-    const res = await fetch('/data/projects.json', { cache: 'no-store' })
-    if (!res.ok) throw new Error('No projects.json')
-    const json = await res.json()
-    if (Array.isArray(json)) {
-      projects.value = json
-      const fav = json.filter(p => p.featured).slice(0,2)
-      if (fav.length > 0) featured.value = fav
-      else featured.value = json.slice(0,2)
-    } else {
-      projects.value = []
-      featured.value = []
-    }
-  } catch (e) {
-    console.warn('loadProjects error', e)
-    projects.value = []
-    featured.value = []
-  }
-}
-
-async function loadGallery() {
-  try {
-    const res = await fetch('/data/gallery.json', { cache: 'no-store' })
-    if (!res.ok) throw new Error('No gallery.json')
-    const json = await res.json()
-    gallery.value = Array.isArray(json) ? json : []
-  } catch (e) {
-    console.warn('loadGallery error', e)
-    gallery.value = []
-  }
-}
-
-async function loadUpdates() {
-  updateLoading.value = true
-  try {
-    const res = await fetch('/data/updates.json', { cache: 'no-store' })
-    if (!res.ok) throw new Error('No updates.json')
-    const json = await res.json()
-    if (Array.isArray(json) && json.length > 0) {
-      latestUpdate.value = json[0]
-    } else latestUpdate.value = null
-  } catch (e) {
-    console.warn('loadUpdates error', e)
-    latestUpdate.value = null
-  } finally {
-    updateLoading.value = false
-  }
-}
-
-onMounted(() => {
-  loadProjects()
-  loadGallery()
-  loadUpdates()
-})
 </script>
 
 <style scoped>
