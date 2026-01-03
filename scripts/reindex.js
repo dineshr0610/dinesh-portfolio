@@ -88,7 +88,7 @@ async function collectDocs() {
         text: resume
       })
     }
-  } catch {}
+  } catch { }
 
   // ---------- CONTENT (daily.txt, faq.md, etc.) ----------
   try {
@@ -105,7 +105,7 @@ async function collectDocs() {
         text: raw
       })
     }
-  } catch {}
+  } catch { }
 
   return docs
 }

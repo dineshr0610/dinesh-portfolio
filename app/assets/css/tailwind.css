@@ -11,6 +11,15 @@ body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; 
 :focus { outline: none; }
 :focus-visible { outline: 3px solid rgba(99,102,241,.35); outline-offset: 2px; }
 
+::selection {
+  background-color: #6366f1; /* brand-500 */
+  color: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 /* reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }

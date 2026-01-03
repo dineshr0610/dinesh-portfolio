@@ -224,11 +224,28 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.mobile-item { padding: .45rem .25rem; display: block }
-.fade-enter-active, .fade-leave-active { transition: opacity .12s }
-.fade-enter-from, .fade-leave-to { opacity: 0 }
-.slide-enter-active { animation: slideDown .18s ease forwards }
-.slide-leave-active { animation: slideUp .16s ease forwards }
-@keyframes slideDown { from { opacity:0; transform:translateY(-6px) } to { opacity:1 } }
-@keyframes slideUp { from { opacity:1 } to { opacity:0; transform:translateY(-6px) } }
+
+.nav-link {
+  @apply px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 transition-all duration-200;
+}
+
+.nav-link.router-link-active {
+  @apply text-brand-700 bg-brand-50 font-semibold;
+}
+
+.mobile-item {
+  @apply block px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition-colors;
+}
+
+.mobile-item.router-link-active {
+  @apply bg-brand-50 text-brand-700 font-semibold;
+}
+
+.fade-enter-active, .fade-leave-active { transition: opacity .12s, transform .12s ease-out; }
+.fade-enter-from, .fade-leave-to { opacity: 0; transform: scale(0.95); }
+.slide-enter-active { animation: slideDown .2s cubic-bezier(0.16, 1, 0.3, 1) forwards }
+.slide-leave-active { animation: slideUp .15s ease-in forwards }
+@keyframes slideDown { from { opacity:0; transform:translateY(-10px) } to { opacity:1; transform:translateY(0) } }
+@keyframes slideUp { from { opacity:1; transform:translateY(0) } to { opacity:0; transform:translateY(-10px) } }
+
 </style>

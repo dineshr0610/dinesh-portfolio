@@ -1,12 +1,12 @@
 <template>
   <section class="prose mx-auto py-8">
     <h1>Dinesh Now</h1>
-    <p class="text-slate-600">This feed shows daily / weekly updates. Admin can post updates by editing <code>/data/updates.json</code>.</p>
+    <p class="text-slate-600">This feed shows daily / weekly updates.</p>
 
     <div class="mt-6 space-y-6">
       <div v-if="loading" class="text-center text-slate-500 py-8">Loading updates…</div>
       <div v-else-if="error" class="text-center text-red-600 py-8">Failed to load updates: {{ error }}</div>
-      <div v-else-if="updates.length === 0" class="text-center text-slate-500 py-8">No updates yet — add items to <code>/data/updates.json</code>.</div>
+      <div v-else-if="updates.length === 0" class="text-center text-slate-500 py-8">No updates yet.</div>
 
       <article
         v-for="u in sorted"
@@ -59,12 +59,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 
 type UpdateItem = {
   id: string
   title: string
-  date?: string
+  date?: string // mapped from published_at
+  published_at?: string
   short?: string
   body?: string
   image?: string
@@ -72,7 +73,19 @@ type UpdateItem = {
   tags?: string[]
 }
 
-const { data: updatesData, pending: loading, error: fetchError } = await useFetch<UpdateItem[]>('/data/updates.json')
+const { data: updatesData, pending: loading, error: fetchError } = await useAsyncData(
+  'public-updates',
+  async () => {
+    const data = await $fetch('/api/public/updates') as any[]
+    
+    // Map published_at to date for template compatibility
+    return (data || []).map(item => ({
+      ...item,
+      date: item.published_at
+    }))
+  }
+)
+
 const updates = computed(() => Array.isArray(updatesData.value) ? updatesData.value : [])
 const error = computed(() => fetchError.value?.message || null)
 
@@ -87,13 +100,8 @@ function formatDate(d?: string) {
   }
 }
 
-const sorted = computed(() => {
-  return [...updates.value].sort((a, b) => {
-    const da = a.date ? +new Date(a.date) : 0
-    const db = b.date ? +new Date(b.date) : 0
-    return db - da
-  })
-})
+// Already sorted by Supabase, but keeping this computed for safety or straightforward pass-through
+const sorted = computed(() => updates.value)
 </script>
 
 <style scoped>

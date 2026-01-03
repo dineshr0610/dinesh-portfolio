@@ -161,25 +161,29 @@
 import { computed } from 'vue'
 import ProfileImage from '~/components/ProfileImage.vue'
 
-const { data: projectsData } = await useFetch('/data/projects.json')
+const { data: projectsData } = await useFetch('/api/projects')
 const projects = computed(() => projectsData.value || [])
 
 const featured = computed(() => {
-  const all = projects.value
-  const fav = all.filter(p => p.featured).slice(0,2)
-  if (fav.length > 0) return fav
-  return all.slice(0,2)
+  return projects.value.slice(0, 2)
 })
 
-const { data: galleryData } = await useFetch('/data/gallery.json')
+// Gallery
+const { data: galleryData } = await useFetch('/api/public/gallery')
 const gallery = computed(() => galleryData.value || [])
 const galleryThumbs = computed(() => gallery.value.slice(0, 3))
 
-const { data: updatesData, pending: updateLoading } = await useFetch('/data/updates.json')
+// Updates
+const { data: updatesData, pending: updateLoading } = await useFetch('/api/public/updates')
 const latestUpdate = computed(() => {
-  const json = updatesData.value
-  if (Array.isArray(json) && json.length > 0) {
-    return json[0]
+  const list = updatesData.value
+  if (Array.isArray(list) && list.length > 0) {
+    // API returns published_at, we can map it if needed or just use it
+    const first = list[0]
+    return {
+      ...first,
+      date: first.published_at // ensure template existing code (formatDate) works
+    }
   }
   return null
 })
@@ -198,8 +202,7 @@ function formatDate(d) {
 
 <style scoped>
 .container { max-width: 1100px; }
-.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.line-clamp-4 { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+
 
 /* subtle heading appear animation */
 @keyframes appear {

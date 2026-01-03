@@ -5,12 +5,12 @@
     <p class="mt-2 text-slate-600">Life / career timeline will appear here.</p>
 
     <div class="mt-6">
-      <div v-if="loading" class="py-8 text-center text-slate-500">Loading timeline…</div>
+      <div v-if="pending" class="py-8 text-center text-slate-500">Loading timeline…</div>
       <div v-else-if="error" class="py-8 text-center text-red-600">Failed to load timeline: {{ error }}</div>
 
       <ul v-else class="mt-6 space-y-6">
         <li
-          v-for="item in items"
+          v-for="item in timeline"
           :key="item.id"
           class="bg-white p-4 rounded shadow overflow-hidden"
           :aria-labelledby="'tl-'+item.id"
@@ -99,7 +99,7 @@
           </div>
         </li>
 
-        <li v-if="items.length === 0" class="text-center text-slate-500 py-12 bg-white rounded shadow">
+        <li v-if="timeline?.length === 0" class="text-center text-slate-500 py-12 bg-white rounded shadow">
           No timeline items yet — add entries to <code>/public/data/timeline.json</code>
         </li>
       </ul>
@@ -108,17 +108,16 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-
-const items = ref([])
-const loading = ref(true)
-const error = ref(null)
+const { data: timeline, pending, error } = await useAsyncData(
+  'public-timeline',
+  async () => {
+    const data = await $fetch('/api/public/timeline')
+    return data
+  }
+)
 
 // track which items are currently playing (video loaded)
 const playing = reactive({})
-
-// placeholder path (use existing pattern)
-const placeholder = '/gallery/placeholder.svg' // keep this pattern consistent with your gallery. :contentReference[oaicite:1]{index=1}
 
 function formatDate(d) {
   if (!d) return ''
@@ -131,24 +130,6 @@ function formatDate(d) {
   }
 }
 
-async function loadTimeline() {
-  loading.value = true
-  error.value = null
-  try {
-    const res = await fetch('/data/timeline.json', { cache: 'no-store' })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const json = await res.json()
-    if (!Array.isArray(json)) throw new Error('timeline.json must be an array')
-    items.value = json
-  } catch (err) {
-    console.error('Error loading timeline.json', err)
-    error.value = err.message || String(err)
-    items.value = []
-  } finally {
-    loading.value = false
-  }
-}
-
 function play(id) {
   // flip playing state so template swaps in <video>
   playing[id] = true
@@ -158,8 +139,6 @@ function play(id) {
     if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' })
   })
 }
-
-onMounted(() => loadTimeline())
 </script>
 
 <style scoped>

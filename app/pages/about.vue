@@ -253,15 +253,11 @@ async function loadProjects() {
   projectsLoading.value = true
   projectsError.value = null
   try {
-    const res = await fetch('/data/projects.json', { cache: 'no-store' })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    const json = await res.json()
-    if (!Array.isArray(json)) throw new Error('projects.json is not an array')
-    projects.value = json
+    projects.value = await $fetch('/api/projects')
   } catch (err) {
     projects.value = []
     projectsError.value = err.message || String(err)
-    console.error('Failed to load projects.json', err)
+    console.error('Failed to load projects', err)
   } finally {
     projectsLoading.value = false
   }
@@ -270,11 +266,7 @@ async function loadProjects() {
 onMounted(() => loadProjects())
 
 const featuredProjects = computed(() => {
-  const order = ['p0', 'p1', 'p2']
-  const map = new Map(projects.value.map(p => [p.id, p]))
-  const picked = order.map(id => map.get(id)).filter(Boolean)
-  const rest = projects.value.filter(p => !order.includes(p.id)).slice(0, 6 - picked.length)
-  return picked.concat(rest)
+  return projects.value
 })
 
 function openProject(p) {

@@ -11,10 +11,12 @@ const tiltX = ref(0)
 const tiltY = ref(0)
 
 function handleMouseMove(e: MouseEvent) {
+  if (typeof window === 'undefined') return
   if (window.innerWidth < 768) return
 
   const cx = window.innerWidth / 2
   const cy = window.innerHeight / 2
+
   tiltX.value = Math.max(-8, Math.min(8, (e.clientY - cy) / 60))
   tiltY.value = Math.max(-8, Math.min(8, (e.clientX - cx) / 60))
 }
@@ -28,11 +30,15 @@ function handleReaction(e: Event) {
 }
 
 onMounted(() => {
+  if (typeof window === 'undefined') return
+
   window.addEventListener('mousemove', handleMouseMove)
   window.addEventListener('ai:react', handleReaction)
 })
 
 onUnmounted(() => {
+  if (typeof window === 'undefined') return
+
   window.removeEventListener('mousemove', handleMouseMove)
   window.removeEventListener('ai:react', handleReaction)
 })
@@ -49,10 +55,27 @@ onUnmounted(() => {
     <div class="front-label">🤖 Ask Dinesh AI</div>
 
     <!-- Spline -->
+    <!--
     <iframe
       src="https://my.spline.design/happyrobotbutton-6NwXPiHF8H76GkDjBrESj5TQ/"
       frameborder="0"
     />
+
+    <iframe
+      src="https://my.spline.design/genkubgreetingrobot-zhjR9AUiPQ3Q6NRInjgB95VU/"
+      frameborder="0"
+    />
+    -->
+<!--
+    <iframe
+      src="https://my.spline.design/r4xbot-fEl4xoWrcG2t3Lc325gb5IUS/"
+      frameborder="0"
+      width="100%"
+      height="100%"
+      loading="lazy"
+    ></iframe>
+
+     -->
   </div>
 </template>
 
@@ -112,9 +135,12 @@ onUnmounted(() => {
 /* ================= TABLET ================= */
 @media (max-width: 1024px) {
   .ai-character { width: 180px; }
-  .front-label { bottom: 18px; font-size: .74rem; 
-  left: 50%;
-  transform: translateX(-50%);}
+  .front-label {
+    bottom: 18px;
+    font-size: .74rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
 }
 
 /* ================= MOBILE ================= */
@@ -128,7 +154,7 @@ onUnmounted(() => {
   .ai-character iframe { transform: scale(.78); }
 
   .front-label {
-    bottom: 32px;   /* 🔥 THIS NOW WORKS */
+    bottom: 32px;
     font-size: .66rem;
     min-width: 80px;
     left: 45%;
@@ -143,10 +169,9 @@ onUnmounted(() => {
   .ai-character iframe { transform: scale(.72); }
 
   .front-label {
-    bottom: 50px;   /* 🔥 MOVE UP HERE */
+    bottom: 50px;
     font-size: .62rem;
     min-width: 105px;
-    
   }
 }
 </style>

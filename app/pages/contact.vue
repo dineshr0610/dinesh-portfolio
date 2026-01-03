@@ -29,23 +29,7 @@ function validate() {
   return { ok: true }
 }
 
-async function sendWithRetry(sendFn: () => Promise<any>, attempts = 2, delays = [200, 500]) {
-  for (let i = 0; i <= attempts; i++) {
-    try {
-      const res = await sendFn()
-      return { ok: true, res }
-    } catch (err) {
-      console.warn(`sendWithRetry attempt ${i + 1} failed`, err)
-      if (i < attempts) {
-        const delay = delays[i] ?? 300
-        await new Promise(r => setTimeout(r, delay))
-        continue
-      }
-      return { ok: false, err }
-    }
-  }
-  return { ok: false, err: new Error('Unknown sendWithRetry failure') }
-}
+
 
 async function handleSubmit() {
   const v = validate()
@@ -65,10 +49,14 @@ async function handleSubmit() {
     message: message.value.trim()
   }
 
-  // 1) Send admin email (critical)
+  // ✅ Send ONLY admin email
   try {
-    await emailjs.send(config.public.emailjsService, config.public.emailjsAdminTemplate, paramsForAdmin)
-  } catch (err: any) {
+    await emailjs.send(
+      config.public.emailjsService,
+      config.public.emailjsAdminTemplate,
+      paramsForAdmin
+    )
+  } catch (err) {
     console.error('Admin email failed:', err)
     loading.value = false
     toast.value = { type: 'error', text: 'Failed to send message. Please try again later.' }
@@ -76,31 +64,9 @@ async function handleSubmit() {
     return
   }
 
-  // 2) Admin succeeded — schedule auto-reply attempts in background (non-blocking)
-  const paramsForUser = {
-    name: name.value.trim(),
-    message: message.value.trim(),
-    reply_to: email.value.trim()
-  }
+  // ✅ EmailJS dashboard auto-reply will handle user email
 
-  // fire-and-forget: attempt retries but do NOT show failure to user
-  sendWithRetry(
-    () => emailjs.send(config.public.emailjsService, config.public.emailjsUserTemplate, paramsForUser),
-    2,
-    [200, 500]
-  ).then(result => {
-    if (!result.ok) {
-      // log for your debugging only; do not inform user
-      console.error('Auto-reply failed after retries:', result.err)
-      // optionally: send failure info to your server logging endpoint here
-    } else {
-      console.debug('Auto-reply sent successfully.')
-    }
-  }).catch(err => {
-    console.error('Auto-reply unexpected error:', err)
-  })
-
-  // 3) Reset form & show confident success to visitor
+  // Reset form
   name.value = ''
   email.value = ''
   message.value = ''

@@ -59,15 +59,18 @@ const props = defineProps({
 })
 
 const projects = ref<any[]>([])
+const loading = ref(true)
 const sectionRef = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
 
 async function load() {
   try {
-    const res = await fetch('/data/projects.json', { cache: 'no-store' })
-    projects.value = await res.json()
-  } catch {
+    projects.value = await $fetch('/api/projects')
+  } catch (e) {
+    console.error('Failed to load projects', e)
     projects.value = []
+  } finally {
+    loading.value = false
   }
 }
 
@@ -83,8 +86,9 @@ onMounted(() => {
   if (!sectionRef.value) return
 
   observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) {
+    (entries) => {
+      const entry = entries[0]
+      if (entry?.isIntersecting) {
         emitReaction('project')
       } else {
         emitReaction('idle')
@@ -114,6 +118,7 @@ const shown = computed(() =>
 .line-clamp-3 {
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

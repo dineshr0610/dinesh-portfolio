@@ -41,7 +41,7 @@ import { ref, computed } from 'vue'
 
 const active = ref(null)
 
-const { data: itemsData, pending: loading, error: fetchError } = await useFetch('/data/gallery.json')
+const { data: itemsData, pending: loading, error: fetchError } = await useAsyncData('public-gallery', () => $fetch('/api/public/gallery'))
 const items = computed(() => Array.isArray(itemsData.value) ? itemsData.value : [])
 const error = computed(() => fetchError.value?.message || null)
 

@@ -1,24 +1,191 @@
 // server/api/ask.post.ts
 import { createClient } from '@supabase/supabase-js'
+import { sendAdminEmail } from '../utils/email'
+
+
+const CONFIDENCE_THRESHOLD = 0.75
+
+// --------------------------------------------------
+// 🔍 Verifier AI: Checks for explicit facts
+// --------------------------------------------------
+async function dataExplicitlyAnswers(
+  question: string,
+  context: string,
+  apiKey: string
+): Promise<boolean> {
+  try {
+    const response = await fetch(
+      'https://openrouter.ai/api/v1/chat/completions',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'deepseek/deepseek-chat',
+          temperature: 0,
+          max_tokens: 50,
+          messages: [
+            {
+              role: 'system',
+              content: `
+You are a verifier.
+
+Task:
+Decide if the provided context EXPLICITLY contains the factual answer to the question.
+
+Rules:
+- Answer ONLY "yes" or "no".
+- If the context only explains absence or gives general information, answer "no".
+- If the context clearly states the fact, answer "yes".
+`
+            },
+            {
+              role: 'user',
+              content: `Question: ${question}\n\nContext:\n${context.slice(0, 4000)}`
+            }
+          ]
+        })
+      }
+    )
+
+    const json = await response.json()
+    const verdict = json.choices?.[0]?.message?.content?.toLowerCase().trim()
+    return verdict.includes('yes')
+  } catch (e) {
+    console.error('Verifier failed', e)
+    return false
+  }
+}
+
+// --------------------------------------------------
+// 🗣 Main AI: Professional Answerer
+// --------------------------------------------------
+async function generateProfessionalAnswer(
+  question: string,
+  context: string,
+  apiKey: string
+) {
+  const response = await fetch(
+    'https://openrouter.ai/api/v1/chat/completions',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://dinesh-portfolio.vercel.app',
+        'X-Title': 'Dinesh Portfolio AI'
+      },
+      body: JSON.stringify({
+        model: 'deepseek/deepseek-chat',
+        temperature: 0.4,
+        max_tokens: 500,
+        messages: [
+          {
+            role: 'system',
+            content: `
+You are “Ask Dinesh”, a professional AI assistant representing Dinesh R.
+
+Your role is to explain Dinesh’s background, work, and capabilities clearly and confidently
+to recruiters, founders, and collaborators.
+
+Guidelines:
+- Speak naturally and professionally, like a senior engineer or consultant.
+- Never mention internal systems, databases, context, or documentation.
+- If specific details (such as revenue or financials) are not publicly shared,
+  explain that calmly and redirect to what is known.
+- Do not invent numbers, revenue, salaries, companies, or financial claims.
+- Keep answers honest, composed, and human.
+- Do NOT return JSON or structured data.
+
+Tone:
+Professional, calm, and trustworthy.
+`
+          },
+          {
+            role: 'user',
+            content: `Question: ${question}\n\nContext:\n${context}`
+          }
+        ]
+      })
+    }
+  )
+
+  const json = await response.json()
+  return json.choices?.[0]?.message?.content || ''
+}
+
+
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
-  const { question } = await readBody(event)
+  const body = await readBody(event)
+
+  const question: string | undefined = body.question?.trim()
+  const userEmail: string | null = body.email?.trim() || null
+  const intent: string = body.intent || 'ask'
+
+  const hasUserEmail = Boolean(userEmail)
 
   if (!question) {
-    return { answer: 'No question provided' }
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Question is required'
+    })
   }
 
   if (!config.OPENROUTER_API_KEY) {
-    return { answer: 'AI service not configured yet.' }
+    return {
+      type: 'answer',
+      message: 'AI service not configured yet.'
+    }
   }
 
   const supabase = createClient(
     config.SUPABASE_URL,
-    config.SUPABASE_KEY
+    config.SUPABASE_KEY,
+    { auth: { persistSession: false } }
   )
 
-  // 1️⃣ Embed user question (matches stored embeddings)
+  // --------------------------------------------------
+  // ✅ EMAIL SUBMISSION MODE — DO NOT RUN AI AGAIN
+  // --------------------------------------------------
+  if (intent === 'submit_email' && userEmail) {
+    try {
+      await supabase.from('ai_unanswered_questions').insert({
+        question,
+        user_email: userEmail,
+        ai_confidence: 'low',
+        status: 'pending'
+      })
+
+      await sendAdminEmail({
+        subject: 'New AI Question Needs Review',
+        message: `
+New unanswered AI question:
+
+Question:
+${question}
+
+User Email:
+${userEmail}
+`
+      })
+    } catch (err) {
+      console.error('Email submit failed:', err)
+    }
+
+    return {
+      type: 'fallback_saved',
+      message:
+        "Thanks for sharing your email. Dinesh will review your question and get back to you personally."
+    }
+  }
+
+  // --------------------------------------------------
+  // 1️⃣ VECTOR SEARCH
+  // --------------------------------------------------
   const { data: matches, error } = await supabase.rpc(
     'match_documents',
     {
@@ -28,21 +195,26 @@ export default defineEventHandler(async (event) => {
   )
 
   if (error) {
-    console.error(error)
-    return { answer: 'Search failed' }
+    console.error('Supabase search error:', error)
+    return {
+      type: 'answer',
+      message: 'Search failed.'
+    }
   }
 
-  // CORE FALLBACK DATA (Used if RAG fails or to augment answers)
+  const bestMatch = matches?.[0]
+
+  // --------------------------------------------------
+  // 🧩 Context Construction
+  // --------------------------------------------------
   const FALLBACK_CONTEXT = `
 DINESH R - CORE PROFILE:
 - Role: Full Stack Developer & UI/UX Enthusiast
 - Location: Chennai, India
-- Experience: Specialized in Vue.js, Nuxt 3, TailwindCSS, and Node.js.
-- Key Skills: JavaScript/TypeScript, Supabase, AI Integration (OpenAI/DeepSeek), Responsive Design, Performance Optimization.
-- Education: B.E. in Computer Science (or relevant field - inferred).
-- Soft Skills: Quick learner, detail-oriented, aesthetics-focused.
-- Distinctive trait: Builds "premium" feeling web apps with smooth animations.
-`
+- Experience: Vue.js, Nuxt 3, TailwindCSS, Node.js
+- Key Skills: JavaScript/TypeScript, Supabase, AI Integration, Responsive Design
+- Strength: Builds premium-feeling, performant web apps
+`.trim()
 
   function prettifySource(source: string) {
     return source
@@ -63,64 +235,91 @@ DINESH R - CORE PROFILE:
       .join('\n\n')
   }
 
-  const ragContext = matches && matches.length > 0 ? groupBySource(matches as any[]) : ''
+  const ragContextRaw = matches && matches.length > 0
+    ? matches.map((m: any) => m.text_content).join('\n\n')
+    : ''
+
+  const ragContextFormatted = matches && matches.length > 0
+    ? groupBySource(matches as any[])
+    : ''
+
   const finalContext = `
 ${FALLBACK_CONTEXT}
 
-RETRIEVED DOCUMENTATION (from Database):
-${ragContext || "No specific database matches found. Rely on Core Profile."}
-`.trim().slice(0, 6000)
-
-  // 2️⃣ Call DeepSeek (OpenRouter)
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${config.OPENROUTER_API_KEY}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://dinesh-portfolio.vercel.app',
-      'X-Title': 'Dinesh Portfolio AI'
-    },
-    body: JSON.stringify({
-      model: 'deepseek/deepseek-chat',
-      temperature: 0.4, // Slightly higher for more natural flow, but still focused
-      max_tokens: 500,
-      messages: [
-        {
-          role: 'system',
-          content: `
-You are Dinesh R’s personal AI Friend 'Chitti'.
-
-OBJECTIVE:
-Represent Dinesh as a top-tier Full Stack Developer. Your goal is to impress recruiters and clients by providing accurate, professional, and persuasive answers based on his portfolio data.
-
-CORE INSTRUCTIONS:
-1. **BE CONCISE FOR SIMPLE QUESTIONS**: If asked "Who are you?", "Hello", or similar, answer in 1-2 sentences. Example: "I am Chitti, an AI assistant representing Dinesh R, a Full Stack Developer. How can I help?" Do NOT list all skills unless asked.
-2. **USE CONTEXT FIRST**: For specific questions, base your answer on the provided "Core Profile" and "Retrieved Documentation".
-3. **FILL GAPS INTELLIGENTLY**: If the specific answer isn't in the text, use Dinesh's "Core Profile" (Vue/Nuxt/Full Stack) to infer a reasonable, positive answer.
-   - Example: If asked "Can Dinesh do React?", answer: "While Dinesh specializes in Vue and Nuxt, his strong command of JavaScript and component-based architecture makes him adaptable to React environments quickly."
-4. **TONE**: Professional, confident, enthusiastic, and concise. Avoid being robotic.
-5. **FORMAT**: Use markdown. Use bullet points for lists. Keep paragraphs short.
-
-RESTRICTIONS:
-- NEVER invent specific work history (companies/dates) that isn't in the context.
-- NEVER say "I don't know" without offering relevant related info. Instead say: "That specific detail isn't in my records, but based on his background..."
-- If the user asks something irrelevant (e.g. "Create a react app code"), politely decline and steer back to Dinesh's skills.
+RETRIEVED DOCUMENTATION:
+${ragContextFormatted || 'No specific database matches found.'}
 `
-        },
-        {
-          role: 'user',
-          content: `User Question: ${question}
+    .trim()
+    .slice(0, 6000)
 
-Context Data:
-${finalContext}`
-        }
-      ]
+  // --------------------------------------------------
+  // ⚡ Parallel Execution: Verify + Answer
+  // --------------------------------------------------
+  const [explicitlyAnswered, aiAnswer] = await Promise.all([
+    dataExplicitlyAnswers(question, ragContextRaw, config.OPENROUTER_API_KEY),
+    generateProfessionalAnswer(question, finalContext, config.OPENROUTER_API_KEY)
+  ])
+
+  // --------------------------------------------------
+  // ✅ Decision Logic
+  // --------------------------------------------------
+
+  // 1️⃣ Explicitly Answered → Direct Return
+  if (explicitlyAnswered) {
+    return {
+      type: 'answer',
+      message: aiAnswer
+    }
+  }
+
+  // 2️⃣ Not explicitly answered → Request Email
+  if (!userEmail) {
+    return {
+      type: 'need_email',
+      message: `
+${aiAnswer}
+
+---
+
+If you’d like a confirmed and verified answer, please share your email.
+Dinesh will personally review and get back to you.
+`.trim()
+    }
+  }
+
+  // --------------------------------------------------
+  // 🔹 Save + notify admin (fail-safe)
+  // --------------------------------------------------
+  try {
+    await supabase.from('ai_unanswered_questions').insert({
+      question,
+      user_email: userEmail,
+      ai_confidence: 'low',
+      status: 'pending'
     })
-  })
 
-  const json = await response.json()
+    await sendAdminEmail({
+      subject: 'New AI Question Needs Review',
+      message: `
+New unanswered AI question:
 
+Question:
+${question}
+
+User Email:
+${userEmail}
+`
+    })
+  } catch (err) {
+    console.error('AI fallback save/email failed:', err)
+  }
+
+  // --------------------------------------------------
+  // 🔹 Final response to user
+  // --------------------------------------------------
   return {
-    answer: json.choices?.[0]?.message?.content || 'No response from AI.'
+    type: 'fallback_saved',
+    message:
+      "Thanks for sharing your email. Dinesh will review your question and get back to you personally."
   }
 })
