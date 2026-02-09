@@ -27,7 +27,8 @@ export default defineEventHandler(async (event) => {
         const res = await supabase
             .from('projects')
             .select('*')
-            .order('created_at', { ascending: false })
+            .order('ended_at', { ascending: false, nullsFirst: true })
+            .order('started_at', { ascending: false })
         data = res.data
         error = res.error
     }

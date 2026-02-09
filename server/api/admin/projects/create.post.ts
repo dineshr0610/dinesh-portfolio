@@ -20,7 +20,10 @@ export default defineEventHandler(async (event) => {
         demo: body.demo || '',
         repo: body.repo || '',
         image: body.image || '',
-        published: body.published ?? true
+        published: body.published ?? true,
+        started_at: body.started_at,
+        ongoing: body.ongoing,
+        ended_at: body.ongoing ? null : body.ended_at
     })
 
     if (error) {

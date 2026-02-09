@@ -8,8 +8,7 @@ export default defineEventHandler(async (event) => {
         .from('gallery')
         .select('*')
         .eq('published', true)
-        .order('order_index', { ascending: true })
-        .order('created_at', { ascending: false })
+        .order('published_at', { ascending: false })
 
     if (error) {
         console.error('Error fetching gallery:', error)

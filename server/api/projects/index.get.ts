@@ -19,10 +19,16 @@ export default defineEventHandler(async () => {
       tech,
       demo,
       repo,
-      image
+      repo,
+      image,
+      started_at,
+      ended_at,
+      ongoing
     `)
         .eq('published', true)
-        .order('created_at', { ascending: false })
+        .order('ongoing', { ascending: false })
+        .order('ended_at', { ascending: false, nullsFirst: true })
+        .order('started_at', { ascending: false })
 
     if (error) {
         throw createError({

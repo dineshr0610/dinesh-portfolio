@@ -10,7 +10,6 @@ export default defineEventHandler(async (event) => {
         .select('*')
         .eq('published', true) // Only published items
         .order('date', { ascending: false })
-        .order('order_index', { ascending: true })
 
     if (error) {
         if (error.code === 'PGRST116') return [] // No results

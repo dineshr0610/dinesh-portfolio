@@ -13,8 +13,20 @@
     />
 
     <h3 class="mt-3 font-semibold text-lg">
-      {{ project.title }}
+      <div class="flex items-start justify-between">
+        {{ project.title }}
+        <span
+          class="text-xs px-2 py-0.5 rounded ml-2 whitespace-nowrap"
+          :class="project.ongoing ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'"
+        >
+          {{ project.ongoing ? 'Ongoing' : 'Completed' }}
+        </span>
+      </div>
     </h3>
+
+    <p class="text-xs text-slate-500 mt-1 mb-2">
+      {{ formatDuration(project) }}
+    </p>
 
     <p class="mt-2 text-sm text-slate-600">
       {{ project.short }}
@@ -60,6 +72,11 @@ defineProps({
     required: true
   }
 })
+
+function formatDuration(p: any) {
+  if (p.ongoing) return `${p.started_at} – Present`
+  return `${p.started_at} – ${p.ended_at}`
+}
 
 function react(type: 'project' | 'idle') {
   window.dispatchEvent(

@@ -40,7 +40,10 @@ export default defineEventHandler(async (event) => {
         updated_at: new Date().toISOString()
     }
 
-    if (published) {
+    if (body.published_at !== undefined) updates.published_at = body.published_at
+
+    // If publishing now and no date, set to now
+    if (published && !updates.published_at && !body.published_at) {
         updates.published_at = new Date().toISOString()
     }
 

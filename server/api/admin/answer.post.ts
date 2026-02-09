@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import { sendUserEmail } from '../../utils/email'
+import { formatters } from '../../utils/ai-normalization'
 
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
@@ -69,6 +70,25 @@ export default defineEventHandler(async (event) => {
             statusCode: 500,
             statusMessage: 'Failed to save answer'
         })
+    }
+
+    // 2.5 🧠 Auto-Index: Learn this match immediately
+    if (!isReopen && answer) {
+        try {
+            const { error: indexError } = await supabase.from('documents').insert({
+                source: 'q_and_a',
+                source_id: questionId,
+                title: questionRow.question,
+                text_content: formatters.question({
+                    question: questionRow.question,
+                    answer: answer
+                }),
+                metadata: { confidence: 'high', verified: true }
+            })
+            if (indexError) console.error('Auto-index error:', indexError)
+        } catch (e) {
+            console.error('Auto-index failed:', e)
+        }
     }
 
     // 3️⃣ Email user

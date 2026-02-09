@@ -14,6 +14,15 @@ definePageMeta({
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       
+      <NuxtLink to="/admin/ai-knowledge" class="card group">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl">🧠</span>
+            <span class="text-gray-400 group-hover:text-indigo-500 transition">→</span>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900">AI Knowledge</h3>
+        <p class="text-sm text-gray-500 mt-1">Manage core knowledge for your AI.</p>
+      </NuxtLink>
+
       <NuxtLink to="/admin/questions" class="card group">
         <div class="flex items-center justify-between mb-2">
             <span class="text-2xl">📨</span>
@@ -59,6 +68,7 @@ definePageMeta({
         <p class="text-sm text-gray-500 mt-1">Manage photos and featured images.</p>
       </NuxtLink>
 
+
       <NuxtLink to="/admin/projects" class="card group">
          <div class="flex items-center justify-between mb-2">
             <span class="text-2xl">🚀</span>
@@ -66,6 +76,15 @@ definePageMeta({
         </div>
         <h3 class="text-lg font-bold text-gray-900">Projects</h3>
         <p class="text-sm text-gray-500 mt-1">Manage portfolio cases and experiments.</p>
+      </NuxtLink>
+
+      <NuxtLink to="/admin/social-highlights" class="card group">
+         <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl">📱</span>
+            <span class="text-gray-400 group-hover:text-indigo-500 transition">→</span>
+        </div>
+        <h3 class="text-lg font-bold text-gray-900">Social Highlights</h3>
+        <p class="text-sm text-gray-500 mt-1">Manage LinkedIn/social media carousel posts.</p>
       </NuxtLink>
 
     </div>

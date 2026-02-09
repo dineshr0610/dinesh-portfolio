@@ -17,9 +17,19 @@
           />
         </div>
 
-        <h3 class="mt-3 font-semibold">
-          {{ p.title }}
-        </h3>
+        <div class="mt-3 flex items-start justify-between">
+          <h3 class="font-semibold">{{ p.title }}</h3>
+          <span
+            class="text-xs px-2 py-0.5 rounded ml-2 whitespace-nowrap"
+            :class="p.ongoing ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'"
+          >
+            {{ p.ongoing ? 'Ongoing' : 'Completed' }}
+          </span>
+        </div>
+
+        <p class="text-xs text-slate-500 mt-1 mb-2">
+          {{ formatDuration(p) }}
+        </p>
 
         <p
           class="text-sm text-slate-600 mt-1 line-clamp-3"
@@ -111,6 +121,11 @@ onUnmounted(() => {
 const shown = computed(() =>
   projects.value.slice(0, props.limit)
 )
+
+function formatDuration(p: any) {
+  if (p.ongoing) return `${p.started_at} – Present`
+  return `${p.started_at} – ${p.ended_at}`
+}
 </script>
 
 <style scoped>

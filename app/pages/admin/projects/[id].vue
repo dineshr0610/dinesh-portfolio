@@ -18,7 +18,16 @@ const form = reactive({
   demo: '',
   repo: '',
   image: '',
-  published: true
+  published: true,
+  started_at: '',
+  ended_at: null as string | null,
+  ongoing: false
+})
+
+watch(() => form.ongoing, (val) => {
+  if (val) {
+    form.ended_at = null
+  }
 })
 
 onMounted(async () => {
@@ -35,7 +44,10 @@ onMounted(async () => {
       demo: data.demo || '',
       repo: data.repo || '',
       image: data.image || '',
-      published: data.published
+      published: data.published,
+      started_at: data.started_at,
+      ended_at: data.ended_at,
+      ongoing: data.ongoing
     })
   } catch (e) {
     alert('Project not found')
@@ -86,6 +98,34 @@ async function submit() {
           required
           class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
         />
+      </div>
+
+      <!-- Dates -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1">Started Date</label>
+          <input 
+            v-model="form.started_at" 
+            type="date" 
+            required
+            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+          />
+        </div>
+
+        <div class="flex items-end gap-2 pb-2">
+          <input type="checkbox" v-model="form.ongoing" id="ongoing" class="w-4 h-4 text-indigo-600 rounded" />
+          <label for="ongoing" class="text-sm font-medium text-slate-700">Ongoing</label>
+        </div>
+
+        <div v-if="!form.ongoing">
+          <label class="block text-sm font-medium text-slate-700 mb-1">Ended Date</label>
+          <input 
+            v-model="form.ended_at" 
+            type="date" 
+            required
+            class="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-indigo-500 outline-none"
+          />
+        </div>
       </div>
 
       <!-- Short -->

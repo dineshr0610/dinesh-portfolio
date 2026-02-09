@@ -57,7 +57,7 @@ function react(type: 'resume' | 'idle') {
       :height="props.height"
       decoding="async"
       loading="lazy"
-      :class="['object-cover', 'block', 'transition-transform', 'duration-300']"
+      :class="['w-full', 'h-full', 'object-cover', 'block', 'transition-transform', 'duration-300']"
       @error="onError"
     />
   </picture>

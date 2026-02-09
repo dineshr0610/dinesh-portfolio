@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
         tags,
         order_index,
         published,
-        published_at: published ? new Date().toISOString() : null
+        published_at: body.published_at || (published ? new Date().toISOString() : null)
     })
 
     if (error) {

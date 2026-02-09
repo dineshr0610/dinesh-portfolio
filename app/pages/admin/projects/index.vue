@@ -70,12 +70,26 @@ onMounted(load)
               <div class="text-xs text-slate-500 truncate max-w-xs">{{ p.short }}</div>
             </td>
             <td class="p-4">
-              <span 
-                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
-                :class="p.published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'"
-              >
-                {{ p.published ? 'Published' : 'Draft' }}
-              </span>
+              <div class="flex flex-col items-start gap-1">
+                <span 
+                  class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium"
+                  :class="p.published ? 'bg-green-100 text-green-800' : 'bg-slate-100 text-slate-500'"
+                >
+                  {{ p.published ? 'Published' : 'Draft' }}
+                </span>
+                <span 
+                  v-if="p.ongoing"
+                  class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800"
+                >
+                  Ongoing
+                </span>
+                <span 
+                  v-else
+                  class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-600"
+                >
+                  Completed
+                </span>
+              </div>
             </td>
             <td class="p-4 text-sm text-slate-600">
               <div class="flex flex-wrap gap-1">
@@ -88,7 +102,10 @@ onMounted(load)
               </div>
             </td>
             <td class="p-4 text-sm text-slate-600">
-              {{ new Date(p.created_at).toLocaleDateString() }}
+              <div class="text-xs">
+                <div>{{ p.started_at }}</div>
+                <div class="text-slate-400">to {{ p.ended_at || 'Present' }}</div>
+              </div>
             </td>
             <td class="p-4 text-right space-x-2">
               <NuxtLink :to="`/admin/projects/${p.id}`" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Edit</NuxtLink>

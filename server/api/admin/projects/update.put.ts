@@ -23,6 +23,9 @@ export default defineEventHandler(async (event) => {
             repo: body.repo,
             image: body.image,
             published: body.published,
+            started_at: body.started_at,
+            ongoing: body.ongoing,
+            ended_at: body.ongoing ? null : body.ended_at,
             updated_at: new Date().toISOString()
         })
         .eq('id', body.id)

@@ -1,301 +1,273 @@
-<!-- app/pages/about.vue -->
 <template>
-  <section class="py-12">
-    <div class="container mx-auto px-4 lg:px-8">
-      <!-- Hero / header -->
-      <div class="grid md:grid-cols-3 gap-8 items-center">
-        <div class="md:col-span-2">
-          <h1 class="text-4xl font-extrabold">About — Dinesh R</h1>
-          <p class="mt-3 text-slate-600 max-w-2xl">
-            3rd Year CSE student • Web Developer & AI enthusiast.
-            Building responsive web apps with Vue / Nuxt and exploring applied AI (RAG + embeddings).
+  <section class="min-h-screen py-16 bg-slate-50">
+    <div class="container mx-auto px-4 lg:px-8 max-w-6xl">
+      <!-- Header Section -->
+      <div class="grid md:grid-cols-3 gap-12 items-center mb-20 animate-fade-in-up">
+        <div class="md:col-span-2 space-y-6">
+          <div class="inline-block px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold tracking-wide uppercase">
+            About Me
+          </div>
+          <h1 class="text-4xl md:text-6xl font-black text-slate-900 leading-tight">
+            Hello, I'm <span class="text-indigo-600">Dinesh R</span>.
+          </h1>
+          <p class="text-xl text-slate-600 leading-relaxed max-w-2xl">
+            A 3rd Year CSE student, Web Developer, and AI enthusiast. I build responsive web apps with <span class="font-semibold text-slate-800">Vue/Nuxt</span> and explore applied AI with <span class="font-semibold text-slate-800">RAG & Embeddings</span>.
           </p>
 
-          <div class="mt-6 flex flex-wrap gap-3">
-            <NuxtLink to="/" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border hover:bg-slate-50">
+          <div class="flex flex-wrap gap-4 pt-4">
+            <NuxtLink to="/" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all font-medium">
               ← Back to Home
             </NuxtLink>
-
-            <!-- View / Download resume -->
-            <a
-  href="/resume.pdf"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white hover:opacity-95 focus:outline-none focus:ring-2 focus:ring-indigo-400"
->
-  View Resume (PDF)
-</a>
-
-
-            <a
-              href="https://github.com/dineshr0610"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border hover:bg-slate-50"
-            >
-              GitHub
+            
+            <a href="/resume.pdf" target="_blank" class="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-slate-900 text-white hover:bg-slate-800 hover:shadow-lg hover:-translate-y-0.5 transition-all font-medium">
+              <span>View Resume (PDF)</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
             </a>
 
-            <a
-              href="https://www.linkedin.com/in/dineshr0610"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg border hover:bg-slate-50"
-            >
-              LinkedIn
-            </a>
+            <!-- Socials -->
+            <div class="flex items-center gap-2">
+                <a href="https://github.com/dineshr0610" target="_blank" class="p-3 bg-white border border-slate-200 rounded-lg text-slate-600 hover:text-black hover:border-slate-400 transition-all" aria-label="GitHub">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.05-.015-2.055-3.33.72-4.035-1.605-4.035-1.605-.54-1.38-1.32-1.74-1.32-1.74-1.095-.75.09-.735.09-.735 1.2.075 1.83 1.23 1.83 1.23 1.08 1.83 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.545 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.285 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                </a>
+                <a href="https://www.linkedin.com/in/dineshr0610" target="_blank" class="p-3 bg-white border border-slate-200 rounded-lg text-slate-600 hover:text-blue-600 hover:border-slate-400 transition-all" aria-label="LinkedIn">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                </a>
+            </div>
           </div>
         </div>
 
-        <!-- Contact card -->
-        <aside class="bg-white shadow rounded-lg p-5 text-center">
-          <!-- Profile image inserted here -->
-          <div class="flex justify-center">
-            <!-- ProfileImage forwards classes, so your class works fine -->
-            <ProfileImage class="w-36 h-36 mb-4 rounded-full ring-2 ring-slate-100" alt="Dinesh R headshot" />
+        <!-- Contact Card -->
+        <aside class="bg-white rounded-2xl shadow-xl shadow-slate-200/50 p-6 text-center border border-slate-100 relative overflow-hidden group">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+          
+          <div class="flex justify-center mb-6 relative">
+             <div class="absolute inset-0 bg-indigo-100 rounded-full blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-500"></div>
+             <div class="relative z-10 w-32 h-32 rounded-full overflow-hidden shadow-lg ring-4 ring-white inset-0">
+                 <ProfileImage class="w-full h-full object-cover" alt="Dinesh R headshot" />
+             </div>
           </div>
 
-          <h3 class="font-semibold">Contact</h3>
-          <p class="mt-2 text-sm text-slate-600">Email</p>
-          <a class="block mt-1 text-slate-900 font-medium" href="mailto:dinesh2370049@ssn.edu.in">
-            dinesh2370049@ssn.edu.in
-          </a>
-
-          <div class="mt-4">
-            <p class="text-sm text-slate-600">Location</p>
-            <p class="mt-1 text-sm">India</p>
-          </div>
-
-          <div class="mt-4">
-            <p class="text-sm text-slate-600">Looking for</p>
-            <p class="mt-1 text-sm">Internships in Web Development / ML & AI</p>
+          <h3 class="font-bold text-lg text-slate-900">Let's Connect</h3>
+          <p class="mt-2 text-sm text-slate-500">Open for Internships & Projects</p>
+          
+          <div class="mt-6 space-y-4">
+             <a href="mailto:dinesh2370049@ssn.edu.in" class="block bg-slate-50 hover:bg-slate-100 p-3 rounded-lg text-sm text-slate-700 font-medium transition-colors">
+                 dinesh2370049@ssn.edu.in
+             </a>
+             <div class="grid grid-cols-2 gap-2 text-xs text-slate-500">
+                <div class="bg-slate-50 p-2 rounded">📍 India</div>
+                <div class="bg-slate-50 p-2 rounded">🌐 Remote Ready</div>
+             </div>
           </div>
         </aside>
       </div>
 
-      <!-- Skills & summary -->
-      <div class="mt-10 grid md:grid-cols-3 gap-8">
-        <div class="md:col-span-2 bg-white rounded-lg shadow p-6">
-          <h2 class="text-xl font-semibold">Summary</h2>
-          <p class="mt-3 text-slate-700">
-            M.Tech (Integrated) CSE student with practical experience in frontend engineering and full-stack projects.
-            I focus on building responsive, accessible interfaces with Vue/Nuxt and experimenting with applied AI features like RAG and embeddings.
-          </p>
-
-          <div class="mt-6">
-            <h3 class="font-medium">Technical Skills</h3>
-            <div class="mt-3 flex flex-wrap gap-2">
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">HTML</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">CSS</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">JavaScript</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">Vue / Nuxt</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">Tailwind</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">Bootstrap</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">Node.js / Express</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">MongoDB</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">Python / Flask (ML)</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">Git</span>
-              <span class="px-2 py-1 rounded bg-slate-100 text-sm">Cloudinary</span>
-            </div>
-          </div>
-
-          <div class="mt-6 grid sm:grid-cols-2 gap-4">
-            <div>
-              <h4 class="text-sm font-medium text-slate-600">Education</h4>
-              <div class="mt-2">
-                <strong>SSN College of Engineering</strong>
-                <div class="text-sm text-slate-600">M.Tech (Integrated), Computer Science & Engineering — 2023–2028</div>
+      <!-- Skills Section -->
+      <div class="grid md:grid-cols-3 gap-8 mb-20 animate-fade-in-up" style="animation-delay: 0.1s;">
+          <div class="md:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+              <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                 ⚡ Technical Arsenal
+              </h2>
+              <div class="flex flex-wrap gap-2">
+                  <span v-for="skill in skills" :key="skill" class="px-3 py-1.5 bg-slate-100 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-200 transition-colors cursor-default">
+                      {{ skill }}
+                  </span>
               </div>
-            </div>
-
-            <div>
-              <h4 class="text-sm font-medium text-slate-600">Certifications</h4>
-              <ul class="mt-2 text-sm text-slate-700 space-y-1">
-                <li>Build Your Own Static Website — NxtWave</li>
-                <li>Build Your Own Responsive Website — NxtWave</li>
-              </ul>
-            </div>
           </div>
-        </div>
 
-        <!-- Volunteering -->
-        <div class="bg-white rounded-lg shadow p-6">
-          <h3 class="text-lg font-semibold">Volunteering & Leadership</h3>
-
-          <div class="mt-4 space-y-4 text-sm text-slate-700">
-            <div>
-              <strong>Talent Quest for India (TQI)</strong>
-              <div class="text-slate-500">Student Volunteer — communication & soft-skill sessions</div>
-            </div>
-
-            <div>
-              <strong>National Service Scheme (NSS)</strong>
-              <div class="text-slate-500">Event Organizer — community & environmental activities</div>
-            </div>
-
-            <div>
-              <strong>National Green Corps (NGC)</strong>
-              <div class="text-slate-500">Chairman (former) — environmental initiatives</div>
-            </div>
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+               <h2 class="text-xl font-bold mb-4">🎓 Education</h2>
+               <div>
+                   <h3 class="font-semibold text-slate-900">SSN College of Engineering</h3>
+                   <p class="text-sm text-indigo-600 font-medium mt-1">M.Tech (Integrated) CSE</p>
+                   <p class="text-xs text-slate-500 mt-1">2023 — 2028</p>
+               </div>
           </div>
-        </div>
       </div>
 
-      <!-- Projects (kept intact) -->
-      <div class="mt-12">
-        <div class="flex items-center justify-between">
-          <h2 class="text-2xl font-bold">Selected Projects</h2>
-          <NuxtLink to="/projects" class="text-sm text-slate-600 hover:underline">See all projects →</NuxtLink>
-        </div>
-
-        <div v-if="projectsLoading" class="text-center py-8 text-slate-500">Loading projects…</div>
-        <div v-else-if="projectsError" class="text-center py-8 text-red-600">Failed to load projects: {{ projectsError }}</div>
-
-        <div v-else class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <article
-            v-for="p in featuredProjects"
-            :key="p.id"
-            class="bg-white rounded-lg shadow overflow-hidden flex flex-col"
-          >
-            <div class="relative h-40">
-              <img
-                v-if="p.image"
-                :src="p.image"
-                alt="Screenshot of {{ p.title }}"
-                class="w-full h-full object-cover"
-                loading="lazy"
-                width="640"
-                height="160"
-              />
-              <div v-else class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400">
-                No image
-              </div>
+      <!-- Projects Section -->
+      <div class="animate-fade-in-up" style="animation-delay: 0.2s;">
+         <div class="flex items-center justify-between mb-8">
+            <div>
+              <h2 class="text-3xl font-bold text-slate-900">Selected Projects</h2>
+              <p class="text-slate-500 mt-2">Some things I've built to solve problems.</p>
             </div>
+         </div>
 
-            <div class="p-4 flex-1 flex flex-col">
-              <h3 class="font-semibold text-lg">{{ p.title }}</h3>
-              <p class="text-sm text-slate-600 mt-2 flex-1" v-html="p.short"></p>
+         <div v-if="projectsLoading" class="flex justify-center py-12">
+            <div class="animate-spin rounded-full h-10 w-10 border-4 border-slate-200 border-t-indigo-600"></div>
+         </div>
+         
+         <div v-else-if="projectsError" class="text-center py-12 text-red-600 bg-red-50 rounded-xl">
+             Failed to load projects: {{ projectsError }}
+         </div>
 
-              <div class="mt-4 flex items-center justify-between">
-                <div class="text-xs flex flex-wrap gap-2">
-                  <span v-for="t in (p.tech || []).slice(0,4)" :key="t" class="px-2 py-1 bg-slate-100 rounded">{{ t }}</span>
+         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <article 
+                v-for="p in projects" 
+                :key="p.id"
+                class="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group overflow-hidden cursor-pointer"
+                @click="openProject(p)"
+            >
+                <div class="relative h-48 bg-slate-100 overflow-hidden">
+                    <img 
+                      v-if="p.image" 
+                      :src="p.image" 
+                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div v-else class="w-full h-full flex items-center justify-center bg-slate-50 text-slate-300">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
                 </div>
 
-                <div class="flex items-center gap-2">
-                  <a v-if="p.demo" :href="p.demo" target="_blank" rel="noopener noreferrer" class="text-sm underline">Demo</a>
-                  <a v-if="p.repo" :href="p.repo" target="_blank" rel="noopener noreferrer" class="text-sm underline">Code</a>
-                  <button @click="openProject(p)" class="text-sm px-3 py-1 border rounded">Details</button>
+                <div class="p-6 flex-1 flex flex-col">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-bold text-xl text-slate-900 group-hover:text-indigo-600 transition-colors">{{ p.title }}</h3>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider" :class="p.ongoing ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'">
+                            {{ p.ongoing ? 'ONGOING' : 'DONE' }}
+                        </span>
+                    </div>
+
+                    <div class="text-xs text-slate-500 mb-3 font-medium">
+                        {{ formatDuration(p) }}
+                    </div>
+
+                    <p class="text-slate-600 text-sm mb-4 line-clamp-3 leading-relaxed flex-1" v-html="p.short"></p>
+                    
+                    <div class="flex flex-wrap gap-2 mt-auto pt-4 border-t border-slate-50">
+                        <span v-for="t in (p.tech || []).slice(0, 3)" :key="t" class="px-2 py-1 bg-slate-50 text-slate-600 text-xs font-medium rounded">
+                            {{ t }}
+                        </span>
+                        <span v-if="(p.tech || []).length > 3" class="px-2 py-1 bg-slate-50 text-slate-400 text-xs rounded">+{{ p.tech.length - 3 }}</span>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </article>
-        </div>
+            </article>
+         </div>
       </div>
 
-      <!-- Project modal (improved accessibility & escape-to-close) -->
-      <div
-        v-if="activeProject"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
-        role="dialog"
-        aria-modal="true"
-        :aria-labelledby="'project-title-' + (activeProject?.id || 'modal')"
-        @keydown.esc.prevent="closeProject"
-        tabindex="-1"
-        ref="modalRoot"
-      >
-        <div class="bg-white max-w-3xl w-full rounded shadow-lg p-6 overflow-auto max-h-[90vh]" role="document">
-          <div class="flex items-start justify-between gap-4">
-            <div>
-              <h2 :id="'project-title-' + (activeProject?.id || 'modal')" class="text-xl font-bold">{{ activeProject.title }}</h2>
-              <p class="text-sm text-slate-500 mt-1">{{ activeProject.short }}</p>
+      <!-- Project Modal -->
+      <Transition name="modal">
+        <div v-if="activeProject" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm" @click.self="closeProject">
+            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative animate-in zoom-in-95 duration-200">
+                <!-- Close Button -->
+                <button @click="closeProject" class="absolute top-4 right-4 p-2 rounded-full bg-white/80 hover:bg-slate-100 transition shadow-sm z-10">
+                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+
+                <div class="grid md:grid-cols-2">
+                    <!-- Image Side -->
+                    <div class="bg-black md:h-full min-h-[300px] relative flex items-center justify-center">
+                        <img v-if="activeProject.image" :src="activeProject.image" class="w-full h-full object-contain max-h-[500px]" />
+                        <div v-else class="text-white/30">No Image</div>
+                    </div>
+
+                    <!-- Content Side -->
+                    <div class="p-8 md:p-10">
+                        <div class="flex justify-between items-start mb-2">
+                             <h2 class="text-3xl font-bold text-slate-900">{{ activeProject.title }}</h2>
+                             <span class="text-xs px-2 py-1 rounded uppercase font-bold tracking-wider" :class="activeProject.ongoing ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'">
+                                 {{ activeProject.ongoing ? 'ONGOING' : 'Completed' }}
+                             </span>
+                        </div>
+                        
+                        <p class="text-sm text-slate-500 font-medium mb-4">
+                            {{ formatDuration(activeProject) }}
+                        </p>
+
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span v-for="t in activeProject.tech || []" :key="t" class="px-2.5 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold uppercase tracking-wide rounded">
+                                {{ t }}
+                            </span>
+                        </div>
+
+                        <div class="prose prose-slate prose-sm max-w-none text-slate-600 mb-8" v-html="activeProject.long || activeProject.short"></div>
+
+                        <div class="flex gap-4">
+                            <a v-if="activeProject.demo" :href="activeProject.demo" target="_blank" class="flex-1 text-center bg-indigo-600 text-white px-4 py-3 rounded-lg font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
+                                Launch Demo
+                            </a>
+                            <a v-if="activeProject.repo" :href="activeProject.repo" target="_blank" class="flex-1 text-center bg-white border border-slate-200 text-slate-700 px-4 py-3 rounded-lg font-bold hover:bg-slate-50 transition">
+                                View Code
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <div class="flex items-center gap-3">
-              <a v-if="activeProject.demo" :href="activeProject.demo" target="_blank" rel="noopener noreferrer" class="text-sm underline">Demo</a>
-              <a v-if="activeProject.repo" :href="activeProject.repo" target="_blank" rel="noopener noreferrer" class="text-sm underline">Repo</a>
-              <button @click="closeProject" class="text-slate-600" aria-label="Close project details">Close</button>
-            </div>
-          </div>
-
-          <img
-            v-if="activeProject.image"
-            :src="activeProject.image"
-            alt="Image for {{ activeProject.title }}"
-            class="mt-4 w-full h-56 object-cover rounded"
-            loading="lazy"
-            width="1024"
-            height="360"
-          />
-          <div class="mt-4 text-slate-700" v-html="activeProject.long"></div>
-
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span v-for="t in activeProject.tech || []" :key="t" class="px-2 py-1 bg-slate-100 rounded text-xs">{{ t }}</span>
-          </div>
         </div>
-      </div>
+      </Transition>
+
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import ProfileImage from '~/components/ProfileImage.vue'
 
-const resumePdf = '/resume.pdf'
+const skills = [
+    'HTML', 'CSS', 'JavaScript', 'Vue.js', 'Nuxt 3', 'TailwindCSS', 
+    'Node.js', 'Express', 'MongoDB', 'Python', 'Flask', 'Git', 
+    'RAG', 'Embeddings', 'OpenAI API'
+]
 
 const projects = ref([])
 const projectsLoading = ref(true)
 const projectsError = ref(null)
 const activeProject = ref(null)
-const modalRoot = ref(null)
 
-async function loadProjects() {
-  projectsLoading.value = true
-  projectsError.value = null
+// Fetch projects
+onMounted(async () => {
   try {
     projects.value = await $fetch('/api/projects')
   } catch (err) {
-    projects.value = []
-    projectsError.value = err.message || String(err)
-    console.error('Failed to load projects', err)
+    projectsError.value = 'Could not load projects.'
+    console.error(err)
   } finally {
     projectsLoading.value = false
   }
-}
-
-onMounted(() => loadProjects())
-
-const featuredProjects = computed(() => {
-  return projects.value
 })
 
-function openProject(p) {
-  // safety: only open if object looks valid
-  if (!p || typeof p !== 'object') return
-  activeProject.value = p
-  // focus modal root for keyboard support
-  nextTick(() => {
-    if (modalRoot.value && typeof modalRoot.value.focus === 'function') {
-      modalRoot.value.focus()
-    }
-  })
+function formatDuration(p) {
+  if (p.ongoing) return `${p.started_at} – Present`
+  return `${p.started_at} – ${p.ended_at}`
 }
 
-function closeProject() {
-  activeProject.value = null
+// Modal Logic
+const openProject = (p) => {
+    activeProject.value = p
+    document.body.style.overflow = 'hidden' // prevent body scroll
+}
+const closeProject = () => {
+    activeProject.value = null
+    document.body.style.overflow = ''
 }
 
+// Close on Escape
 onMounted(() => {
-  // ensure Escape closes modal from anywhere
-  const keyHandler = (e) => {
-    if (e.key === 'Escape' || e.key === 'Esc') closeProject()
-  }
-  window.addEventListener('keydown', keyHandler)
-  onBeforeUnmount(() => window.removeEventListener('keydown', keyHandler))
+    const handler = (e) => { if(e.key === 'Escape') closeProject() }
+    window.addEventListener('keydown', handler)
+    onBeforeUnmount(() => window.removeEventListener('keydown', handler))
 })
 </script>
 
 <style scoped>
-.container { max-width: 1100px; }
-/* keep existing visual layout */
+/* Fade In Up */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out backwards;
+}
+
+/* Modal Transition */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.2s ease;
+}
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
 </style>

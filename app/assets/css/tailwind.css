@@ -4,15 +4,29 @@
 @tailwind utilities;
 
 /* small custom resets */
-html, body { height: 100%; }
-body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+html,
+body {
+  height: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
 /* accessibility focus */
-:focus { outline: none; }
-:focus-visible { outline: 3px solid rgba(99,102,241,.35); outline-offset: 2px; }
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 3px solid rgba(99, 102, 241, .35);
+  outline-offset: 2px;
+}
 
 ::selection {
-  background-color: #6366f1; /* brand-500 */
+  background-color: #6366f1;
+  /* brand-500 */
   color: #ffffff;
 }
 
@@ -22,7 +36,11 @@ html {
 
 /* reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-  * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
 
@@ -43,7 +61,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -58,7 +76,8 @@ select:focus-visible {
 /* visually-hidden utility for screen readers */
 .sr-only {
   position: absolute !important;
-  height: 1px; width: 1px;
+  height: 1px;
+  width: 1px;
   overflow: hidden;
   clip: rect(1px, 1px, 1px, 1px);
   white-space: nowrap;

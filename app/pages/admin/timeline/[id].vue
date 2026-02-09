@@ -49,7 +49,7 @@ async function save() {
     <div class="space-y-4">
       <input v-model="form.title" class="input" />
       <input v-model="form.subtitle" class="input" />
-      <input v-model="form.date" type="date" class="input" />
+      <input v-model="form.date" type="date" required class="input" />
       <input v-model="form.image" class="input" />
 
       <textarea
