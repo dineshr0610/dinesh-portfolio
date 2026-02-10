@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import emailjs from '@emailjs/browser'
+import Footer from '~/components/Footer.vue'
 
 // EmailJS public config (safe on client)
 const config = useRuntimeConfig()
@@ -79,57 +80,60 @@ async function handleSubmit() {
 </script>
 
 <template>
-  <div class="max-w-2xl mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-4">Contact Me</h1>
-    <p class="mb-6 text-muted">Have a question or want to work together? Send me a message and I’ll get back to you shortly.</p>
+  <div class="overscroll-y-contain">
+    <div class="max-w-2xl mx-auto p-6">
+      <h1 class="text-3xl font-bold mb-4">Contact Me</h1>
+      <p class="mb-6 text-muted">Have a question or want to work together? Send me a message and I’ll get back to you shortly.</p>
 
-    <form @submit.prevent="handleSubmit" class="space-y-4">
-      <label class="block">
-        <span class="text-sm font-medium">Name</span>
-        <input v-model="name" type="text" class="mt-1 block w-full rounded-md border px-3 py-2" placeholder="Your name" />
-      </label>
+      <form @submit.prevent="handleSubmit" class="space-y-4">
+        <label class="block">
+          <span class="text-sm font-medium">Name</span>
+          <input v-model="name" type="text" class="mt-1 block w-full rounded-md border px-3 py-2" placeholder="Your name" />
+        </label>
 
-      <label class="block">
-        <span class="text-sm font-medium">Email</span>
-        <input v-model="email" type="email" class="mt-1 block w-full rounded-md border px-3 py-2" placeholder="you@example.com" />
-      </label>
+        <label class="block">
+          <span class="text-sm font-medium">Email</span>
+          <input v-model="email" type="email" class="mt-1 block w-full rounded-md border px-3 py-2" placeholder="you@example.com" />
+        </label>
 
-      <!-- honeypot: visually hidden -->
-      <label style="display:none">
-        <span>Company (leave empty)</span>
-        <input v-model="company" type="text" autocomplete="off" tabindex="-1" />
-      </label>
+        <!-- honeypot: visually hidden -->
+        <label style="display:none">
+          <span>Company (leave empty)</span>
+          <input v-model="company" type="text" autocomplete="off" tabindex="-1" />
+        </label>
 
-      <label class="block">
-        <span class="text-sm font-medium">Message</span>
-        <textarea v-model="message" rows="6" class="mt-1 block w-full rounded-md border px-3 py-2" placeholder="Write your message..." />
-      </label>
+        <label class="block">
+          <span class="text-sm font-medium">Message</span>
+          <textarea v-model="message" rows="6" class="mt-1 block w-full rounded-md border px-3 py-2" placeholder="Write your message..." />
+        </label>
 
-      <div class="flex items-center gap-3">
-        <button
-          :disabled="loading"
-          type="submit"
-          class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-sky-600 text-white hover:bg-sky-700 disabled:opacity-60"
-        >
-          <svg v-if="loading" class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" /></svg>
-          <span>{{ loading ? 'Sending...' : 'Send Message' }}</span>
-        </button>
-        <p v-if="!loading" class="text-sm text-gray-600">I'll reply as soon as possible.</p>
-      </div>
-    </form>
+        <div class="flex items-center gap-3">
+          <button
+            :disabled="loading"
+            type="submit"
+            class="inline-flex items-center gap-2 px-4 py-2 rounded-md bg-sky-600 text-white hover:bg-sky-700 disabled:opacity-60"
+          >
+            <svg v-if="loading" class="animate-spin h-4 w-4" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" /></svg>
+            <span>{{ loading ? 'Sending...' : 'Send Message' }}</span>
+          </button>
+          <p v-if="!loading" class="text-sm text-gray-600">I'll reply as soon as possible.</p>
+        </div>
+      </form>
 
-    <!-- toast -->
-    <div v-if="toast" class="fixed bottom-6 right-6 max-w-xs">
-      <div v-if="toast.type === 'success'" class="bg-green-600 text-white px-4 py-3 rounded-md shadow">
-        {{ toast.text }}
-      </div>
-      <div v-else-if="toast.type === 'error'" class="bg-red-600 text-white px-4 py-3 rounded-md shadow">
-        {{ toast.text }}
-      </div>
-      <div v-else class="bg-slate-600 text-white px-4 py-3 rounded-md shadow">
-        {{ toast.text }}
+      <!-- toast -->
+      <div v-if="toast" class="fixed bottom-6 right-6 max-w-xs">
+        <div v-if="toast.type === 'success'" class="bg-green-600 text-white px-4 py-3 rounded-md shadow">
+          {{ toast.text }}
+        </div>
+        <div v-else-if="toast.type === 'error'" class="bg-red-600 text-white px-4 py-3 rounded-md shadow">
+          {{ toast.text }}
+        </div>
+        <div v-else class="bg-slate-600 text-white px-4 py-3 rounded-md shadow">
+          {{ toast.text }}
+        </div>
       </div>
     </div>
+    <Footer />
   </div>
 </template>
 

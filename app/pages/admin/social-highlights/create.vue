@@ -11,8 +11,7 @@ const form = ref({
   platform: 'LinkedIn',
   title: '',
   embed_html: '',
-  published: true,
-  published_at: new Date().toISOString().slice(0, 16) // Default to now
+  published: true
 })
 
 const platforms = ['LinkedIn', 'Twitter', 'YouTube', 'Instagram', 'Other']
@@ -66,11 +65,7 @@ async function submit() {
           <textarea v-model="form.embed_html" required rows="6" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 font-mono text-sm" placeholder="<iframe src='...'></iframe>"></textarea>
         </div>
 
-        <!-- Published At -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Date Published</label>
-            <input v-model="form.published_at" type="datetime-local" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-        </div>
+
 
         <!-- Published Toggle -->
         <div class="flex items-center gap-2">

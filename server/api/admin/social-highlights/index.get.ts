@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     const { data, error } = await client
         .from('social_highlights')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('id', { ascending: false })
 
     if (error) {
         throw createError({

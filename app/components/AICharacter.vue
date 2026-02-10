@@ -51,29 +51,8 @@ onUnmounted(() => {
     :style="{ '--rx': tiltX + 'deg', '--ry': tiltY + 'deg' }"
     @click="goToAsk"
   >
-    <!-- LABEL -->
-    <div class="front-label">🤖 Ask Dinesh AI</div>
-
-    <!-- Spline -->
-    <!--
-    <iframe
-      src="https://my.spline.design/happyrobotbutton-6NwXPiHF8H76GkDjBrESj5TQ/"
-      frameborder="0"
-    />
-
-    <iframe
-      src="https://my.spline.design/genkubgreetingrobot-zhjR9AUiPQ3Q6NRInjgB95VU/"
-      frameborder="0"
-    />
-    -->
-
-    <iframe
-      src="https://my.spline.design/r4xbot-fEl4xoWrcG2t3Lc325gb5IUS/"
-      frameborder="0"
-      width="100%"
-      height="100%"
-      loading="lazy"
-    ></iframe>
+    <!-- LABEL ONLY -->
+    <div class="front-label">🤖 Ask Chitti</div>
 
     
   </div>
@@ -83,95 +62,38 @@ onUnmounted(() => {
 /* ================= BASE ================= */
 .ai-character {
   position: fixed;
-  bottom: 1.4rem;
-  right: 1.4rem;
-  width: 220px;
-  aspect-ratio: 1 / 1.18;
+  bottom: 2rem;
+  right: 2rem;
   z-index: 50;
   cursor: pointer;
-
-  transform: perspective(700px) rotateX(var(--rx)) rotateY(var(--ry));
-  transition: transform .18s ease, filter .25s ease;
+  transition: transform .2s ease;
 }
 
-.ai-character iframe {
-  width: 100%;
-  height: 100%;
-  border-radius: 18px;
-  pointer-events: none;
-  position: relative;
-  z-index: 1;
+.ai-character:hover {
+  transform: scale(1.05);
 }
 
 /* ================= LABEL ================= */
 .front-label {
-  position: absolute;
-  bottom: 20px;
-  left: 60%;
-  transform: translateX(-60%);
-  z-index: 20;
-
-  white-space: nowrap;
-  padding: .45rem .95rem;
-  min-width: 135px;
-  font-size: .78rem;
+  padding: .75rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   color: #fff;
   text-align: center;
-
-  background: rgba(15,23,42,.6);
+  background: rgba(15,23,42,.9);
   backdrop-filter: blur(10px);
   border-radius: 999px;
-  box-shadow: 0 10px 25px rgba(0,0,0,.35);
-
-  animation: floatY 2.6s ease-in-out infinite;
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: floatY 3s ease-in-out infinite;
 }
 
 @keyframes floatY {
-  0% { transform: translate(-50%, 0); }
-  50% { transform: translate(-50%, -6px); }
-  100% { transform: translate(-50%, 0); }
-}
-
-/* ================= TABLET ================= */
-@media (max-width: 1024px) {
-  .ai-character { width: 180px; }
-  .front-label {
-    bottom: 18px;
-    font-size: .74rem;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-}
-
-/* ================= MOBILE ================= */
-@media (max-width: 640px) {
-  .ai-character {
-    width: 155px;
-    bottom: .85rem;
-    right: .85rem;
-  }
-
-  .ai-character iframe { transform: scale(.78); }
-
-  .front-label {
-    bottom: 32px;
-    font-size: .66rem;
-    min-width: 80px;
-    left: 45%;
-    transform: translateX(-45%);
-  }
-}
-
-/* ================= VERY SMALL ================= */
-@media (max-width: 420px) {
-  .ai-character { width: 135px; }
-
-  .ai-character iframe { transform: scale(.72); }
-
-  .front-label {
-    bottom: 50px;
-    font-size: .62rem;
-    min-width: 105px;
-  }
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0); }
 }
 </style>

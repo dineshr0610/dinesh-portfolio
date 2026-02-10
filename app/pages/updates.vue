@@ -73,6 +73,9 @@ type UpdateItem = {
   tags?: string[]
 }
 
+// Mobile Gesture Nav
+useGestureNavigation()
+
 const { data: updatesData, pending: loading, error: fetchError } = await useAsyncData(
   'public-updates',
   async () => {

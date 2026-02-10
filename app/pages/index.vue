@@ -122,7 +122,61 @@
            </div>
         </div>
 
-        <!-- Row 1 Right: Social Highlights -->
+        <!-- Row 1 Right: Timeline & Achievements Stack -->
+        <div class="h-full flex flex-col gap-8">
+            <!-- Timeline -->
+            <div class="flex-1 flex flex-col min-h-0">
+                <div class="flex items-center justify-between mb-4 px-1">
+                  <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                     <span class="text-2xl">⏳</span> Timeline
+                  </h2>
+                  <NuxtLink to="/about" class="text-indigo-600 font-bold text-xs bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors uppercase tracking-wide">
+                      Full Story
+                  </NuxtLink>
+               </div>
+               
+               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+                   <div class="relative pl-4 border-l-2 border-slate-100 space-y-8 py-2">
+                      <div v-for="(item, index) in (timeline || []).slice(0, 3)" :key="item.id || index" class="relative">
+                          <div class="absolute -left-[21px] top-1.5 w-3 h-3 rounded-full bg-indigo-500 ring-4 ring-white"></div>
+                          <div class="text-[10px] font-bold text-indigo-500 mb-0.5 uppercase tracking-wider">{{ item.year }}</div>
+                          <h4 class="font-bold text-slate-900 text-base leading-tight mb-1">{{ item.title }}</h4>
+                          <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">{{ item.description }}</p>
+                      </div>
+                      <div v-if="!timeline?.length" class="text-slate-400 italic text-sm">No timeline entries yet.</div>
+                   </div>
+               </div>
+            </div>
+
+            <!-- Achievements -->
+            <div class="flex-1 flex flex-col min-h-0">
+                <div class="flex items-center justify-between mb-4 px-1">
+                  <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                     <span class="text-2xl">🏆</span> Achievements
+                  </h2>
+                  <NuxtLink to="/achievements" class="text-indigo-600 font-bold text-xs bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors uppercase tracking-wide">
+                      View All
+                  </NuxtLink>
+               </div>
+               
+               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+                   <div class="space-y-4">
+                       <div v-for="ach in (achievements || []).slice(0, 3)" :key="ach.id" class="flex gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 items-start">
+                           <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center text-lg flex-shrink-0 border border-yellow-100">
+                               {{ ach.icon || '🏆' }}
+                           </div>
+                           <div>
+                               <h4 class="font-bold text-slate-900 text-sm leading-tight mb-0.5">{{ ach.title }}</h4>
+                               <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">{{ ach.year }} • {{ ach.type }}</div>
+                           </div>
+                       </div>
+                       <div v-if="!achievements?.length" class="text-slate-400 italic text-sm">No achievements yet.</div>
+                   </div>
+               </div>
+            </div>
+        </div>
+
+        <!-- Row 2 Left: Social Highlights -->
         <div class="h-full flex flex-col">
            <div class="flex items-center justify-between mb-4 px-1">
               <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
@@ -134,115 +188,67 @@
            </div>
         </div>
 
-        <!-- Row 2 Left: Timeline -->
-        <div class="h-full">
-            <div class="flex items-center justify-between mb-4 px-1">
-              <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                 <span class="text-2xl">⏳</span> Timeline
-              </h2>
-              <NuxtLink to="/about" class="text-indigo-600 font-bold text-xs bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors uppercase tracking-wide">
-                  Full Story
-              </NuxtLink>
-           </div>
-           
-           <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 h-[calc(100%-3rem)]">
-               <div class="relative pl-4 border-l-2 border-slate-100 space-y-8 py-2">
-                  <div v-for="(item, index) in (timeline || []).slice(0, 3)" :key="item.id || index" class="relative">
-                      <div class="absolute -left-[21px] top-1.5 w-3 h-3 rounded-full bg-indigo-500 ring-4 ring-white"></div>
-                      <div class="text-[10px] font-bold text-indigo-500 mb-0.5 uppercase tracking-wider">{{ item.year }}</div>
-                      <h4 class="font-bold text-slate-900 text-base leading-tight mb-1">{{ item.title }}</h4>
-                      <p class="text-slate-600 text-xs leading-relaxed line-clamp-2">{{ item.description }}</p>
-                  </div>
-                  <div v-if="!timeline?.length" class="text-slate-400 italic text-sm">No timeline entries yet.</div>
+        <!-- Row 2 Right: Gallery & Dinesh Now Stack -->
+        <div class="h-full flex flex-col gap-8">
+            <!-- Gallery -->
+            <div class="flex-1 flex flex-col min-h-0">
+                <div class="flex items-center justify-between mb-4 px-1">
+                  <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                     <span class="text-2xl">📸</span> Gallery
+                  </h2>
+                  <NuxtLink to="/gallery" class="text-indigo-600 font-bold text-xs bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors uppercase tracking-wide">
+                      View All
+                  </NuxtLink>
                </div>
-           </div>
-        </div>
 
-        <!-- Row 2 Right: Gallery -->
-        <div class="h-full">
-            <div class="flex items-center justify-between mb-4 px-1">
-              <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                 <span class="text-2xl">📸</span> Gallery
-              </h2>
-              <NuxtLink to="/gallery" class="text-indigo-600 font-bold text-xs bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors uppercase tracking-wide">
-                  View All
-              </NuxtLink>
-           </div>
-
-           <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 h-[calc(100%-3rem)] flex flex-col justify-center">
-               <div class="grid grid-cols-2 gap-3">
-                   <template v-if="galleryThumbs.length">
-                      <NuxtLink to="/gallery" v-for="g in galleryThumbs.slice(0, 4)" :key="g.id" class="aspect-square rounded-xl overflow-hidden relative group cursor-zoom-in shadow-sm hover:shadow-md transition-all">
-                          <img :src="getThumb(g)" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                              <span class="text-white text-[10px] font-bold uppercase tracking-widest">View</span>
-                          </div>
-                      </NuxtLink>
-                   </template>
-                   <div v-else class="col-span-2 py-8 text-center text-slate-400 border border-dashed border-slate-100 rounded-xl">
-                       Gallery is empty
-                   </div>
-               </div>
-           </div>
-        </div>
-
-        <!-- Row 3 Left: Achievements -->
-        <div class="h-full">
-            <div class="flex items-center justify-between mb-4 px-1">
-              <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                 <span class="text-2xl">🏆</span> Achievements
-              </h2>
-              <NuxtLink to="/achievements" class="text-indigo-600 font-bold text-xs bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors uppercase tracking-wide">
-                  View All
-              </NuxtLink>
-           </div>
-           
-           <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 h-[calc(100%-3rem)]">
-               <div class="space-y-4">
-                   <div v-for="ach in (achievements || []).slice(0, 3)" :key="ach.id" class="flex gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 items-start">
-                       <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center text-lg flex-shrink-0 border border-yellow-100">
-                           {{ ach.icon || '�' }}
-                       </div>
-                       <div>
-                           <h4 class="font-bold text-slate-900 text-sm leading-tight mb-0.5">{{ ach.title }}</h4>
-                           <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wide">{{ ach.year }} • {{ ach.type }}</div>
+               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex-1 flex flex-col justify-center overflow-hidden">
+                   <div class="grid grid-cols-2 gap-3 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
+                       <template v-if="galleryThumbs.length">
+                          <NuxtLink to="/gallery" v-for="g in galleryThumbs.slice(0, 4)" :key="g.id" class="aspect-square rounded-xl overflow-hidden relative group cursor-zoom-in shadow-sm hover:shadow-md transition-all">
+                              <img :src="getThumb(g)" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                  <span class="text-white text-[10px] font-bold uppercase tracking-widest">View</span>
+                              </div>
+                          </NuxtLink>
+                       </template>
+                       <div v-else class="col-span-2 py-8 text-center text-slate-400 border border-dashed border-slate-100 rounded-xl">
+                           Gallery is empty
                        </div>
                    </div>
-                   <div v-if="!achievements?.length" class="text-slate-400 italic text-sm">No achievements yet.</div>
                </div>
-           </div>
-        </div>
+            </div>
 
-        <!-- Row 3 Right: Dinesh Now -->
-        <div class="h-full">
-            <div class="flex items-center justify-between mb-4 px-1">
-              <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                 <span class="text-2xl">⚡</span> Dinesh Now
-              </h2>
-              <NuxtLink to="/updates" class="text-indigo-600 font-bold text-xs bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors uppercase tracking-wide">
-                  History
-              </NuxtLink>
-           </div>
+            <!-- Dinesh Now -->
+            <div class="flex-1 flex flex-col min-h-0">
+                <div class="flex items-center justify-between mb-4 px-1">
+                  <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                     <span class="text-2xl">⚡</span> Dinesh Now
+                  </h2>
+                  <NuxtLink to="/updates" class="text-indigo-600 font-bold text-xs bg-indigo-50 px-3 py-1.5 rounded-full hover:bg-indigo-100 transition-colors uppercase tracking-wide">
+                      History
+                  </NuxtLink>
+               </div>
 
-           <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group h-[calc(100%-3rem)] flex flex-col">
-                <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-50 to-transparent rounded-bl-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform"></div>
-                <div class="relative z-10 flex flex-col h-full">
-                    <div class="flex items-center gap-2 mb-4">
-                        <span class="relative flex h-3 w-3">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-                        </span>
-                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Latest Status</span>
+               <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group flex-1 flex flex-col">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-50 to-transparent rounded-bl-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform"></div>
+                    <div class="relative z-10 flex flex-col h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 pr-1">
+                        <div class="flex items-center gap-2 mb-4 flex-shrink-0">
+                            <span class="relative flex h-3 w-3">
+                              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                              <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                            </span>
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Latest Status</span>
+                        </div>
+                        
+                        <div v-if="updateLoading" class="py-6 flex justify-center flex-1 items-center"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div></div>
+                        <div v-else-if="latestUpdate" class="flex-1 flex flex-col min-h-0">
+                            <div class="text-xs text-slate-400 mb-2 font-bold">{{ formatDate(latestUpdate.date) }}</div>
+                            <h4 class="font-bold text-lg text-slate-800 mb-2 leading-tight group-hover:text-indigo-600 transition-colors">{{ latestUpdate.title }}</h4>
+                            <p class="text-sm text-slate-600 line-clamp-3 mb-4 leading-relaxed flex-1" v-html="latestUpdate.short || latestUpdate.body"></p>
+                            <NuxtLink to="/updates" class="text-sm font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 group-hover:gap-2 transition-all mt-auto pt-4 flex-shrink-0">Read Update <span>→</span></NuxtLink>
+                        </div>
+                        <div v-else class="text-sm text-slate-500 italic flex-1 flex items-center justify-center">No recent updates.</div>
                     </div>
-                    
-                    <div v-if="updateLoading" class="py-6 flex justify-center flex-1 items-center"><div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div></div>
-                    <div v-else-if="latestUpdate" class="flex-1 flex flex-col">
-                        <div class="text-xs text-slate-400 mb-2 font-bold">{{ formatDate(latestUpdate.date) }}</div>
-                        <h4 class="font-bold text-lg text-slate-800 mb-2 leading-tight group-hover:text-indigo-600 transition-colors">{{ latestUpdate.title }}</h4>
-                        <p class="text-sm text-slate-600 line-clamp-3 mb-4 leading-relaxed flex-1" v-html="latestUpdate.short || latestUpdate.body"></p>
-                        <NuxtLink to="/updates" class="text-sm font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 group-hover:gap-2 transition-all mt-auto pt-4">Read Update <span>→</span></NuxtLink>
-                    </div>
-                    <div v-else class="text-sm text-slate-500 italic flex-1 flex items-center justify-center">No recent updates.</div>
                 </div>
             </div>
         </div>
@@ -250,23 +256,50 @@
       </div>
 
       <!-- Row 4: Contact (Full Width) -->
-      <div class="bg-gradient-to-br from-indigo-800 to-purple-900 rounded-3xl p-8 md:p-12 text-white text-center shadow-2xl shadow-indigo-900/20 relative overflow-hidden group">
+      <!-- Row 4: Contact (Full Width) -->
+      <div class="mt-8 bg-gradient-to-br from-indigo-800 to-purple-900 rounded-3xl p-6 md:p-8 text-white shadow-2xl shadow-indigo-900/20 relative overflow-hidden group">
           <div class="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
           <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black/20"></div>
           <!-- Decor Circles -->
           <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors duration-700"></div>
           <div class="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/20 rounded-full blur-3xl"></div>
 
-          <div class="relative z-10 max-w-2xl mx-auto space-y-6">
-              <div class="text-5xl animate-bounce-slow inline-block">👋</div>
-              <div>
-                <h3 class="font-bold text-3xl md:text-4xl mb-4 tracking-tight">Let's Work Together</h3>
-                <p class="text-indigo-100 text-lg leading-relaxed opacity-90">I'm currently open for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!</p>
+          <div class="relative z-10 grid md:grid-cols-2 gap-8 items-center">
+              <!-- Left: Text Content -->
+              <div class="text-center md:text-left space-y-6">
+                  <div class="text-5xl animate-bounce-slow inline-block">👋</div>
+                  <div>
+                    <h3 class="font-bold text-3xl md:text-4xl mb-4 tracking-tight">Let's Work Together</h3>
+                    <p class="text-indigo-100 text-lg leading-relaxed opacity-90 max-w-lg">I'm currently open for new opportunities. Whether you have a question or just want to say hi, I'll try my best to get back to you!</p>
+                  </div>
+                  <div class="pt-4">
+                    <NuxtLink to="/contact" class="inline-flex items-center gap-2 bg-white text-indigo-900 px-8 py-4 rounded-xl font-bold text-base hover:bg-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
+                        Get In Touch
+                    </NuxtLink>
+                  </div>
               </div>
-              <div class="pt-4">
-                <NuxtLink to="/contact" class="inline-flex items-center gap-2 bg-white text-indigo-900 px-8 py-4 rounded-xl font-bold text-base hover:bg-slate-50 hover:shadow-lg hover:scale-105 transition-all duration-300">
-                    Get In Touch
-                </NuxtLink>
+
+              <!-- Right: AI Character Embed -->
+              <div class="relative h-[400px] w-full flex items-center justify-center">
+                  <div class="w-full h-full relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 bg-black/20 backdrop-blur-sm group/ai cursor-pointer">
+                      <iframe 
+                        src="https://my.spline.design/r4xbot-fEl4xoWrcG2t3Lc325gb5IUS/" 
+                        frameborder="0" 
+                        width="100%" 
+                        height="100%"
+                        class="w-full h-full pointer-events-none"
+                      ></iframe>
+                      
+                      <!-- Transparent Overlay for Click Hijacking -->
+                      <NuxtLink to="/ask" class="absolute inset-0 z-20" aria-label="Chat with Dinesh AI"></NuxtLink>
+
+                      <!-- Overlay Guide -->
+                      <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none z-10">
+                          <span class="px-3 py-1 bg-black/40 backdrop-blur text-xs font-bold rounded-full border border-white/20 group-hover/ai:bg-indigo-600 group-hover/ai:border-indigo-400 transition-colors">
+                              🤖 Ask me anything about Dinesh!
+                          </span>
+                      </div>
+                  </div>
               </div>
           </div>
       </div>
@@ -320,6 +353,8 @@ function formatDuration(p) {
   if (p.ongoing) return `${p.started_at} – Present`
   return `${p.started_at} – ${p.ended_at}`
 }
+// Mobile Gesture Nav
+useGestureNavigation()
 </script>
 
 <style scoped>

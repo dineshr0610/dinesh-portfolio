@@ -205,6 +205,9 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import ProfileImage from '~/components/ProfileImage.vue'
 
+// Mobile Gesture Nav
+useGestureNavigation()
+
 const skills = [
     'HTML', 'CSS', 'JavaScript', 'Vue.js', 'Nuxt 3', 'TailwindCSS', 
     'Node.js', 'Express', 'MongoDB', 'Python', 'Flask', 'Git', 

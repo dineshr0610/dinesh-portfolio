@@ -66,7 +66,6 @@
            <div class="mb-4 text-center w-full px-4">
               <div class="flex items-center justify-center gap-2 mb-1">
                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 uppercase tracking-wider">{{ item.platform }}</span>
-                 <span class="text-[10px] text-slate-400">• {{ formatDate(item.published_at) }}</span>
               </div>
               <h4 v-if="item.title" class="text-sm font-bold text-slate-800 line-clamp-2 md:line-clamp-1 leading-tight">{{ item.title }}</h4>
            </div>
@@ -162,11 +161,7 @@ function handleSwipe() {
   }
 }
 
-function formatDate(d) {
-  if (!d) return ''
-  try { return new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) } 
-  catch { return '' }
-}
+
 
 onMounted(() => {
   startAutoSlide()

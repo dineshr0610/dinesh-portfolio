@@ -17,9 +17,7 @@ async function deleteItem(id) {
   }
 }
 
-function formatDate(d) {
-  return new Date(d).toLocaleDateString()
-}
+
 </script>
 
 <template>
@@ -48,8 +46,6 @@ function formatDate(d) {
             <tr>
               <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase whitespace-nowrap">Platform</th>
               <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Title</th>
-              <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase whitespace-nowrap">Published</th>
-              <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase whitespace-nowrap">Created</th>
               <th class="py-3 px-4 text-right text-xs font-semibold text-gray-500 uppercase whitespace-nowrap">Actions</th>
             </tr>
           </thead>
@@ -62,16 +58,6 @@ function formatDate(d) {
               </td>
               <td class="py-3 px-4 font-medium text-gray-900 max-w-xs truncate">
                 {{ item.title || '—' }}
-              </td>
-              <td class="py-3 px-4">
-                 <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap" 
-                  :class="item.published ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'">
-                   <span class="w-1.5 h-1.5 rounded-full" :class="item.published ? 'bg-green-500' : 'bg-yellow-500'"></span>
-                   {{ item.published ? 'Published' : 'Draft' }}
-                 </span>
-              </td>
-              <td class="py-3 px-4 text-sm text-gray-500 whitespace-nowrap">
-                {{ formatDate(item.created_at) }}
               </td>
               <td class="py-3 px-4 text-right space-x-2 whitespace-nowrap">
                 <NuxtLink :to="`/admin/social-highlights/${item.id}`" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">Edit</NuxtLink>

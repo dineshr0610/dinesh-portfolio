@@ -8,7 +8,6 @@ export default defineEventHandler(async (event) => {
         .from('social_highlights')
         .select('*')
         .eq('published', true)
-        .order('created_at', { ascending: false }) // Initial fetch order
 
     if (error) {
         throw createError({

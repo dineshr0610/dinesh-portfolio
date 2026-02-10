@@ -108,6 +108,9 @@
 </template>
 
 <script setup>
+// Mobile Gesture Nav
+useGestureNavigation()
+
 const { data: itemsData, pending: loading, error: fetchError } = await useAsyncData('public-gallery', () => $fetch('/api/public/gallery'))
 
 const items = computed(() => Array.isArray(itemsData.value) ? itemsData.value : [])

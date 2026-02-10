@@ -16,8 +16,7 @@ const form = ref({
   platform: 'LinkedIn',
   title: '',
   embed_html: '',
-  published: true,
-  published_at: ''
+  published: true
 })
 
 const platforms = ['LinkedIn', 'Twitter', 'YouTube', 'Instagram', 'Other']
@@ -29,8 +28,7 @@ watch(item, (newItem) => {
       platform: newItem.platform,
       title: newItem.title,
       embed_html: newItem.embed_html,
-      published: newItem.published,
-      published_at: newItem.published_at ? newItem.published_at.slice(0, 16) : ''
+      published: newItem.published
     }
   }
 }, { immediate: true })
@@ -85,11 +83,7 @@ async function submit() {
           <textarea v-model="form.embed_html" required rows="6" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 font-mono text-sm"></textarea>
         </div>
 
-        <!-- Published At -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Date Published</label>
-            <input v-model="form.published_at" type="datetime-local" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-        </div>
+
 
         <!-- Published Toggle -->
         <div class="flex items-center gap-2">

@@ -97,6 +97,9 @@
 </template>
 
 <script setup>
+// Mobile Gesture Nav
+useGestureNavigation()
+
 const { data: timeline, pending, error } = await useAsyncData(
   'public-timeline',
   async () => {
