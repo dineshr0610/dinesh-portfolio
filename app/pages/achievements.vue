@@ -18,9 +18,6 @@ interface Achievement {
   } | null
 }
 
-// Mobile Gesture Nav
-useGestureNavigation()
-
 const { data: achievements, pending, error } = await useFetch<Achievement[]>('/api/achievements')
 
 const grouped = computed(() => {

@@ -123,7 +123,7 @@
         </div>
 
         <!-- Row 1 Right: Timeline & Achievements Stack -->
-        <div class="h-full flex flex-col gap-8">
+        <div class="flex flex-col gap-8 lg:h-full">
             <!-- Timeline -->
             <div class="flex-1 flex flex-col min-h-0">
                 <div class="flex items-center justify-between mb-4 px-1">
@@ -135,7 +135,7 @@
                   </NuxtLink>
                </div>
                
-               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:flex-1 lg:overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent h-auto overflow-visible">
                    <div class="relative pl-4 border-l-2 border-slate-100 space-y-8 py-2">
                       <div v-for="(item, index) in (timeline || []).slice(0, 3)" :key="item.id || index" class="relative">
                           <div class="absolute -left-[21px] top-1.5 w-3 h-3 rounded-full bg-indigo-500 ring-4 ring-white"></div>
@@ -159,7 +159,7 @@
                   </NuxtLink>
                </div>
                
-               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
+               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:flex-1 lg:overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent h-auto overflow-visible">
                    <div class="space-y-4">
                        <div v-for="ach in (achievements || []).slice(0, 3)" :key="ach.id" class="flex gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 items-start">
                            <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center text-lg flex-shrink-0 border border-yellow-100">
@@ -177,19 +177,19 @@
         </div>
 
         <!-- Row 2 Left: Social Highlights -->
-        <div class="h-full flex flex-col">
+        <div class="flex flex-col lg:h-full">
            <div class="flex items-center justify-between mb-4 px-1">
               <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
                  <span class="text-2xl">📱</span> Social Highlights
               </h2>
            </div>
-           <div class="flex-1 overflow-hidden">
-               <SocialCarousel class="h-full" />
+           <div class="lg:flex-1 w-full overflow-hidden">
+               <SocialCarousel class="w-full lg:h-full" />
            </div>
         </div>
 
         <!-- Row 2 Right: Gallery & Dinesh Now Stack -->
-        <div class="h-full flex flex-col gap-8">
+        <div class="flex flex-col gap-8 lg:h-full">
             <!-- Gallery -->
             <div class="flex-1 flex flex-col min-h-0">
                 <div class="flex items-center justify-between mb-4 px-1">
@@ -201,8 +201,8 @@
                   </NuxtLink>
                </div>
 
-               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 flex-1 flex flex-col justify-center overflow-hidden">
-                   <div class="grid grid-cols-2 gap-3 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
+               <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:flex-1 flex flex-col justify-center overflow-hidden h-auto">
+                   <div class="grid grid-cols-2 gap-3 lg:h-full lg:overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200">
                        <template v-if="galleryThumbs.length">
                           <NuxtLink to="/gallery" v-for="g in galleryThumbs.slice(0, 4)" :key="g.id" class="aspect-square rounded-xl overflow-hidden relative group cursor-zoom-in shadow-sm hover:shadow-md transition-all">
                               <img :src="getThumb(g)" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
@@ -229,9 +229,9 @@
                   </NuxtLink>
                </div>
 
-               <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group flex-1 flex flex-col">
+               <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group lg:flex-1 flex flex-col h-auto">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-50 to-transparent rounded-bl-full -mr-8 -mt-8 opacity-50 group-hover:scale-110 transition-transform"></div>
-                    <div class="relative z-10 flex flex-col h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 pr-1">
+                    <div class="relative z-10 flex flex-col lg:h-full lg:overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200 pr-1 h-auto overflow-visible">
                         <div class="flex items-center gap-2 mb-4 flex-shrink-0">
                             <span class="relative flex h-3 w-3">
                               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -353,8 +353,6 @@ function formatDuration(p) {
   if (p.ongoing) return `${p.started_at} – Present`
   return `${p.started_at} – ${p.ended_at}`
 }
-// Mobile Gesture Nav
-useGestureNavigation()
 </script>
 
 <style scoped>
