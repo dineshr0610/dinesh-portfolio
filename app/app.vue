@@ -4,6 +4,12 @@
 import '~/assets/css/tailwind.css'
 </script>
 
+<style>
+html, body {
+  overflow-x: hidden;
+}
+</style>
+
 <template>
   <NuxtLayout>
     <NuxtPage />

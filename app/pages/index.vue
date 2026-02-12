@@ -1,18 +1,18 @@
 <template>
   <section class="min-h-screen py-12 md:py-20 bg-slate-50 relative overflow-hidden">
     <!-- Background Decor -->
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-    <div class="absolute top-20 left-0 w-[400px] h-[400px] bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+    <div class="absolute top-0 right-0 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-indigo-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+    <div class="absolute top-20 left-0 w-[250px] h-[250px] md:w-[400px] md:h-[400px] bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 
     <div class="container mx-auto px-4 lg:px-8 relative z-10">
       <!-- HERO -->
-      <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-16 md:mb-24">
+      <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-10 md:mb-24">
         <div class="order-2 md:order-1 text-center md:text-left">
           <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/80 backdrop-blur border border-indigo-100 rounded-full text-xs font-bold tracking-wide uppercase text-indigo-600 mb-6 shadow-sm hover:shadow transition-shadow cursor-default">
              <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
              Welcome to my portfolio
           </div>
-          <h1 class="text-5xl md:text-7xl font-black leading-tight text-slate-900 mb-6 animate-appear tracking-tight">
+          <h1 class="text-4xl md:text-7xl font-black leading-tight text-slate-900 mb-6 animate-appear tracking-tight">
             Hi, I’m <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">Dinesh R</span>
           </h1>
           <p class="text-lg md:text-xl text-slate-600 max-w-lg leading-relaxed mb-8 mx-auto md:mx-0 font-light">
@@ -63,7 +63,7 @@
       </div>
 
       <!-- Main Content Grid -->
-      <div class="grid lg:grid-cols-2 gap-8 items-stretch">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
         
         <!-- Row 1 Left: Featured Projects -->
         <div class="h-full flex flex-col">
@@ -82,10 +82,10 @@
                   <article 
                     v-for="p in featured" 
                     :key="p.id"
-                    class="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-indigo-100 transition-all duration-300 flex overflow-hidden h-36 group relative"
+                    class="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-indigo-100 transition-all duration-300 flex overflow-hidden min-h-[9rem] h-auto md:h-36 group relative"
                   >
                       <!-- Image Section -->
-                      <div class="relative w-36 flex-shrink-0 bg-slate-100 overflow-hidden">
+                      <div class="relative w-28 md:w-36 flex-shrink-0 bg-slate-100 overflow-hidden">
                           <img v-if="p.image" :src="p.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                           <div v-else class="w-full h-full flex items-center justify-center text-slate-400 bg-slate-50">
                               <span class="text-2xl opacity-20">🖼️</span>
@@ -93,7 +93,7 @@
                       </div>
 
                       <!-- Content Section -->
-                      <div class="p-4 flex-1 flex flex-col justify-center min-w-0 relative">
+                      <div class="p-3 md:p-4 flex-1 flex flex-col justify-center min-w-0 relative">
                           <div class="mb-1">
                              <div class="flex justify-between items-start gap-2">
                                  <h3 class="font-bold text-base text-slate-900 group-hover:text-indigo-600 truncate transition-colors leading-tight" title="p.title">{{ p.title }}</h3>
@@ -125,7 +125,7 @@
         <!-- Row 1 Right: Timeline & Achievements Stack -->
         <div class="flex flex-col gap-8 lg:h-full">
             <!-- Timeline -->
-            <div class="flex-1 flex flex-col min-h-0">
+            <div class="flex flex-col min-h-0 lg:flex-1">
                 <div class="flex items-center justify-between mb-4 px-1">
                   <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
                      <span class="text-2xl">⏳</span> Timeline
@@ -149,7 +149,7 @@
             </div>
 
             <!-- Achievements -->
-            <div class="flex-1 flex flex-col min-h-0">
+            <div class="flex flex-col min-h-0 lg:flex-1">
                 <div class="flex items-center justify-between mb-4 px-1">
                   <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
                      <span class="text-2xl">🏆</span> Achievements
@@ -191,7 +191,7 @@
         <!-- Row 2 Right: Gallery & Dinesh Now Stack -->
         <div class="flex flex-col gap-8 lg:h-full">
             <!-- Gallery -->
-            <div class="flex-1 flex flex-col min-h-0">
+            <div class="flex flex-col min-h-0 lg:flex-1">
                 <div class="flex items-center justify-between mb-4 px-1">
                   <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
                      <span class="text-2xl">📸</span> Gallery
@@ -219,7 +219,7 @@
             </div>
 
             <!-- Dinesh Now -->
-            <div class="flex-1 flex flex-col min-h-0">
+            <div class="flex flex-col min-h-0 lg:flex-1">
                 <div class="flex items-center justify-between mb-4 px-1">
                   <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
                      <span class="text-2xl">⚡</span> Dinesh Now

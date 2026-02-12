@@ -36,7 +36,7 @@
     </div>
 
     <!-- Carousel Window -->
-    <div class="overflow-hidden bg-white rounded-2xl border border-slate-200 shadow-sm min-h-[450px] relative hover:shadow-md transition-shadow flex-1 flex flex-col">
+    <div class="overflow-hidden bg-white rounded-2xl border border-slate-200 shadow-sm min-h-[300px] md:min-h-[450px] relative hover:shadow-md transition-shadow flex-1 flex flex-col">
       <div v-if="pending" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 text-slate-400 text-sm gap-2">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
         Loading highlights...
@@ -59,7 +59,7 @@
         <div 
           v-for="(item, index) in items" 
           :key="item.id || index"
-          class="w-full flex-shrink-0 p-4 flex flex-col items-center justify-center bg-white min-h-[450px] h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200"
+          class="w-full flex-shrink-0 p-4 flex flex-col items-center justify-center bg-white min-h-[300px] md:min-h-[450px] h-full overflow-y-auto scrollbar-thin scrollbar-thumb-slate-200"
           :class="{ 'opacity-100 pointer-events-auto': index === currentIndex, 'opacity-0 pointer-events-none': index !== currentIndex }"
         >
            <!-- Label/Date - Moved top for better context -->
