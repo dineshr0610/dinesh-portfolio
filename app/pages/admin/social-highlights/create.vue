@@ -63,6 +63,10 @@ async function submit() {
           <label class="block text-sm font-medium text-gray-700 mb-1">Embed HTML <span class="text-red-500">*</span></label>
           <p class="text-xs text-gray-500 mb-2">Paste the full <code>&lt;iframe&gt;</code> or embed code here.</p>
           <textarea v-model="form.embed_html" required rows="6" class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 font-mono text-sm" placeholder="<iframe src='...'></iframe>"></textarea>
+          <div v-if="form.embed_html" class="mt-4 p-4 border border-gray-200 rounded-lg bg-gray-50">
+             <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Preview</label>
+             <div class="w-full max-w-[400px] mx-auto overflow-hidden rounded shadow-sm bg-white" v-html="form.embed_html"></div>
+          </div>
         </div>
 
 

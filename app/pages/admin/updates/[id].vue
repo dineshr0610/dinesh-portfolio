@@ -138,6 +138,9 @@ async function saveUpdate() {
           type="url"
           class="w-full border rounded px-3 py-2"
         />
+        <div v-if="image" class="mt-2 relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+           <img :src="image" class="w-full h-full object-contain" />
+        </div>
       </div>
 
       <!-- Tags -->

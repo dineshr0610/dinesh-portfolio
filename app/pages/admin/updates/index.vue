@@ -83,6 +83,7 @@ onMounted(fetchUpdates)
     >
       <thead class="bg-gray-100 text-left text-sm">
         <tr>
+          <th class="p-3 w-20">Image</th>
           <th class="p-3">Title</th>
           <th class="p-3">Summary</th>
           <th class="p-3">Status</th>
@@ -97,6 +98,12 @@ onMounted(fetchUpdates)
           :key="u.id"
           class="border-t hover:bg-gray-50 bg-white"
         >
+          <td class="p-3">
+             <div class="w-12 h-12 bg-slate-100 rounded overflow-hidden border border-slate-200 flex items-center justify-center">
+                  <img v-if="u.image" :src="u.image" class="w-full h-full object-cover" />
+                  <span v-else class="text-xs text-slate-300">No Img</span>
+             </div>
+          </td>
           <td class="p-3 font-medium">{{ u.title }}</td>
           <td class="p-3 text-sm text-gray-600">
             {{ u.short || '—' }}

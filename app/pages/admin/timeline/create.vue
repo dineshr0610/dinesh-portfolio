@@ -35,7 +35,13 @@ async function save() {
       <input v-model="form.title" placeholder="Title" class="input" />
       <input v-model="form.subtitle" placeholder="Subtitle" class="input" />
       <input v-model="form.date" type="date" required class="input" />
-      <input v-model="form.image" placeholder="Image URL" class="input" />
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+        <input v-model="form.image" placeholder="Image URL (https://...)" class="input" />
+        <div v-if="form.image" class="mt-2 relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+          <img :src="form.image" class="w-full h-full object-contain" />
+        </div>
+      </div>
 
       <textarea
         v-model="form.description"

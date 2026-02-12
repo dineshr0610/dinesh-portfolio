@@ -108,6 +108,9 @@ async function createUpdate() {
         <p class="text-xs text-gray-500 mt-1">
           Paste an image or video URL. Uploads are not required.
         </p>
+        <div v-if="image" class="mt-2 relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+           <img :src="image" class="w-full h-full object-contain" />
+        </div>
       </div>
 
       <!-- Tags -->

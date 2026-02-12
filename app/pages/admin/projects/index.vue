@@ -56,6 +56,7 @@ onMounted(load)
       <table class="w-full text-left border-collapse">
         <thead class="bg-slate-50 border-b">
           <tr>
+            <th class="p-4 font-semibold text-sm text-slate-600 w-20">Image</th>
             <th class="p-4 font-semibold text-sm text-slate-600">Title</th>
             <th class="p-4 font-semibold text-sm text-slate-600">Status</th>
             <th class="p-4 font-semibold text-sm text-slate-600">Tech</th>
@@ -65,6 +66,12 @@ onMounted(load)
         </thead>
         <tbody class="divide-y">
           <tr v-for="p in projects" :key="p.id" class="hover:bg-slate-50">
+            <td class="p-4">
+              <div class="w-12 h-12 bg-slate-100 rounded overflow-hidden border border-slate-200 flex items-center justify-center">
+                  <img v-if="p.image" :src="p.image" class="w-full h-full object-cover" />
+                  <span v-else class="text-xs text-slate-300">No Img</span>
+              </div>
+            </td>
             <td class="p-4">
               <div class="font-medium text-slate-900">{{ p.title }}</div>
               <div class="text-xs text-slate-500 truncate max-w-xs">{{ p.short }}</div>

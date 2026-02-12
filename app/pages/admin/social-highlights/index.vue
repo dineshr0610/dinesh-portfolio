@@ -45,6 +45,7 @@ async function deleteItem(id) {
           <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
               <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase whitespace-nowrap">Platform</th>
+              <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase whitespace-nowrap w-20">Preview</th>
               <th class="py-3 px-4 text-xs font-semibold text-gray-500 uppercase">Title</th>
               <th class="py-3 px-4 text-right text-xs font-semibold text-gray-500 uppercase whitespace-nowrap">Actions</th>
             </tr>
@@ -55,6 +56,18 @@ async function deleteItem(id) {
                 <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
                   {{ item.platform }}
                 </span>
+              </td>
+              <td class="py-3 px-4">
+                <div class="w-24 h-16 bg-white rounded overflow-hidden border border-gray-200 flex items-center justify-center text-xs text-gray-400 relative">
+                   <!-- 
+                      Review Fix: 
+                      Embeds often need substantial width to render (e.g. >300px). 
+                      We set the inner container to 500px width and scale it down to fit the 96px (w-24) container.
+                      Scale = 96 / 500 ~= 0.192. Let's use 0.2 approx.
+                   -->
+                   <div v-if="item.embed_html" class="absolute top-0 left-0 origin-top-left w-[500px] h-[400px] pointer-events-none" style="transform: scale(0.192);" v-html="item.embed_html"></div>
+                   <span v-else class="text-[10px] text-center px-1">No Embed</span>
+                </div>
               </td>
               <td class="py-3 px-4 font-medium text-gray-900 max-w-xs truncate">
                 {{ item.title || '—' }}
