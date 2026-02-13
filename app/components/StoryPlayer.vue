@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import gsap from 'gsap'
 
 // Define props with types
@@ -8,6 +8,11 @@ interface TimelineEvent {
   title: string
   description: string
   image?: string
+  media?: {
+    type: 'image' | 'video'
+    src: string
+    poster?: string
+  }
 }
 
 const props = defineProps<{
@@ -21,17 +26,62 @@ const currentIndex = ref(props.initialIndex || 0)
 const isPlaying = ref(true) // Default to auto-play
 const isMuted = ref(false)
 
+// Computed for cleaner template
+const currentEvent = computed(() => props.events[currentIndex.value])
+
+// Helper to resolve the correct image to show
+const currentImage = computed(() => {
+  const evt = currentEvent.value
+  if (!evt) return null
+  
+  // 1. If video, try poster
+  if (evt.media?.type === 'video' && evt.media.poster) return evt.media.poster
+  
+  // 2. If valid media src (and not video or just generic media)
+  // Note: timeline.vue uses (item.media && item.media.src) || item.image
+  if (evt.media?.src && evt.media.type !== 'video') return evt.media.src
+  
+  // 3. Fallback to direct image property
+  return evt.image || null
+})
+
 // Refs for GSAP
 const containerRef = ref<HTMLElement | null>(null)
 const dateRef = ref<HTMLElement | null>(null)
 const titleRef = ref<HTMLElement | null>(null)
 const descRef = ref<HTMLElement | null>(null)
-const bgRef = ref<HTMLElement | null>(null)
-const overlayRef = ref<HTMLElement | null>(null) // For crossfades
+
+// Visual Layers
+const bgImageRef = ref<HTMLElement | null>(null)
+const bgGradientRef = ref<HTMLElement | null>(null)
+const overlayRef = ref<HTMLElement | null>(null) // For crossfades/vignette
 const audioRef = ref<HTMLAudioElement | null>(null)
 
 // Master Timeline for the current scene
 let masterTimeline: gsap.core.Timeline | null = null
+const currentStyle = ref<CinematicStyle | null>(null) // State for template binding
+
+// Computed alignment classes for the content container
+const alignmentClasses = computed(() => {
+    const align = currentStyle.value?.textAlignment || 'center'
+    
+    switch (align) {
+        case 'left':
+            return 'items-start text-left justify-center'
+        case 'right':
+            return 'items-end text-right justify-center'
+        case 'bottom-left':
+            return 'items-start text-left justify-end pb-32' // Extra padding for controls
+        case 'top-left':
+            return 'items-start text-left justify-start pt-32'
+        case 'center':
+        default:
+            return 'items-center text-center justify-center'
+    }
+})
+
+// Expose style to template safely
+const cinematicStyle = computed(() => currentStyle.value)
 
 // ---------------------------------------------------------------------------
 // 🎵 AUDIO ENGINE (Minute-Based Rotation)
@@ -46,7 +96,6 @@ function initAudio() {
   const totalTracks = 10 // range 0.mp3 to 9.mp3
   
   // Logic: 0-9 based on minute
-  // e.g. minute 0 -> 0.mp3, minute 1 -> 1.mp3 ... minute 10 -> 0.mp3
   const trackIndex = minutes % totalTracks 
   
   const primarySrc = `/content/audio/${trackIndex}.mp3`
@@ -57,7 +106,9 @@ function initAudio() {
     if (!audioRef.value) return
     console.log(`Track ${trackIndex}.mp3 not found. Falling back to 1.mp3`)
     audioRef.value.src = fallbackSrc
-    audioRef.value.play().then(fadeAudioIn).catch(e => console.error("Fallback failed", e))
+    audioRef.value.play()
+        .then(fadeAudioIn)
+        .catch(e => console.warn("Fallback autoplay blocked", e))
   }
 
   // Remove any existing listeners to avoid duplicates
@@ -67,6 +118,8 @@ function initAudio() {
     // Only fallback if not already playing fallback
     if (audioRef.value && !audioRef.value.src.endsWith('1.mp3')) {
         playFallback()
+    } else {
+        console.warn("Audio file missing, continuing without music.")
     }
   }
 
@@ -74,9 +127,11 @@ function initAudio() {
   audioRef.value.src = primarySrc
   audioRef.value.volume = 0 // Start silent
   
-  audioRef.value.play().then(fadeAudioIn).catch((err) => {
-    console.warn("Audio play error (likely missing file or autoplay policy):", err)
-  })
+  audioRef.value.play()
+    .then(fadeAudioIn)
+    .catch((err) => {
+        console.warn("Audio play error (likely missing file or autoplay policy):", err)
+    })
 }
 
 function fadeAudioIn() {
@@ -109,7 +164,7 @@ function toggleMute() {
     gsap.to(audioRef.value, { volume: 0, duration: 0.5 })
   } else {
     gsap.to(audioRef.value, { volume: 0.25, duration: 1 })
-    if (audioRef.value.paused) audioRef.value.play()
+    if (audioRef.value.paused) audioRef.value.play().catch(() => {})
   }
 }
 
@@ -117,76 +172,110 @@ function toggleMute() {
 // 🎬 CINEMATIC ENGINE
 // ---------------------------------------------------------------------------
 
+import { getCinematicStyle, type CinematicStyle } from '~/utils/cinematic-styles'
+
 function runScene(index: number) {
   // 1. Cleanup previous scene
   if (masterTimeline) masterTimeline.kill()
   
-  // 2. Setup Elements (Immediate Reset)
-  gsap.set([dateRef.value, titleRef.value, descRef.value], { opacity: 0, y: 30, filter: 'blur(10px)' })
-  if (bgRef.value) gsap.set(bgRef.value, { scale: 1.0, opacity: 0 }) 
-  if (overlayRef.value) gsap.set(overlayRef.value, { opacity: 1 }) // Start with black overlay
+  // 2. GET STYLE FOR THIS SCENE 🎭
+  const style = getCinematicStyle(index)
+  currentStyle.value = style // Update state for template
+  // console.log(`🎬 Scene ${index}: Playing style "${style.name}"`)
 
-  // 3. Build Master Timeline
+  // 3. Setup Elements (Immediate Reset)
+  // Reset text
+  const textElements = [dateRef.value, titleRef.value, descRef.value].filter(el => el) as HTMLElement[]
+  // CRITICAL FIX: Base state must be visible (opacity: 1) so .from() animations work.
+  // The .from() tweens will immediately handle hiding them at the start of the timeline.
+  gsap.set(textElements, { opacity: 1, y: 0, x: 0, scale: 1, filter: 'none', skewX: 0, color: 'white', letterSpacing: 'normal' }) 
+
+  
+  // Reset Backgrounds
+  // Check refs existence again safely (nextTick ensures they should be there if logic is right)
+  const bgImage = bgImageRef.value
+  const bgGradient = bgGradientRef.value
+  
+  if (bgImage) gsap.set(bgImage, { scale: 1.0, opacity: 0, x: 0, y: 0, rotation: 0, filter: 'none' }) 
+  if (bgGradient) gsap.set(bgGradient, { scale: 1.0, opacity: 0, x: 0, y: 0, rotation: 0, filter: 'none' })
+  
+  // Reset Overlay
+  if (overlayRef.value) {
+    gsap.set(overlayRef.value, { opacity: 1 }) 
+    // Clear old custom classes if any (basic approach: reset to base)
+    overlayRef.value.className = "absolute inset-0 bg-black z-10 opacity-100 transition-overlay" 
+    if (style.overlayClass) {
+        overlayRef.value.classList.add(...style.overlayClass.split(' '))
+    }
+  }
+
+  // 4. Build Master Timeline
   masterTimeline = gsap.timeline({
     paused: !isPlaying.value, // Start paused if user paused
     onComplete: next // Auto-advance at end
   })
 
-  // --- SCENE SEQUENCE (Total ~8-10s) ---
+  // --- SCENE SEQUENCE (Total from style.duration or default 12s) ---
+  const sceneDuration = style.duration || 12
+  const exitTime = sceneDuration - 1.5
 
-  // 0s: Fade in Sequence (Crossfade feeling)
-  masterTimeline.to(overlayRef.value, { opacity: 0.3, duration: 1.5, ease: "power2.inOut" }, 0)
-  masterTimeline.to(bgRef.value, { opacity: 1, duration: 1, ease: "power2.out" }, 0.5)
+  // Determine active BG
+  const activeBg = (currentImage.value && bgImage) ? bgImage : bgGradient
+  
+  // If we have an active BG, apply the style
+  if (activeBg) {
+      // Apply CSS Filter (immediate)
+      if (style.filter) {
+          gsap.set(activeBg, { filter: style.filter })
+      }
 
-  // Ken Burns Effect (runs for whole slide)
-  masterTimeline.to(bgRef.value, { 
-    scale: 1.1, 
-    duration: 10, 
-    ease: "sine.out" 
-  }, 0)
+      // 0s: Reveal Scene (Fade overlay out)
+      masterTimeline.to(overlayRef.value, { opacity: 0.3, duration: 1.5, ease: "power2.inOut" }, 0)
+      
+      // Fade active BG in
+      masterTimeline.to(activeBg, { opacity: 1, duration: 1, ease: "power2.out" }, 0.5)
 
-  // 1s: Date Reveal (Subtle)
-  masterTimeline.to(dateRef.value, { 
-    y: 0, 
-    opacity: 0.8, 
-    filter: 'blur(0px)',
-    duration: 1.5, 
-    ease: "power3.out" 
-  }, 1)
+      // 🎥 CAM MOTION (Image Animation)
+      // We add the style's timeline to the master
+      const imgAnim = style.imageAnimation(activeBg)
+      masterTimeline.add(imgAnim, 0)
+  }
 
-  // 1.5s: Title Reveal (Bold)
-  masterTimeline.to(titleRef.value, { 
-    y: 0, 
-    opacity: 1, 
-    filter: 'blur(0px)',
-    duration: 1.5, 
-    ease: "power4.out" 
-  }, 1.3)
+  // 📝 TEXT MOTION
+  // We add the style's text timeline
+  if (textElements.length > 0) {
+      const txtAnim = style.textAnimation(textElements)
+      masterTimeline.add(txtAnim, 1.0) // Start text a bit in
+  }
 
-  // 2.5s: Description Reveal (Calm)
-  masterTimeline.to(descRef.value, { 
-    y: 0, 
-    opacity: 0.9, 
-    filter: 'blur(0px)',
-    duration: 1.5, 
-    ease: "power2.out" 
-  }, 2.0)
+  // 🚪 EXIT SEQUENCE
+  if (style.exitAnimation && overlayRef.value && activeBg) {
+      // Custom Exit
+      const exitAnim = style.exitAnimation(textElements, overlayRef.value, activeBg)
+      masterTimeline.add(exitAnim, exitTime)
+  } else {
+      // Standard Cinematic Exit (Fade Out)
+      // Text fade out
+      masterTimeline.to(textElements, { 
+        opacity: 0, 
+        filter: 'blur(5px)',
+        duration: 1, 
+        stagger: 0.1,
+        ease: "power2.in" 
+      }, exitTime)
 
-  // 8s: Fade Out (Transition)
-  masterTimeline.to([dateRef.value, titleRef.value, descRef.value], { 
-    opacity: 0, 
-    y: -20, 
-    filter: 'blur(5px)',
-    duration: 1, 
-    stagger: 0.1,
-    ease: "power2.in" 
-  }, 8)
-
-  masterTimeline.to(overlayRef.value, { 
-    opacity: 1, 
-    duration: 1, 
-    ease: "power2.in" 
-  }, 8.5)
+      // Fade overlay to black
+      if (overlayRef.value) {
+          masterTimeline.to(overlayRef.value, { 
+            opacity: 1, 
+            duration: 1.5, 
+            ease: "power2.in" 
+          }, exitTime)
+      }
+  }
+  
+  // Ensure timeline lasts full duration (padding)
+  masterTimeline.to({}, { duration: 0.1 }, sceneDuration)
 }
 
 // ---------------------------------------------------------------------------
@@ -232,10 +321,14 @@ function closeStory() {
   }
 }
 
-// Watch for index changes
-watch(currentIndex, () => {
-    // Small delay to ensure DOM update if needed, though with refs it's usually reactive.
-    // We restart the timeline for the new index.
+// Watch for index changes AND data updates (e.g. initial load)
+watch([currentIndex, currentEvent], async () => {
+    // Wait for DOM to update (v-if on image vs gradient)
+    await nextTick()
+    
+    // Safety check: if events are empty, don't run
+    if (!currentEvent.value) return 
+
     runScene(currentIndex.value)
 })
 
@@ -247,11 +340,12 @@ function handleKeydown(e: KeyboardEvent) {
     if (e.key === 'm') toggleMute()
 }
 
-onMounted(() => {
+onMounted(async () => {
     // Initial fade in of the whole container
     if (containerRef.value) {
          gsap.fromTo(containerRef.value, { opacity: 0 }, { opacity: 1, duration: 1 })
     }
+    await nextTick()
     // Start Story
     runScene(currentIndex.value)
     // Start Audio
@@ -270,47 +364,70 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="fixed inset-0 bg-black text-white z-[9999] flex flex-col justify-center items-center px-6 overflow-hidden font-sans"
+    class="fixed inset-0 bg-black text-white z-[9999] flex flex-col justify-center items-center px-6 overflow-hidden font-sans select-none"
     ref="containerRef"
   >
     <!-- Background Audio -->
-    <audio ref="audioRef" loop crossorigin="anonymous"></audio>
+    <audio ref="audioRef" loop preload="auto" crossorigin="anonymous"></audio>
 
-    <!-- Background Layer (Parallax/Effect) -->
+    <!-- 🎬 CINEMATIC VISUAL STACK 🎬 -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <!-- The image/gradient that zooms -->
-        <div ref="bgRef" class="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#111] to-black">
-           <!-- Subtle texture overlay -->
-           <div class="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
+        
+        <!-- LAYER 0: Background (Image OR Gradient) -->
+        <!-- Logic: If image exists, render img. If not, render gradient. Both controlled by GSAP. -->
+        <div class="absolute inset-0 bg-black">
+             <!-- Option A: Image -->
+             <img 
+                v-if="currentImage" 
+                :src="currentImage" 
+                ref="bgImageRef"
+                class="absolute inset-0 w-full h-full object-cover filter brightness-[0.6] contrast-[1.1] blur-[1px] opacity-0 will-change-transform"
+                alt="Cinematic Background"
+             />
+
+             <!-- Option B: Gradient Fallback -->
+             <div 
+                v-else
+                ref="bgGradientRef" 
+                class="absolute inset-0 bg-gradient-to-br from-[#0a0a0a] via-[#111] to-black opacity-0 will-change-transform"
+             >
+                <div class="absolute inset-0 opacity-[0.05] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] mix-blend-overlay"></div>
+             </div>
         </div>
         
-        <!-- Vignette & Crossfade Overlay -->
-        <div ref="overlayRef" class="absolute inset-0 bg-black z-10 opacity-30"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_90%)] z-10"></div>
+        <!-- LAYER 1: Dark Overlay (For transitions & readability) -->
+        <div ref="overlayRef" class="absolute inset-0 bg-black z-10 opacity-100"></div>
+
+        <!-- LAYER 2: Film Grain (Animated) -->
+        <div class="absolute inset-0 opacity-[0.12] mix-blend-overlay pointer-events-none film-grain z-20"></div>
+
+        <!-- LAYER 3: Vignette (Static) -->
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.5)_60%,rgba(0,0,0,0.95)_100%)] z-20"></div>
     </div>
 
-    <!-- Content Layer -->
-    <div class="relative z-20 flex flex-col items-center max-w-5xl text-center space-y-8 select-none">
+
+    <!-- 📝 CONTENT LAYER -->
+    <div class="relative z-30 flex flex-col items-center max-w-5xl text-center space-y-8">
         
         <!-- Date -->
-        <div class="text-sm md:text-lg font-medium tracking-[0.3em] uppercase text-indigo-400 opacity-0" ref="dateRef">
-         {{ events[currentIndex]?.date }}
+        <div class="text-sm md:text-lg font-medium tracking-[0.3em] uppercase text-indigo-400 opacity-0 transform translate-y-10" ref="dateRef">
+         {{ currentEvent?.date }}
         </div>
 
         <!-- Title -->
-        <h1 class="text-5xl md:text-8xl font-bold tracking-tight text-white opacity-0 leading-tight drop-shadow-2xl" ref="titleRef">
-        {{ events[currentIndex]?.title }}
+        <h1 class="text-5xl md:text-8xl font-bold tracking-tight text-white opacity-0 leading-tight drop-shadow-2xl transform translate-y-10" ref="titleRef">
+        {{ currentEvent?.title }}
         </h1>
 
         <!-- Description -->
-        <p class="max-w-3xl text-xl md:text-2xl text-gray-300 opacity-0 leading-relaxed font-light" ref="descRef">
-        {{ events[currentIndex]?.description }}
+        <p class="max-w-3xl text-xl md:text-2xl text-gray-300 opacity-0 leading-relaxed font-light transform translate-y-10" ref="descRef">
+        {{ currentEvent?.description }}
         </p>
     
     </div>
 
-    <!-- Controls -->
-    <div class="absolute bottom-12 w-full z-30 flex justify-center items-center gap-12">
+    <!-- 🎮 CONTROLS LAYER -->
+    <div class="absolute bottom-12 w-full z-40 flex justify-center items-center gap-12">
       
       <!-- Buttons -->
         <button 
@@ -348,7 +465,7 @@ onUnmounted(() => {
             </div>
         </button>
         
-        <!-- Mute Toggle (New) -->
+        <!-- Mute Toggle -->
         <button 
             @click="toggleMute" 
             class="group flex flex-col items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-white/40 hover:text-white transition-colors absolute left-10 bottom-2"
@@ -368,7 +485,7 @@ onUnmounted(() => {
              class="group text-white/30 hover:text-white transition-all duration-300 p-4 rounded-full border border-transparent hover:border-white/10 hover:bg-white/5"
         >
              <span class="sr-only">Next</span>
-             <svg v-if="currentIndex < events.length - 1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-8 h-8 group-hover:scale-110 transition-transform">
+             <svg v-if="currentIndex < props.events.length - 1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor" class="w-8 h-8 group-hover:scale-110 transition-transform">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
              <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -379,9 +496,6 @@ onUnmounted(() => {
 
     <!-- Progress Bar -->
     <div class="absolute bottom-0 left-0 h-[2px] bg-white/5 w-full z-30">
-        <!-- We can animate the progress bar specifically for the slide, OR just show overall progress.
-             For a "Movie" feel, user usually wants to see total progress. 
-             GSAP can tweak this too if needed. -->
       <div
         class="h-full bg-indigo-500/80 shadow-[0_0_15px_rgba(99,102,241,0.6)] transition-all duration-[1000ms] ease-linear relative"
         :style="{ width: ((currentIndex + 1) / events.length) * 100 + '%' }"
@@ -391,3 +505,24 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* FILM GRAIN ANIMATION */
+.film-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  animation: grain 8s steps(10) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -2%); }
+  20% { transform: translate(-4%, 2%); }
+  30% { transform: translate(2%, -4%); }
+  40% { transform: translate(-2%, 4%); }
+  50% { transform: translate(-4%, 2%); }
+  60% { transform: translate(4%, 0); }
+  70% { transform: translate(0, 4%); }
+  80% { transform: translate(-2%, -2%); }
+  90% { transform: translate(2%, 2%); }
+}
+</style>

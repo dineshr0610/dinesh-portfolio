@@ -52,7 +52,7 @@ export default defineNuxtConfig({
 
   supabase: {
     redirect: false,
-    key: process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY
+    key: process.env.SUPABASE_ANON_KEY
   },
 
   css: [
@@ -73,7 +73,6 @@ export default defineNuxtConfig({
     OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY,
-    SUPABASE_KEY: process.env.SUPABASE_KEY,
 
     // EmailJS — reused Contact template (Option A)
     EMAILJS_SERVICE_ID: process.env.EMAILJS_SERVICE_ID || 'service_uqr7bau',

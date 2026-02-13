@@ -1,5 +1,4 @@
 // app/middleware/admin.ts
-import { createClient } from '@supabase/supabase-js'
 
 export default defineNuxtRouteMiddleware(async () => {
     if (process.server) return

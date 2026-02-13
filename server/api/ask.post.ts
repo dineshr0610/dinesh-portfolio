@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
 
   const supabase = createClient(
     config.SUPABASE_URL,
-    config.SUPABASE_KEY,
+    config.SUPABASE_SERVICE_KEY,
     { auth: { persistSession: false } }
   )
 
