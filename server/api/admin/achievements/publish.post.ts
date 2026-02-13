@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+// server/utils/admin is auto-imported
 // server/utils/admin is auto-imported
 
 export default defineEventHandler(async (event) => {
@@ -7,10 +7,7 @@ export default defineEventHandler(async (event) => {
     const { id, published } = await readBody(event)
     const config = useRuntimeConfig()
 
-    const supabase = createClient(
-        config.SUPABASE_URL,
-        config.SUPABASE_KEY
-    )
+    const supabase = getServerSupabase()
 
     const { error } = await supabase
         .from('achievements')

@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+// server/utils/admin is auto-imported
 import { requireAdmin } from './_guard'
 import { formatters } from '../../utils/ai-normalization'
 
@@ -8,10 +8,7 @@ export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
 
     // 2. Init Client
-    const supabase = createClient(
-        config.SUPABASE_URL,
-        config.SUPABASE_KEY
-    )
+    const supabase = getServerSupabase()
 
     const log = [] as string[]
     const errors = [] as string[]
@@ -69,7 +66,7 @@ export default defineEventHandler(async (event) => {
         // 5. Normalization Loop
 
         // Knowledge
-        knowledge?.forEach(item => {
+        knowledge?.forEach((item: any) => {
             allDocs.push({
                 source: 'ai_knowledge',
                 source_id: item.id,
@@ -80,7 +77,7 @@ export default defineEventHandler(async (event) => {
         })
 
         // Projects
-        projects?.forEach(item => {
+        projects?.forEach((item: any) => {
             allDocs.push({
                 source: 'projects',
                 source_id: item.id,
@@ -91,7 +88,7 @@ export default defineEventHandler(async (event) => {
         })
 
         // Timeline
-        timeline?.forEach(item => {
+        timeline?.forEach((item: any) => {
             allDocs.push({
                 source: 'timeline',
                 source_id: item.id,
@@ -102,7 +99,7 @@ export default defineEventHandler(async (event) => {
         })
 
         // Updates
-        updates?.forEach(item => {
+        updates?.forEach((item: any) => {
             allDocs.push({
                 source: 'updates',
                 source_id: item.id,
@@ -113,7 +110,7 @@ export default defineEventHandler(async (event) => {
         })
 
         // Achievements
-        achievements?.forEach(item => {
+        achievements?.forEach((item: any) => {
             allDocs.push({
                 source: 'achievements',
                 source_id: item.id,
@@ -124,7 +121,7 @@ export default defineEventHandler(async (event) => {
         })
 
         // Gallery
-        gallery?.forEach(item => {
+        gallery?.forEach((item: any) => {
             if (!item.description && !item.title) return
             allDocs.push({
                 source: 'gallery',
@@ -136,7 +133,7 @@ export default defineEventHandler(async (event) => {
         })
 
         // Questions
-        questions?.forEach(item => {
+        questions?.forEach((item: any) => {
             allDocs.push({
                 source: 'q_and_a',
                 source_id: item.id,

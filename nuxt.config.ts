@@ -3,11 +3,13 @@ import { defineNuxtConfig } from 'nuxt/config'
 import { resolve } from 'path'
 
 export default defineNuxtConfig({
+  compatibilityDate: '2026-02-13',
   ssr: true,
 
   future: {
     compatibilityVersion: 4,
   },
+
 
   srcDir: 'app',
 
@@ -72,7 +74,7 @@ export default defineNuxtConfig({
     // ==============================
     OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
     SUPABASE_URL: process.env.SUPABASE_URL,
-    SUPABASE_SERVICE_KEY: process.env.SUPABASE_SERVICE_KEY,
+    SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY,
 
     // EmailJS — reused Contact template (Option A)
     EMAILJS_SERVICE_ID: process.env.EMAILJS_SERVICE_ID || 'service_uqr7bau',

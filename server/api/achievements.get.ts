@@ -1,13 +1,8 @@
 // server/api/achievements.get.ts
-import { createClient } from '@supabase/supabase-js'
+// server/utils/admin is auto-imported
 
 export default defineEventHandler(async () => {
-    const config = useRuntimeConfig()
-
-    const supabase = createClient(
-        config.SUPABASE_URL,
-        config.SUPABASE_KEY   // your existing server key
-    )
+    const supabase = getServerSupabase()
 
     const { data, error } = await supabase
         .from('achievements')

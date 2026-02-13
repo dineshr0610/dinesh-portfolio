@@ -1,14 +1,11 @@
-import { createClient } from '@supabase/supabase-js'
+// server/utils/admin is auto-imported
 import { requireAdmin } from '../../../utils/admin'
 
 export default defineEventHandler(async (event) => {
     await requireAdmin(event)
 
     const config = useRuntimeConfig()
-    const supabase = createClient(
-        config.SUPABASE_URL,
-        config.SUPABASE_KEY
-    )
+    const supabase = getServerSupabase()
 
     const query = getQuery(event)
     const id = query.id

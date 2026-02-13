@@ -1,9 +1,7 @@
-import { createClient } from '@supabase/supabase-js'
+// server/utils/admin is auto-imported
 
 export default defineEventHandler(async (event) => {
-    const config = useRuntimeConfig()
-    console.log('DEBUG: Timeline API - Key Exists:', !!config.SUPABASE_KEY)
-    const supabase = createClient(config.SUPABASE_URL, config.SUPABASE_KEY)
+    const supabase = getServerSupabase()
 
     const { data, error } = await supabase
         .from('timeline') // Use correct table name

@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+// email utils imported below
 import { sendUserEmail } from '../../utils/email'
 import { formatters } from '../../utils/ai-normalization'
 
@@ -22,11 +22,7 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    const supabase = createClient(
-        config.SUPABASE_URL,
-        config.SUPABASE_KEY,
-        { auth: { persistSession: false } }
-    )
+    const supabase = getServerSupabase()
 
     // 1️⃣ Fetch question + user email
     const { data: questionRow, error: fetchError } = await supabase

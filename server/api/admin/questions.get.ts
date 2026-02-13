@@ -1,13 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
+// server/utils/admin is auto-imported
 
 export default defineEventHandler(async (event) => {
     const config = useRuntimeConfig()
 
-    const supabase = createClient(
-        config.SUPABASE_URL,
-        config.SUPABASE_KEY,
-        { auth: { persistSession: false } }
-    )
+    const supabase = getServerSupabase()
 
     // Parallel fetch for speed
     const [pendingRes, answeredRes] = await Promise.all([

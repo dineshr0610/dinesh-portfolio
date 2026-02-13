@@ -1,13 +1,8 @@
-import { createClient } from '@supabase/supabase-js'
+// server/utils/admin is auto-imported
 
 export default defineEventHandler(async () => {
-    const config = useRuntimeConfig()
-
-    // Use SUPABASE_KEY as defined in nuxt.config.ts runtimeConfig
-    const supabase = createClient(
-        config.SUPABASE_URL,
-        config.SUPABASE_KEY
-    )
+    // Use getServerSupabase utility
+    const supabase = getServerSupabase()
 
     const { data, error } = await supabase
         .from('projects')
