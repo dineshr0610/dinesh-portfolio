@@ -8,6 +8,7 @@ type Update = {
   id: string
   title: string
   short: string | null
+  image: string | null
   published: boolean
   created_at: string
 }

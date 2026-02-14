@@ -1,5 +1,8 @@
 <script setup>
 import StoryPlayer from '~/components/StoryPlayer.vue'
+import { useCinematicAudio } from '~/composables/useCinematicAudio'
+
+const { initAudio, playSfx } = useCinematicAudio()
 
 const { data: timeline, pending, error } = await useAsyncData(
   'public-timeline',
@@ -8,6 +11,11 @@ const { data: timeline, pending, error } = await useAsyncData(
     return data
   }
 )
+
+// Preload Audio on Mount
+onMounted(() => {
+    initAudio()
+})
 
 // Story Mode Logic
 const showStory = ref(false)
@@ -56,6 +64,11 @@ function play(id) {
     if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' })
   })
 }
+
+function openStory() {
+    playSfx('ui') // Unlock Audio Context & Feedback
+    showStory.value = true
+}
 </script>
 
 <template>
@@ -67,7 +80,7 @@ function play(id) {
         </div>
         
         <button 
-            @click="showStory = true"
+            @click="openStory"
             class="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all duration-300 font-medium group"
         >
             <span class="text-lg group-hover:animate-pulse">▶</span>
@@ -76,13 +89,17 @@ function play(id) {
     </div>
 
     <!-- Story Player Component -->
-    <Transition name="fade">
-        <StoryPlayer 
-            v-if="showStory" 
-            :events="storyEvents" 
-            @close="showStory = false" 
-        />
-    </Transition>
+    <!-- Story Player Component (Teleported to break out of stacking contexts) -->
+    <Teleport to="body">
+        <Transition name="fade">
+            <StoryPlayer 
+                v-if="showStory"
+                :model-value="showStory" 
+                :events="storyEvents" 
+                @close="showStory = false" 
+            />
+        </Transition>
+    </Teleport>
 
     <div class="mt-6">
       <div v-if="pending" class="py-8 text-center text-slate-500">Loading timeline…</div>

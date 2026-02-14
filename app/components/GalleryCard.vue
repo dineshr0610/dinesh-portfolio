@@ -20,7 +20,7 @@
     <div class="p-4">
       <div class="flex items-start justify-between">
         <div class="pr-4">
-          <h3 class="font-semibold text-lg leading-snug">
+          <h3 class="font-semibold text-lg leading-snug font-display text-slate-900">
             {{ item.title || 'Untitled' }}
           </h3>
 

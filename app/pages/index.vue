@@ -28,7 +28,7 @@
               Ask My AI <span class="group-hover:translate-x-1 inline-block transition-transform">🤖</span>
             </NuxtLink>
             
-            <a href="/resume.pdf" target="_blank" class="px-8 py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
+            <a href="/Dinesh_Resume.pdf" target="_blank" class="px-8 py-3.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-medium hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm">
                Resume
             </a>
           </div>

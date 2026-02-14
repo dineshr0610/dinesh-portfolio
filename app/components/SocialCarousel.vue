@@ -2,7 +2,7 @@
   <div class="relative group h-full flex flex-col" @mouseenter="pause" @mouseleave="resume" ref="container">
     <!-- Header -->
     <div class="flex items-center justify-between mb-5 px-1 flex-shrink-0">
-      <h3 class="font-bold text-slate-900 flex items-center gap-2">
+      <h3 class="font-bold text-slate-900 flex items-center gap-2 font-display text-lg">
         <span class="relative flex h-3 w-3">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
           <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>

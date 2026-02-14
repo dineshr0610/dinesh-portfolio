@@ -10,7 +10,7 @@
         <!-- Brand -->
         <div class="text-center md:text-left space-y-4">
           <div>
-            <h3 class="font-bold text-xl text-slate-900">Dinesh R</h3>
+            <h3 class="font-bold text-xl text-slate-900 font-display">Dinesh R</h3>
             <p class="text-slate-500 text-sm mt-1">Full-Stack Developer • AI & Web Enthusiast</p>
           </div>
           <p class="text-xs text-slate-400 max-w-xs mx-auto md:mx-0">

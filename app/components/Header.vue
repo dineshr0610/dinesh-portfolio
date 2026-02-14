@@ -5,7 +5,7 @@
   >
     <div class="container mx-auto flex items-center justify-between px-4 lg:px-8">
       <!-- Brand -->
-      <NuxtLink to="/" class="text-xl font-bold">Dinesh R</NuxtLink>
+      <NuxtLink to="/" class="text-xl font-bold font-display tracking-tight">Dinesh R</NuxtLink>
 
       <!-- Desktop nav -->
       <nav class="hidden md:flex items-center gap-6 text-sm">
@@ -80,7 +80,7 @@
                 <div class="mt-3 flex gap-2">
                   <a
                     ref="resumeLink"
-                    href="/resume.pdf"
+                    href="/Dinesh_Resume.pdf"
                     target="_blank"
                     class="flex-1 bg-slate-900 text-white px-3 py-2 rounded text-sm"
                   >
@@ -143,7 +143,7 @@
             <div>
               <div class="text-sm font-medium">Dinesh R</div>
               <div class="text-xs text-slate-500">Frontend • AI</div>
-              <a href="/resume.pdf" target="_blank" class="ml-auto text-xs underline">
+              <a href="/Dinesh_Resume.pdf" target="_blank" class="ml-auto text-xs underline">
               Resume
             </a>
             </div>

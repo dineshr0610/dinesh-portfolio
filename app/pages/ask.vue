@@ -43,6 +43,9 @@
                       <!-- Answer Content -->
                       <div v-else class="prose prose-indigo max-w-none prose-p:leading-relaxed prose-a:text-indigo-600">
                          <div v-html="renderedAnswer"></div>
+                         
+                         <!-- Related Items Visualization -->
+                         <RelatedItems :items="related" />
                       </div>
                   </div>
               </Transition>
@@ -117,10 +120,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { marked } from 'marked'
+import RelatedItems from '~/components/ai/RelatedItems.vue'
 
 const q = ref('')
 const email = ref('')
 const answer = ref('')
+const related = ref([]) // Store related visual items
 const loading = ref(false)
 const error = ref('')
 const needsEmail = ref(false)
@@ -133,6 +138,7 @@ async function askQuestion() {
   loading.value = true
   error.value = ''
   answer.value = ''
+  related.value = []
   needsEmail.value = false
 
   try {
@@ -148,8 +154,8 @@ async function askQuestion() {
     }
 
     if (res.type === 'answer') {
-        // Simple typewriter effect simulation could go here, but for now just show it
         answer.value = res.message
+        related.value = res.related || []
     }
   } catch (e) {
     error.value = 'My brain is currently offline. Please try again later.'
@@ -191,6 +197,7 @@ function clear() {
   q.value = ''
   email.value = ''
   answer.value = ''
+  related.value = []
   error.value = ''
   needsEmail.value = false
 }

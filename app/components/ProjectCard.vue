@@ -12,7 +12,7 @@
       class="w-full h-40 object-cover rounded"
     />
 
-    <h3 class="mt-3 font-semibold text-lg">
+    <h3 class="mt-3 font-bold text-lg font-display tracking-tight text-slate-900">
       <div class="flex items-start justify-between">
         {{ project.title }}
         <span
