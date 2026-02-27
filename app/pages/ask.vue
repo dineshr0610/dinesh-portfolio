@@ -122,6 +122,8 @@ import { ref, computed } from 'vue'
 import { marked } from 'marked'
 import RelatedItems from '~/components/ai/RelatedItems.vue'
 
+const { show } = useToast()
+
 const q = ref('')
 const email = ref('')
 const answer = ref('')
@@ -154,11 +156,13 @@ async function askQuestion() {
     }
 
     if (res.type === 'answer') {
-        answer.value = res.message
-        related.value = res.related || []
+      answer.value = res.message
+      related.value = res.related || []
     }
   } catch (e) {
-    error.value = 'My brain is currently offline. Please try again later.'
+    const msg = 'My brain is currently offline. Please try again later.'
+    error.value = msg
+    show('error', msg)
   } finally {
     loading.value = false
   }
@@ -182,12 +186,15 @@ async function submitEmail() {
 
     if (res.type === 'fallback_saved') {
       answer.value = "Thanks! I've sent your question to Dinesh. He'll get back to you soon."
+      show('success', 'Question shared with Dinesh successfully.')
       needsEmail.value = false
       email.value = ''
       q.value = ''
     }
   } catch (e) {
-    error.value = 'Failed to send email.'
+    const msg = 'Failed to send email.'
+    error.value = msg
+    show('error', msg)
   } finally {
     loading.value = false
   }
@@ -240,3 +247,4 @@ function clear() {
     transform: translateY(10px);
 }
 </style>
+

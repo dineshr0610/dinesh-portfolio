@@ -32,7 +32,7 @@ async function loadQuestion() {
       return
     }
 
-    answer.value = question.value.admin_answer || '' // DB field is admin_answer
+    answer.value = question.value.admin_answer || ''
   } catch (e) {
     error.value = 'Failed to load question'
   } finally {
@@ -51,7 +51,7 @@ async function submitAnswer() {
   success.value = ''
 
   try {
-    await $fetch('/api/admin/answer', {
+    const res: any = await $fetch('/api/admin/answer', {
       method: 'POST',
       body: {
         id,
@@ -59,7 +59,12 @@ async function submitAnswer() {
       }
     })
 
-    success.value = 'Answer sent successfully'
+    if (res?.emailSent === false) {
+      success.value = 'Answer saved, but email delivery failed. Check EmailJS template config.'
+    } else {
+      success.value = 'Answer sent successfully'
+    }
+
     await loadQuestion()
   } catch (e) {
     error.value = 'Failed to send answer'
@@ -99,7 +104,7 @@ async function handleAction(action: 'reopen' | 'delete') {
       try {
         await $fetch('/api/admin/questions/delete', {
             method: 'POST',
-            body: { id } // Use the route param 'id'
+            body: { id }
         })
         router.push('/admin/questions')
       } catch (e) {
@@ -152,7 +157,6 @@ onMounted(loadQuestion)
               {{ question.status === 'answered' ? 'Update Answer' : 'Send Answer' }}
             </button>
 
-            <!-- Admin Tools -->
             <div class="flex gap-4 ml-auto">
                  <button 
                     v-if="question.status === 'answered'" 

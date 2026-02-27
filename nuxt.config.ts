@@ -24,7 +24,7 @@ export default defineNuxtConfig({
         { property: 'og:title', content: 'Dinesh R — Portfolio' },
         { property: 'og:description', content: 'Frontend & Full-Stack developer. Building AI-enabled portfolio & music apps.' },
         { property: 'og:type', content: 'website' },
-        { property: 'og:image', content: '/images/og-image.png' },
+        { property: 'og:image', content: '/public/images/profile.jpeg' },
         { property: 'og:url', content: 'https://your-domain.com' },
         { property: 'og:site_name', content: 'Dinesh Portfolio' },
 
@@ -32,7 +32,7 @@ export default defineNuxtConfig({
         { name: 'twitter:card', content: 'summary_large_image' },
         { name: 'twitter:title', content: 'Dinesh R — Portfolio' },
         { name: 'twitter:description', content: 'Frontend & Full-Stack developer. Building AI-enabled portfolio & music apps.' },
-        { name: 'twitter:image', content: '/images/og-image.png' },
+        { name: 'twitter:image', content: '/public/images/profile.jpeg' },
 
         { name: 'author', content: 'Dinesh R' }
       ],
@@ -76,10 +76,17 @@ export default defineNuxtConfig({
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY,
 
-    // EmailJS — reused Contact template (Option A)
+    // EmailJS (server templates)
     EMAILJS_SERVICE_ID: process.env.EMAILJS_SERVICE_ID || 'service_uqr7bau',
-    EMAILJS_ADMIN_TEMPLATE_ID: process.env.EMAILJS_ADMIN_TEMPLATE_ID || 'template_ykdoosr',
+    EMAILJS_TEMPLATE_CONTACT: process.env.EMAILJS_TEMPLATE_CONTACT || process.env.EMAILJS_ADMIN_TEMPLATE_ID || 'template_ykdoosr',
+    EMAILJS_TEMPLATE_AUTOREPLY: process.env.EMAILJS_TEMPLATE_AUTOREPLY || process.env.EMAILJS_USER_TEMPLATE_ID || 'template_7jt4rmf',
     EMAILJS_PUBLIC_KEY: process.env.EMAILJS_PUBLIC_KEY || 'KgxuGl9u3L8YeZd72',
+    EMAILJS_PRIVATE_KEY: process.env.EMAILJS_PRIVATE_KEY,
+    CONTACT_RECEIVER_EMAIL: process.env.CONTACT_RECEIVER_EMAIL || 'dinesh2370049@ssn.edu.in',
+
+    // Backward-compatible aliases
+    EMAILJS_ADMIN_TEMPLATE_ID: process.env.EMAILJS_ADMIN_TEMPLATE_ID || process.env.EMAILJS_TEMPLATE_CONTACT || 'template_ykdoosr',
+    EMAILJS_USER_TEMPLATE_ID: process.env.EMAILJS_USER_TEMPLATE_ID || process.env.EMAILJS_TEMPLATE_AUTOREPLY || 'template_7jt4rmf',
 
     // ==============================
     // 🌐 CLIENT-ONLY CONFIG
@@ -102,3 +109,7 @@ export default defineNuxtConfig({
     }
   }
 })
+
+
+
+

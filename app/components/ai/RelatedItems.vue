@@ -6,75 +6,144 @@
         Visual Proof
       </h3>
     </div>
-    
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      <div
-        v-for="item in items"
-        :key="item.title"
-        class="group relative bg-white/40 dark:bg-gray-800/40 backdrop-blur-sm rounded-xl overflow-hidden border border-white/50 hover:border-indigo-200/50 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-      >
-        <!-- Type Badge -->
-        <div class="absolute top-2 left-2 z-10">
-          <span 
-            class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase border shadow-sm backdrop-blur-md"
-            :class="getTypeStyles(item.type)"
-          >
-            {{ item.type || 'Related' }}
-          </span>
-        </div>
 
-        <!-- Image Area (Fixed Aspect Ratio) -->
-        <div class="relative w-full aspect-[16/9] bg-slate-100 dark:bg-slate-800 overflow-hidden">
-          <img
-            v-if="item.image"
-            :src="item.image"
-            :alt="item.title"
-            class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-            loading="lazy"
-          />
-          <div v-else class="absolute inset-0 flex items-center justify-center text-slate-300">
-            <svg class="w-8 h-8 opacity-20" fill="currentColor" viewBox="0 0 24 24"><path d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <component
+        v-for="item in items"
+        :key="`${item.type}-${item.id}`"
+        :is="resolveComponent(item.type)"
+        :item="item"
+        @preview-gallery="openGalleryPreview"
+      />
+    </div>
+
+    <Teleport to="body">
+      <Transition name="fade">
+        <div
+          v-if="activeGalleryItem"
+          class="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 md:p-8"
+          @click.self="closeGalleryPreview"
+        >
+          <button
+            class="absolute top-6 right-6 text-white/70 hover:text-white transition"
+            aria-label="Close preview"
+            @click="closeGalleryPreview"
+          >
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <div class="w-full max-w-4xl">
+            <div class="rounded-xl overflow-hidden bg-black border border-white/10">
+              <img
+                v-if="activeGalleryItem.mediaType !== 'video'"
+                :src="activeGalleryItem.mediaSrc || activeGalleryItem.image || ''"
+                :alt="activeGalleryItem.title"
+                class="w-full max-h-[72vh] object-contain"
+              />
+              <video
+                v-else
+                :src="activeGalleryItem.mediaSrc || ''"
+                :poster="activeGalleryItem.poster || activeGalleryItem.image || ''"
+                controls
+                autoplay
+                class="w-full max-h-[72vh]"
+              />
+            </div>
+
+            <div class="mt-4 text-center text-white">
+              <h4 class="text-xl font-semibold">{{ activeGalleryItem.title }}</h4>
+              <p v-if="activeGalleryItem.short" class="text-white/75 mt-2">{{ activeGalleryItem.short }}</p>
+            </div>
           </div>
         </div>
-        
-        <!-- Content Area -->
-        <div class="p-4">
-          <h4 class="font-bold text-slate-800 dark:text-white line-clamp-2 leading-snug font-display text-sm mb-1">
-            {{ item.title }}
-          </h4>
-          
-          <a
-            v-if="item.link"
-            :href="item.link"
-            target="_blank"
-            class="inline-flex items-center text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 mt-2 group/link"
-          >
-            Explore 
-            <span class="ml-1 transition-transform group-hover/link:translate-x-0.5">→</span>
-          </a>
-        </div>
-      </div>
-    </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
-<script setup>
-defineProps({
-  items: Array
-})
+<script setup lang="ts">
+import AchievementProofCard from '~/components/ai/cards/AchievementProofCard.vue'
+import GalleryProofCard from '~/components/ai/cards/GalleryProofCard.vue'
+import ProjectProofCard from '~/components/ai/cards/ProjectProofCard.vue'
+import TimelineProofCard from '~/components/ai/cards/TimelineProofCard.vue'
+import UpdateProofCard from '~/components/ai/cards/UpdateProofCard.vue'
 
-function getTypeStyles(type) {
-  switch (type?.toLowerCase()) {
-    case 'project': 
-      return 'bg-blue-50/90 border-blue-100 text-blue-700'
-    case 'achievement': 
-      return 'bg-amber-50/90 border-amber-100 text-amber-700'
-    case 'timeline': 
-      return 'bg-emerald-50/90 border-emerald-100 text-emerald-700'
-    case 'gallery': 
-      return 'bg-purple-50/90 border-purple-100 text-purple-700'
-    default: 
-      return 'bg-slate-50/90 border-slate-100 text-slate-600'
+type RelatedType = 'project' | 'achievement' | 'timeline' | 'gallery' | 'update'
+
+type RelatedItem = {
+  id: string | number
+  type: RelatedType
+  title: string
+  image: string | null
+  short?: string | null
+  date?: string | null
+  tech?: string[] | null
+  demo?: string | null
+  repo?: string | null
+  linkUrl?: string | null
+  route?: string | null
+  mediaType?: 'image' | 'video' | 'audio' | null
+  mediaSrc?: string | null
+  poster?: string | null
+}
+
+const props = defineProps<{
+  items: RelatedItem[]
+}>()
+
+const activeGalleryItem = ref<RelatedItem | null>(null)
+
+function resolveComponent(type: RelatedType) {
+  switch (type) {
+    case 'project':
+      return ProjectProofCard
+    case 'timeline':
+      return TimelineProofCard
+    case 'gallery':
+      return GalleryProofCard
+    case 'achievement':
+      return AchievementProofCard
+    case 'update':
+      return UpdateProofCard
+    default:
+      return ProjectProofCard
   }
 }
+
+function openGalleryPreview(item: RelatedItem) {
+  activeGalleryItem.value = item
+  document.body.style.overflow = 'hidden'
+}
+
+function closeGalleryPreview() {
+  activeGalleryItem.value = null
+  document.body.style.overflow = ''
+}
+
+watch(
+  () => props.items,
+  () => {
+    if (!activeGalleryItem.value) return
+    const exists = props.items?.some((item) => item.id === activeGalleryItem.value?.id && item.type === 'gallery')
+    if (!exists) closeGalleryPreview()
+  }
+)
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = ''
+})
 </script>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

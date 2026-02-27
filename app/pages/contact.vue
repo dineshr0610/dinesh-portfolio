@@ -1,15 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import emailjs from '@emailjs/browser'
+import { ref } from 'vue'
 import Footer from '~/components/Footer.vue'
 
-// EmailJS public config (safe on client)
-const config = useRuntimeConfig()
-// Access keys via config.public.emailjsPublic, etc.
-
-onMounted(() => {
-  try { emailjs.init(config.public.emailjsPublic) } catch (e) { console.warn('EmailJS init:', e) }
-})
+const { show } = useToast()
 
 const name = ref('')
 const email = ref('')
@@ -17,7 +10,6 @@ const message = ref('')
 const company = ref('') // honeypot
 
 const loading = ref(false)
-const toast = ref<{ type: 'success'|'error'|'info', text: string } | null>(null)
 
 function validate() {
   if (company.value.trim() !== '') return { ok: false, msg: 'spam' }
@@ -30,52 +22,40 @@ function validate() {
   return { ok: true }
 }
 
-
-
 async function handleSubmit() {
   const v = validate()
   if (!v.ok) {
     if (v.msg === 'spam') return
-    toast.value = { type: 'error', text: v.msg as string }
-    setTimeout(() => (toast.value = null), 4000)
+    show('error', v.msg as string)
     return
   }
 
   loading.value = true
-  toast.value = null
 
-  const paramsForAdmin = {
-    name: name.value.trim(),
-    email: email.value.trim(),
-    message: message.value.trim()
-  }
-
-  // ✅ Send ONLY admin email
   try {
-    await emailjs.send(
-      config.public.emailjsService,
-      config.public.emailjsAdminTemplate,
-      paramsForAdmin
-    )
+    await $fetch('/api/contact', {
+      method: 'POST',
+      body: {
+        title: 'Portfolio Contact',
+        name: name.value.trim(),
+        email: email.value.trim(),
+        message: message.value.trim()
+      }
+    })
   } catch (err) {
-    console.error('Admin email failed:', err)
+    console.error('Contact API failed:', err)
     loading.value = false
-    toast.value = { type: 'error', text: 'Failed to send message. Please try again later.' }
-    setTimeout(() => (toast.value = null), 5000)
+    show('error', 'Failed to send message. Please try again later.')
     return
   }
 
-  // ✅ EmailJS dashboard auto-reply will handle user email
-
-  // Reset form
   name.value = ''
   email.value = ''
   message.value = ''
   company.value = ''
 
-  toast.value = { type: 'success', text: 'Message sent. Thank you!' }
+  show('success', 'Message sent. Thank you!')
   loading.value = false
-  setTimeout(() => (toast.value = null), 5000)
 }
 </script>
 
@@ -119,19 +99,6 @@ async function handleSubmit() {
           <p v-if="!loading" class="text-sm text-gray-600">I'll reply as soon as possible.</p>
         </div>
       </form>
-
-      <!-- toast -->
-      <div v-if="toast" class="fixed bottom-6 right-6 max-w-xs">
-        <div v-if="toast.type === 'success'" class="bg-green-600 text-white px-4 py-3 rounded-md shadow">
-          {{ toast.text }}
-        </div>
-        <div v-else-if="toast.type === 'error'" class="bg-red-600 text-white px-4 py-3 rounded-md shadow">
-          {{ toast.text }}
-        </div>
-        <div v-else class="bg-slate-600 text-white px-4 py-3 rounded-md shadow">
-          {{ toast.text }}
-        </div>
-      </div>
     </div>
     <Footer />
   </div>

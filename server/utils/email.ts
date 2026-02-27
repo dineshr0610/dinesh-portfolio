@@ -1,90 +1,82 @@
 // server/utils/email.ts
+import emailjs from '@emailjs/nodejs'
 
-export const sendAdminEmail = async (params: {
-  subject: string
-  message: string
-}) => {
+type EmailVariables = Record<string, any>
+
+export async function sendEmail({
+  templateId,
+  to,
+  variables
+}: {
+  templateId: string
+  to: string
+  variables: EmailVariables
+}) {
   const config = useRuntimeConfig()
 
   if (
     !config.EMAILJS_SERVICE_ID ||
-    !config.EMAILJS_ADMIN_TEMPLATE_ID ||
-    !config.EMAILJS_PUBLIC_KEY
+    !config.EMAILJS_PUBLIC_KEY ||
+    !config.EMAILJS_PRIVATE_KEY
   ) {
-    console.error('❌ EmailJS server config missing')
-    return
+    throw new Error('EmailJS config missing')
   }
 
-  const templateParams = {
-    name: 'Portfolio AI Assistant',
-    email: 'ai-system@dinesh-portfolio',
-    message: params.message
-  }
-
-  try {
-    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        service_id: config.EMAILJS_SERVICE_ID,
-        template_id: config.EMAILJS_ADMIN_TEMPLATE_ID,
-        user_id: config.EMAILJS_PUBLIC_KEY,
-        template_params: templateParams
-      })
-    })
-
-    if (!res.ok) {
-      console.error('❌ EmailJS Error:', await res.text())
+  return await emailjs.send(
+    config.EMAILJS_SERVICE_ID,
+    templateId,
+    {
+      ...variables,
+      email: to
+    },
+    {
+      publicKey: config.EMAILJS_PUBLIC_KEY,
+      privateKey: config.EMAILJS_PRIVATE_KEY
     }
-  } catch (err) {
-    console.error('❌ Failed to send admin email:', err)
-  }
+  )
 }
 
-export const sendUserEmail = async (params: {
+export const sendContactToAdmin = async (params: {
+  title: string
+  name: string
+  email: string
+  message: string
+}) => {
+  const config = useRuntimeConfig()
+
+  return sendEmail({
+    templateId: config.EMAILJS_TEMPLATE_CONTACT,
+    to: config.CONTACT_RECEIVER_EMAIL,
+    variables: {
+      title: params.title,
+      name: params.name,
+      email: params.email,
+      message: params.message
+    }
+  })
+}
+
+export const sendAutoReply = async (params: {
   to: string
   subject: string
-  message: string
+  name: string
+  intro: string
+  content: string
+  footer: string
 }) => {
   const config = useRuntimeConfig()
 
-  if (
-    !config.EMAILJS_SERVICE_ID ||
-    !config.EMAILJS_ADMIN_TEMPLATE_ID ||
-    !config.EMAILJS_PUBLIC_KEY
-  ) {
-    console.error('❌ EmailJS server config missing')
-    return
-  }
-
-  const templateParams = {
-    name: 'Dinesh R', // Verified Sender Name
-    email: params.to,      // Used for Reply-To
-    to_email: params.to,   // Actual recipient (mapped effectively in template or ignored if template hardcodes)
-    // CRITICAL: We rely on the template logic to use `to_email` if possible, 
-    // OR we are relying on 'email' being the Reply-To. 
-    // The user said: "to_email: userEmail (actual recipient)".
-    title: params.subject,
-    message: params.message,
-    source: 'admin'        // 🚫 Prevents auto-reply loop
-  }
-
-  try {
-    const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        service_id: config.EMAILJS_SERVICE_ID,
-        template_id: config.EMAILJS_ADMIN_TEMPLATE_ID,
-        user_id: config.EMAILJS_PUBLIC_KEY,
-        template_params: templateParams
-      })
-    })
-
-    if (!res.ok) {
-      console.error('❌ EmailJS (User) Error:', await res.text())
+  return sendEmail({
+    templateId: config.EMAILJS_TEMPLATE_AUTOREPLY,
+    to: params.to,
+    variables: {
+      subject: params.subject,
+      name: params.name,
+      intro: params.intro,
+      content: params.content,
+      footer: params.footer,
+      to_email: params.to
     }
-  } catch (err) {
-    console.error('❌ Failed to send user email:', err)
-  }
+  })
 }
+

@@ -6,8 +6,8 @@ import { useAttrs } from 'vue'
 const attrs = useAttrs()
 
 const props = defineProps({
-  src: { type: String, default: '/images/profile.webp' },
-  fallback: { type: String, default: '/images/profile.jpg' },
+  src: { type: String, default: '/images/profile.jpeg' },
+  fallback: { type: String, default: '/images/profile.jpeg' },
   alt: { type: String, default: 'Dinesh R — profile photo' },
   width: { type: [Number, String], default: 192 },
   height: { type: [Number, String], default: 192 },
@@ -17,6 +17,8 @@ const errored = ref(false)
 
 const srcWebp = computed(() => {
   if (!props.src) return ''
+  // Avoid using the old webp for the new profile image
+  if (props.src.includes('profile.jpeg')) return ''
   if (props.src.endsWith('.webp')) return props.src
   return props.src.replace(/\.(jpe?g|png)$/i, '.webp')
 })

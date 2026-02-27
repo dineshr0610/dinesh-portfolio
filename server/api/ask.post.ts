@@ -1,6 +1,6 @@
 // server/api/ask.post.ts
 // server/utils/admin is auto-imported
-import { sendAdminEmail } from '../utils/email'
+import { sendContactToAdmin, sendAutoReply } from '../utils/email'
 
 // Source priorities for re-ranking
 const SOURCE_PRIORITY: Record<string, number> = {
@@ -10,6 +10,25 @@ const SOURCE_PRIORITY: Record<string, number> = {
   achievements: 1.0,
   timeline: 0.9,
   gallery: 0.8       // Lowest priority
+}
+
+type RelatedItemType = 'project' | 'achievement' | 'timeline' | 'gallery' | 'update'
+
+type RelatedItem = {
+  id: string | number
+  type: RelatedItemType
+  title: string
+  image: string | null
+  short?: string | null
+  date?: string | null
+  tech?: string[] | null
+  demo?: string | null
+  repo?: string | null
+  linkUrl?: string | null
+  route?: string | null
+  mediaType?: 'image' | 'video' | 'audio' | null
+  mediaSrc?: string | null
+  poster?: string | null
 }
 
 export default defineEventHandler(async (event) => {
@@ -42,15 +61,26 @@ export default defineEventHandler(async (event) => {
       status: 'pending'
     })
 
-    await sendAdminEmail({
-      subject: 'New AI Question Needs Review',
-      message: `Question:\n${rawQuestion}\n\nUser Email:\n${userEmail}`
-    })
-
     return {
       type: 'fallback_saved',
       message:
-        "Thanks! Dinesh will personally review your question and get back to you."
+        "Thanks! Dinesh will personally review your question and get back to you.",
+      emailPayload: {
+        admin: {
+          title: 'New AI Question Needs Review',
+          name: 'Portfolio AI Assistant',
+          email: userEmail,
+          message: `Question:\n${rawQuestion}\n\nUser Email:\n${userEmail}`
+        },
+        user: {
+          subject: 'Your AI Question Has Been Received',
+          name: 'there',
+          intro: 'Thanks for your question. Dinesh will review it personally:',
+          content: rawQuestion,
+          footer: 'You will get a response soon.',
+          to_email: userEmail
+        }
+      }
     }
   }
 
@@ -329,7 +359,7 @@ If you'd like, please share your email below. Dinesh will personally review your
     }
   }
 
-  // 2. Determine dominant source (Legacy Logic Fallback)
+  // 2. Determine dominant source (legacy fallback)
   const sourceEntries = Object.entries(groupedBySource)
     .sort((a, b) => b[1].length - a[1].length)
 
@@ -338,33 +368,41 @@ If you'd like, please share your email below. Dinesh will personally review your
 
   let selectedMatches: any[] = []
 
-  // 3. Selection strategy (LLM-Driven)
+  // 3. Selection strategy (LLM-driven)
   if (usedSources.length > 0 && !usedSources.includes('mixed')) {
-    // Strict Source Selection
+    // Strict source selection
     for (const source of usedSources) {
       if (groupedBySource[source]) {
-        selectedMatches.push(...groupedBySource[source].slice(0, 3))
+        selectedMatches.push(...groupedBySource[source].slice(0, 2))
       }
     }
   } else {
-    // Fallback / Mixed Mode
+    // Fallback / mixed mode
     if (dominantCount > topMatches.length * 0.6) {
       // Dominant topic mode
       if (dominantSource) {
-        selectedMatches = groupedBySource[dominantSource].slice(0, 4)
+        selectedMatches = groupedBySource[dominantSource].slice(0, 3)
       }
     } else {
       // Mixed mode
       for (const [source, items] of sourceEntries) {
-        selectedMatches.push(...items.slice(0, 2))
+        if (selectedMatches.length >= 3) break
+        selectedMatches.push(...items.slice(0, 1))
       }
     }
   }
 
-  // Limit to max 4 items
-  selectedMatches = selectedMatches.slice(0, 4)
+  // Keep UI clean: max 3 cards, max 2 source types.
+  const limitedByType: any[] = []
+  const selectedTypes = new Set<string>()
+  for (const match of selectedMatches) {
+    if (limitedByType.length >= 3) break
+    if (selectedTypes.size >= 2 && !selectedTypes.has(match.source)) continue
+    selectedTypes.add(match.source)
+    limitedByType.push(match)
+  }
 
-  const relatedItems = await fetchRelatedItems(selectedMatches, supabase)
+  const relatedItems = await fetchRelatedItems(limitedByType, supabase)
 
   return {
     type: 'answer',
@@ -376,8 +414,8 @@ If you'd like, please share your email below. Dinesh will personally review your
 // --------------------------------------------------
 // 🛠 HELPER: FETCH FULL SOURCE DETAILS
 // --------------------------------------------------
-async function fetchRelatedItems(items: any[], supabase: any) {
-  const related: any[] = []
+async function fetchRelatedItems(items: any[], supabase: any): Promise<RelatedItem[]> {
+  const related: RelatedItem[] = []
 
   // We process items sequentially to maintain order of relevance
   for (const item of items) {
@@ -386,16 +424,21 @@ async function fetchRelatedItems(items: any[], supabase: any) {
     if (item.source === 'projects') {
       const { data } = await supabase
         .from('projects')
-        .select('id, title, image, demo, repo')
+        .select('id, title, short, image, tech, demo, repo')
         .eq('id', item.source_id)
         .single()
 
       if (data) {
         related.push({
+          id: data.id,
           type: 'project',
           title: data.title,
-          image: data.image || null, // Allow null image
-          link: data.demo || data.repo
+          image: data.image || null,
+          short: data.short || null,
+          tech: Array.isArray(data.tech) ? data.tech : [],
+          demo: data.demo || null,
+          repo: data.repo || null,
+          route: '/projects'
         })
       }
     }
@@ -404,16 +447,20 @@ async function fetchRelatedItems(items: any[], supabase: any) {
     else if (item.source === 'achievements') {
       const { data } = await supabase
         .from('achievements')
-        .select('id, title, image_url, link_url')
+        .select('id, title, short, achieved_at, image_url, link_url')
         .eq('id', item.source_id)
         .single()
 
       if (data) {
         related.push({
+          id: data.id,
           type: 'achievement',
           title: data.title,
-          image: data.image_url || null, // Allow null image
-          link: data.link_url
+          image: data.image_url || null,
+          short: data.short || null,
+          date: data.achieved_at || null,
+          linkUrl: data.link_url || null,
+          route: '/achievements'
         })
       }
     }
@@ -422,37 +469,80 @@ async function fetchRelatedItems(items: any[], supabase: any) {
     else if (item.source === 'gallery') {
       const { data } = await supabase
         .from('gallery')
-        .select('id, title, src')
+        .select('id, title, description, type, src, poster, published_at')
         .eq('id', item.source_id)
         .single()
 
-      if (data && data.src) { // Only if src exists
+      if (data && data.src) {
         related.push({
+          id: data.id,
           type: 'gallery',
           title: data.title,
-          image: data.src
+          image: data.type === 'video' ? (data.poster || data.src) : data.src,
+          short: data.description || null,
+          date: data.published_at || null,
+          mediaType: data.type || 'image',
+          mediaSrc: data.src,
+          poster: data.poster || null
         })
       }
     }
 
-    // --- TIMELINE (New Support) ---
+    // --- TIMELINE ---
     else if (item.source === 'timeline') {
       const { data } = await supabase
         .from('timeline')
-        .select('id, title, date, image')
+        .select('id, title, subtitle, description, date, image')
         .eq('id', item.source_id)
         .single()
 
       if (data) {
         related.push({
+          id: data.id,
           type: 'timeline',
-          title: `${data.title} (${new Date(data.date).getFullYear()})`,
-          image: data.image || null, // Allow null image
-          subtitle: new Date(data.date).getFullYear()
+          title: data.title,
+          image: data.image || null,
+          short: data.description || data.subtitle || null,
+          date: data.date || null,
+          route: '/timeline'
+        })
+      }
+    }
+
+    // --- UPDATES ---
+    else if (item.source === 'updates') {
+      const { data } = await supabase
+        .from('dinesh_updates')
+        .select('id, title, short, image, media, published_at')
+        .eq('id', item.source_id)
+        .single()
+
+      if (data) {
+        const media = data.media || null
+        const mediaType = media?.type || null
+        const mediaSrc = media?.src || null
+        const poster = media?.poster || null
+
+        related.push({
+          id: data.id,
+          type: 'update',
+          title: data.title,
+          image: mediaType === 'video' ? (poster || data.image || null) : (data.image || null),
+          short: data.short || null,
+          date: data.published_at || null,
+          mediaType,
+          mediaSrc,
+          poster,
+          route: '/updates'
         })
       }
     }
   }
 
-  return related
+  // Final dedupe in case selected matches still overlap.
+  return related.filter((item, index, arr) => {
+    const key = `${item.type}-${item.id}`
+    return arr.findIndex((x) => `${x.type}-${x.id}` === key) === index
+  })
 }
+

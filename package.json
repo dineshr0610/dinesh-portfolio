@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
+    "@emailjs/nodejs": "^5.0.2",
     "@heroicons/vue": "^2.1.5",
     "@nuxt/content": "^2.13.4",
     "@nuxtjs/supabase": "^2.0.3",

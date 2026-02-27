@@ -15,6 +15,7 @@ html, body {
     <div class="bg-noise"></div>
     <NuxtLayout>
       <NuxtPage />
+      <GlobalToast />
     </NuxtLayout>
   </div>
 </template>
