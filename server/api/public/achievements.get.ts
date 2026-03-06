@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
         .from('achievements')
         .select('*')
         .eq('published', true)
-        .order('date', { ascending: false })
+        .order('achieved_at', { ascending: false })
 
     if (!error && dbData) {
         return dbData
