@@ -13,6 +13,7 @@ const body = ref('')
 const image = ref('')
 const tagsInput = ref('')
 const published = ref(false)
+const publishedAt = ref(new Date().toISOString().split('T')[0])
 
 const loading = ref(false)
 const error = ref('')
@@ -40,6 +41,9 @@ async function loadUpdate() {
     image.value = data.image || ''
     tagsInput.value = (data.tags || []).join(', ')
     published.value = data.published
+    publishedAt.value = data.published_at
+      ? String(data.published_at).split('T')[0]
+      : new Date().toISOString().split('T')[0]
 
     initialLoaded.value = true
   } catch (e) {
@@ -73,7 +77,7 @@ async function saveUpdate() {
         image: image.value.trim() || null,
         tags: parseTags(tagsInput.value),
         published: published.value,
-        published_at: published.value ? new Date().toISOString() : null
+        published_at: published.value ? publishedAt.value : null
       }
     })
 
@@ -164,6 +168,15 @@ async function saveUpdate() {
         <label for="published" class="text-sm">
           Published
         </label>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Published Date</label>
+        <input
+          v-model="publishedAt"
+          type="date"
+          class="w-full border rounded px-3 py-2"
+        />
       </div>
 
       <!-- Error -->

@@ -10,6 +10,7 @@ const body = ref('') // MARKDOWN
 const image = ref('') // image or video URL
 const tagsInput = ref('')
 const published = ref(false)
+const publishedAt = ref(new Date().toISOString().split('T')[0])
 
 const loading = ref(false)
 const error = ref('')
@@ -40,7 +41,7 @@ async function createUpdate() {
         image: image.value.trim() || null,
         tags: parseTags(tagsInput.value),
         published: published.value,
-        published_at: published.value ? new Date().toISOString() : null
+        published_at: published.value ? publishedAt.value : null
       }
     })
 
@@ -135,6 +136,15 @@ async function createUpdate() {
         <label for="published" class="text-sm">
           Publish immediately
         </label>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium mb-1">Published Date</label>
+        <input
+          v-model="publishedAt"
+          type="date"
+          class="w-full border rounded px-3 py-2"
+        />
       </div>
 
       <!-- Error -->
