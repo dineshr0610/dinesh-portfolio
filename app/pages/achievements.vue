@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { marked } from 'marked'
+
 interface Achievement {
   id: number | string
   title: string | null
@@ -92,6 +94,10 @@ function openAchievement(achievement: Achievement) {
 
 function closeAchievement() {
   selectedAchievement.value = null
+}
+
+function renderMarkdown(text: string | null | undefined) {
+  return String(marked.parse(text || ''))
 }
 
 watch(selectedAchievement, (value) => {
@@ -295,7 +301,7 @@ onBeforeUnmount(() => {
             </p>
 
             <div v-if="selectedAchievement.long" class="prose prose-lg max-w-none">
-              <div v-html="selectedAchievement.long"></div>
+              <div v-html="renderMarkdown(selectedAchievement.long)"></div>
             </div>
             <p v-else class="text-slate-700">
               Detailed notes are not available for this achievement yet.
