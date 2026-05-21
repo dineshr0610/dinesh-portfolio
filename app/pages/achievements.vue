@@ -73,6 +73,10 @@ function formatDate(value: string | null | undefined) {
   return date.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+function toImageSrc(value: string | null | undefined) {
+  return value || undefined
+}
+
 function getTypeIcon(type: string | null) {
   switch (type) {
     case 'certificate':
@@ -190,7 +194,7 @@ onBeforeUnmount(() => {
 
                 <img
                   v-else-if="item.image_url"
-                  :src="item.image_url"
+                  :src="toImageSrc(item.image_url)"
                   :alt="item.title || 'Achievement image'"
                   loading="lazy"
                   class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -242,97 +246,67 @@ onBeforeUnmount(() => {
     </div>
   </section>
 
-  <Teleport to="body">
-    <Transition name="modal-fade">
+<Teleport to="body">
+  <Transition name="modal-fade">
+    <div
+      v-if="selectedAchievement"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      @click.self="closeAchievement"
+    >
       <div
-        v-if="selectedAchievement"
-        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm"
-        @click.self="closeAchievement"
+        class="custom-scrollbar w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl"
       >
-        <div class="w-full max-w-2xl overflow-y-auto rounded-3xl bg-white shadow-2xl max-h-[90vh]">
-          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-100 bg-white/95 p-5 backdrop-blur">
-            <h3 class="pr-4 text-xl font-bold text-slate-900">
-              {{ selectedAchievement.title || 'Untitled achievement' }}
-            </h3>
-            <button
-              type="button"
-              class="rounded-full p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-              aria-label="Close"
-              @click="closeAchievement"
-            >
-              ✕
-            </button>
-          </div>
+        <!-- HEADER -->
+        <div class="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-5">
+          <h3 class="text-2xl font-bold text-slate-900">
+            {{ selectedAchievement.title }}
+          </h3>
 
-          <div class="p-6">
-            <div class="relative mb-6 aspect-video w-full overflow-hidden rounded-2xl bg-slate-100">
-              <template v-if="selectedAchievement.media?.type === 'video' && selectedAchievement.media.src">
-                <video
-                  :src="selectedAchievement.media.src"
-                  :poster="selectedAchievement.media.poster"
-                  class="h-full w-full object-cover"
-                  controls
-                  preload="metadata"
-                />
-              </template>
-              <img
-                v-else-if="selectedAchievement.media?.type === 'image' && selectedAchievement.media.src"
-                :src="selectedAchievement.media.src"
-                :alt="selectedAchievement.title || 'Achievement media'"
-                class="h-full w-full object-cover"
-              />
-              <img
-                v-else-if="selectedAchievement.image_url"
-                :src="selectedAchievement.image_url"
-                :alt="selectedAchievement.title || 'Achievement image'"
-                class="h-full w-full object-cover"
-              />
-              <div v-else class="flex h-full w-full items-center justify-center text-6xl">
-                {{ getTypeIcon(selectedAchievement.type) }}
-              </div>
-            </div>
+          <button
+            @click="closeAchievement"
+            class="rounded-full p-2 hover:bg-slate-100"
+          >
+            ✕
+          </button>
+        </div>
 
-            <div class="mb-4 text-xs font-bold uppercase tracking-wider text-indigo-600">
-              {{ formatDate(selectedAchievement.achieved_at) }}
-            </div>
+        <!-- FULL IMAGE -->
+        <div
+          v-if="selectedAchievement.image_url || selectedAchievement.media?.src"
+          class="bg-black"
+        >
+          <img
+            v-if="selectedAchievement.media?.type !== 'video'"
+            :src="toImageSrc(selectedAchievement.media?.src || selectedAchievement.image_url)"
+            :alt="selectedAchievement.title || ''"
+            class="max-h-[70vh] w-full object-contain"
+          />
 
-            <p class="mb-4 text-sm leading-relaxed text-slate-600">
-              {{ selectedAchievement.short || 'No summary available.' }}
-            </p>
+          <video
+            v-else
+            controls
+            autoplay
+            class="max-h-[70vh] w-full"
+          >
+            <source :src="selectedAchievement.media.src" />
+          </video>
+        </div>
 
-            <div v-if="selectedAchievement.long" class="prose prose-lg max-w-none">
-              <div v-html="renderMarkdown(selectedAchievement.long)"></div>
-            </div>
-            <p v-else class="text-slate-700">
-              Detailed notes are not available for this achievement yet.
-            </p>
+        <!-- CONTENT -->
+        <div class="p-6">
+          <p class="mb-4 text-sm text-slate-500">
+            {{ formatDate(selectedAchievement.achieved_at) }}
+          </p>
 
-            <div v-if="selectedAchievement.tags?.length" class="mt-6 flex flex-wrap gap-2">
-              <span
-                v-for="tag in selectedAchievement.tags"
-                :key="tag"
-                class="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-600"
-              >
-                #{{ tag }}
-              </span>
-            </div>
-
-            <div v-if="selectedAchievement.link_url" class="mt-6">
-              <a
-                :href="selectedAchievement.link_url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 transition hover:text-indigo-700"
-              >
-                Open external link
-                <span>&rarr;</span>
-              </a>
-            </div>
-          </div>
+          <div
+            class="prose max-w-none text-slate-700"
+            v-html="renderMarkdown(selectedAchievement.long)"
+          />
         </div>
       </div>
-    </Transition>
-  </Teleport>
+    </div>
+  </Transition>
+</Teleport>
 </template>
 
 <style scoped>
