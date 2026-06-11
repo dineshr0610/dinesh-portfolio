@@ -1,55 +1,54 @@
 <!-- components/ProjectCard.vue -->
 <template>
   <article
-    class="project-card group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-indigo-500/10 hover:border-indigo-100"
+    class="project-card group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.03] p-5 flex flex-col transition-all duration-300 hover:-translate-y-1 hover:bg-white/[0.05] hover:border-indigo-500/20"
     @mouseenter="react('project')"
     @mouseleave="react('idle')"
   >
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.16),transparent_42%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
-    <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-500/0 via-transparent to-fuchsia-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.10),transparent_50%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
 
     <img
       v-if="project.image"
       :src="project.image"
       alt=""
-      class="relative z-10 w-full h-40 object-cover rounded-xl transition-transform duration-700 group-hover:scale-[1.05]"
+      class="relative z-10 w-full h-40 object-cover rounded-xl transition-transform duration-500 group-hover:scale-[1.03] mb-4"
     />
 
-    <h3 class="relative z-10 mt-3 font-bold text-lg font-display tracking-tight text-slate-900 group-hover:text-indigo-700 transition-colors">
-      <div class="flex items-start justify-between">
+    <div class="relative z-10 flex items-start justify-between mb-1">
+      <h3 class="font-bold text-lg font-display tracking-tight text-slate-100 group-hover:text-indigo-300 transition-colors flex-1 pr-3">
         {{ project.title }}
-        <span
-          class="text-xs px-2 py-0.5 rounded-full ml-2 whitespace-nowrap"
-          :class="project.ongoing ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'"
-        >
-          {{ project.ongoing ? 'Ongoing' : 'Completed' }}
-        </span>
-      </div>
-    </h3>
+      </h3>
+      <span
+        class="text-[10px] px-2 py-0.5 rounded-full whitespace-nowrap font-bold uppercase tracking-wide flex-shrink-0"
+        :class="project.ongoing ? 'bg-green-900/30 text-green-300 border border-green-500/20' : 'bg-white/[0.05] text-slate-400 border border-white/[0.06]'"
+      >
+        {{ project.ongoing ? 'Active' : 'Done' }}
+      </span>
+    </div>
 
-    <p class="relative z-10 text-xs text-slate-500 mt-1 mb-2">
+    <p class="relative z-10 text-xs text-slate-500 mb-3 font-medium">
       {{ formatDuration(project) }}
     </p>
 
-    <p class="relative z-10 mt-2 text-sm text-slate-600">
+    <p class="relative z-10 text-sm text-slate-400 leading-relaxed line-clamp-3 flex-1">
       {{ project.short }}
     </p>
 
-    <div class="relative z-10 mt-3 flex items-center justify-between">
-      <div class="text-xs space-x-2">
+    <div class="relative z-10 mt-4 flex items-center justify-between pt-4 border-t border-white/[0.06]">
+      <div class="flex gap-1.5 overflow-hidden">
         <span
-          v-for="tag in project.tech || []"
+          v-for="tag in (project.tech || []).slice(0, 3)"
           :key="tag"
-          class="inline-block px-2 py-1 bg-slate-100 rounded-full border border-slate-200 text-xs text-slate-600"
+          class="inline-block px-2 py-0.5 bg-white/[0.04] rounded-full border border-white/[0.06] text-xs text-slate-400"
         >
           {{ tag }}
         </span>
       </div>
 
-      <div class="flex items-center space-x-2">
+      <div class="flex items-center gap-3">
         <button
           @click="$emit('open', project)"
-          class="px-3 py-1 rounded-full border border-slate-200 bg-white/90 text-sm text-slate-700 transition hover:border-indigo-200 hover:text-indigo-700 hover:bg-indigo-50"
+          class="px-3 py-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] text-sm text-slate-300 transition hover:border-indigo-500/30 hover:text-indigo-300 hover:bg-indigo-500/[0.06]"
         >
           Read
         </button>
@@ -59,7 +58,7 @@
           :href="project.repo"
           target="_blank"
           rel="noopener"
-          class="text-sm underline"
+          class="text-sm text-slate-500 hover:text-slate-300 transition-colors"
         >
           Code
         </a>
@@ -82,10 +81,6 @@ function formatDuration(p: any) {
 }
 
 function react(type: 'project' | 'idle') {
-  window.dispatchEvent(
-    new CustomEvent('ai:react', {
-      detail: type
-    })
-  )
+  window.dispatchEvent(new CustomEvent('ai:react', { detail: type }))
 }
 </script>

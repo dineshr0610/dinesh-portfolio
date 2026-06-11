@@ -36,22 +36,18 @@ function toSafeTime(value: string | null | undefined) {
 function toYear(item: Achievement) {
   const parsed = item.achieved_at ? new Date(item.achieved_at).getFullYear() : Number.NaN
   if (!Number.isNaN(parsed)) return parsed
-
   const fallback = Number.parseInt(String(item.year ?? ''), 10)
   if (!Number.isNaN(fallback)) return fallback
-
   return new Date().getFullYear()
 }
 
 const grouped = computed(() => {
   const map: Record<number, Achievement[]> = {}
-
   for (const item of safeAchievements.value) {
     const year = toYear(item)
     if (!map[year]) map[year] = []
     map[year].push(item)
   }
-
   return Object.entries(map)
     .sort((a, b) => Number(b[0]) - Number(a[0]))
     .map(([year, items]) => ({
@@ -79,16 +75,11 @@ function toImageSrc(value: string | null | undefined) {
 
 function getTypeIcon(type: string | null) {
   switch (type) {
-    case 'certificate':
-      return '📜'
-    case 'award':
-      return '🏆'
-    case 'hackathon':
-      return '💻'
-    case 'competition':
-      return '🥇'
-    default:
-      return '📌'
+    case 'certificate': return '📜'
+    case 'award': return '🏆'
+    case 'hackathon': return '💻'
+    case 'competition': return '🥇'
+    default: return '📌'
   }
 }
 
@@ -116,60 +107,60 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <section class="min-h-screen bg-slate-50 px-4 py-16">
+  <section class="min-h-screen bg-[#0b0f1a] px-4 py-16">
     <div class="mx-auto max-w-7xl">
-      <div class="mb-16 text-center animate-fade-in-up">
-        <h1 class="text-4xl font-black tracking-tight text-slate-900 md:text-5xl">Achievements</h1>
-        <p class="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+
+      <!-- Page Header -->
+      <div class="mb-16 animate-fade-in-up">
+        <div class="inline-block px-3 py-1 bg-white/[0.03] text-slate-400 rounded-full text-sm font-semibold tracking-wide uppercase border border-white/[0.06] mb-4">
+          Recognition
+        </div>
+        <h1 class="text-4xl font-black tracking-tight text-slate-100 md:text-5xl">Achievements</h1>
+        <p class="mt-3 max-w-2xl text-lg text-slate-400 leading-relaxed">
           Milestones, hackathon wins, and certifications gained along the way.
         </p>
       </div>
 
+      <!-- Loading -->
       <div v-if="pending" class="flex items-center justify-center py-20">
-        <div class="text-center">
-          <div class="mb-4 inline-flex h-16 w-16 animate-pulse items-center justify-center rounded-full bg-indigo-100">
-            <svg class="h-8 w-8 animate-spin text-indigo-600" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-20" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-              <path
-                class="opacity-90"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
-              />
-            </svg>
-          </div>
-          <p class="font-medium text-slate-600">Loading achievements...</p>
-        </div>
+        <div class="animate-spin rounded-full h-10 w-10 border-4 border-white/[0.08] border-t-indigo-500"></div>
       </div>
 
-      <div v-else-if="error" class="rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
-        <p class="font-medium text-red-700">Failed to load achievements</p>
-        <p class="mt-1 text-sm text-red-600">{{ errorMessage }}</p>
+      <!-- Error -->
+      <div v-else-if="error" class="rounded-2xl border border-red-500/20 bg-red-900/10 p-6 text-center">
+        <p class="font-medium text-red-400">Failed to load achievements</p>
+        <p class="mt-1 text-sm text-red-500">{{ errorMessage }}</p>
       </div>
 
+      <!-- Empty -->
       <div v-else-if="safeAchievements.length === 0" class="py-20 text-center">
         <div class="mb-4 text-6xl">🎯</div>
-        <h3 class="mb-2 text-2xl font-bold text-slate-900">No Achievements Yet</h3>
-        <p class="text-slate-600">Achievements will appear here as you earn them.</p>
+        <h3 class="mb-2 text-2xl font-bold text-slate-100">No Achievements Yet</h3>
+        <p class="text-slate-400">Achievements will appear here as you earn them.</p>
       </div>
 
+      <!-- Grouped by Year -->
       <div v-else>
         <section
           v-for="section in grouped"
           :key="section.year"
           class="mb-16 animate-fade-in-up"
         >
-          <h2 class="mb-8 flex items-center gap-3 text-3xl font-bold text-slate-800">
-            <span class="opacity-30">#</span> {{ section.year }}
-          </h2>
+          <!-- Year Header -->
+          <div class="flex items-center gap-4 mb-8">
+            <h2 class="text-2xl font-black text-slate-100">{{ section.year }}</h2>
+            <div class="flex-1 h-px bg-white/[0.06]"></div>
+          </div>
 
-          <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             <article
               v-for="item in section.items"
               :key="item.id"
-              class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-xl"
+              class="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.03] transition-all duration-300 hover:bg-white/[0.05] hover:-translate-y-1 hover:border-indigo-500/20"
               @click="openAchievement(item)"
             >
-              <div class="relative aspect-video w-full overflow-hidden bg-gradient-to-br from-slate-100 to-slate-50">
+              <!-- Media -->
+              <div class="relative aspect-video w-full overflow-hidden bg-black/30">
                 <template v-if="item.media?.type === 'video' && item.media.src">
                   <video
                     :src="item.media.src"
@@ -179,7 +170,7 @@ onBeforeUnmount(() => {
                     muted
                     playsinline
                   />
-                  <div class="absolute right-3 top-3 rounded bg-white/90 px-2 py-1 text-xs font-bold backdrop-blur">
+                  <div class="absolute right-3 top-3 rounded-full bg-black/60 px-2.5 py-1 text-xs font-bold text-white backdrop-blur border border-white/10">
                     ▶ Video
                   </div>
                 </template>
@@ -189,7 +180,7 @@ onBeforeUnmount(() => {
                   :src="item.media.src"
                   :alt="item.title || 'Achievement media'"
                   loading="lazy"
-                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
                 <img
@@ -197,24 +188,25 @@ onBeforeUnmount(() => {
                   :src="toImageSrc(item.image_url)"
                   :alt="item.title || 'Achievement image'"
                   loading="lazy"
-                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
 
-                <div v-else class="flex h-full w-full items-center justify-center text-5xl">
+                <div v-else class="flex h-full w-full items-center justify-center text-5xl bg-white/[0.02]">
                   {{ getTypeIcon(item.type) }}
                 </div>
               </div>
 
+              <!-- Content -->
               <div class="flex flex-1 flex-col p-6">
-                <div class="mb-2 text-xs font-bold uppercase tracking-wider text-indigo-600">
+                <div class="mb-2 text-xs font-bold uppercase tracking-wider text-indigo-400">
                   {{ formatDate(item.achieved_at) }}
                 </div>
 
-                <h3 class="mb-2 line-clamp-2 text-lg font-bold text-slate-900">
+                <h3 class="mb-2 line-clamp-2 text-lg font-bold text-slate-100 group-hover:text-indigo-300 transition-colors">
                   {{ item.title || 'Untitled achievement' }}
                 </h3>
 
-                <p class="mb-4 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-600">
+                <p class="mb-4 line-clamp-3 flex-1 text-sm leading-relaxed text-slate-400">
                   {{ item.short || 'No summary available.' }}
                 </p>
 
@@ -222,22 +214,19 @@ onBeforeUnmount(() => {
                   <span
                     v-for="tag in item.tags.slice(0, 3)"
                     :key="tag"
-                    class="rounded bg-slate-100 px-2 py-1 text-xs font-medium text-slate-500"
+                    class="rounded-full bg-white/[0.04] px-2.5 py-1 text-xs font-medium text-slate-400 border border-white/[0.06]"
                   >
                     #{{ tag }}
                   </span>
-                  <span v-if="item.tags.length > 3" class="px-2 py-1 text-xs text-slate-400">
+                  <span v-if="item.tags.length > 3" class="px-2 py-1 text-xs text-slate-500">
                     +{{ item.tags.length - 3 }}
                   </span>
                 </div>
 
-                <button
-                  type="button"
-                  class="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 transition hover:text-indigo-700"
-                >
-                  View full details
-                  <span class="transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
-                </button>
+                <div class="mt-auto inline-flex items-center gap-1 text-sm font-semibold text-indigo-400 group-hover:text-indigo-300 transition-colors">
+                  View details
+                  <span class="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </div>
               </div>
             </article>
           </div>
@@ -246,98 +235,84 @@ onBeforeUnmount(() => {
     </div>
   </section>
 
-<Teleport to="body">
-  <Transition name="modal-fade">
-    <div
-      v-if="selectedAchievement"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
-      @click.self="closeAchievement"
-    >
+  <!-- Modal -->
+  <Teleport to="body">
+    <Transition name="modal-fade">
       <div
-        class="custom-scrollbar w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl"
+        v-if="selectedAchievement"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+        @click.self="closeAchievement"
       >
-        <!-- HEADER -->
-        <div class="sticky top-0 z-10 flex items-center justify-between border-b bg-white p-5">
-          <h3 class="text-2xl font-bold text-slate-900">
-            {{ selectedAchievement.title }}
-          </h3>
+        <div class="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl bg-[#0e1220] border border-white/[0.08] shadow-2xl">
 
-          <button
-            @click="closeAchievement"
-            class="rounded-full p-2 hover:bg-slate-100"
-          >
-            ✕
-          </button>
-        </div>
+          <!-- Modal Header -->
+          <div class="sticky top-0 z-10 flex items-center justify-between border-b border-white/[0.06] bg-[#0e1220]/95 backdrop-blur p-5">
+            <h3 class="text-xl font-bold text-slate-100 pr-8">
+              {{ selectedAchievement.title }}
+            </h3>
+            <button
+              @click="closeAchievement"
+              class="p-2 rounded-full bg-white/[0.06] hover:bg-white/[0.10] text-slate-400 hover:text-slate-100 transition-colors border border-white/[0.06]"
+              aria-label="Close"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
 
-        <!-- FULL IMAGE -->
-        <div
-          v-if="selectedAchievement.image_url || selectedAchievement.media?.src"
-          class="bg-black"
-        >
-          <img
-            v-if="selectedAchievement.media?.type !== 'video'"
-            :src="toImageSrc(selectedAchievement.media?.src || selectedAchievement.image_url)"
-            :alt="selectedAchievement.title || ''"
-            class="max-h-[70vh] w-full object-contain"
-          />
-
-          <video
-            v-else
-            controls
-            autoplay
-            class="max-h-[70vh] w-full"
-          >
-            <source :src="selectedAchievement.media.src" />
-          </video>
-        </div>
-
-        <!-- CONTENT -->
-        <div class="p-6">
-          <p class="mb-4 text-sm text-slate-500">
-            {{ formatDate(selectedAchievement.achieved_at) }}
-          </p>
-
+          <!-- Full Media -->
           <div
-            class="prose max-w-none text-slate-700"
-            v-html="renderMarkdown(selectedAchievement.long)"
-          />
+            v-if="selectedAchievement.image_url || selectedAchievement.media?.src"
+            class="bg-black/60"
+          >
+            <img
+              v-if="selectedAchievement.media?.type !== 'video'"
+              :src="toImageSrc(selectedAchievement.media?.src || selectedAchievement.image_url)"
+              :alt="selectedAchievement.title || ''"
+              class="max-h-[60vh] w-full object-contain"
+            />
+            <video
+              v-else
+              controls
+              autoplay
+              class="max-h-[60vh] w-full"
+            >
+              <source :src="selectedAchievement.media.src" />
+            </video>
+          </div>
+
+          <!-- Content -->
+          <div class="p-6">
+            <p class="mb-4 text-sm text-slate-500">
+              {{ formatDate(selectedAchievement.achieved_at) }}
+            </p>
+            <div
+              class="prose prose-invert prose-sm max-w-none text-slate-300"
+              v-html="renderMarkdown(selectedAchievement.long)"
+            />
+          </div>
         </div>
       </div>
-    </div>
-  </Transition>
-</Teleport>
+    </Transition>
+  </Teleport>
 </template>
 
 <style scoped>
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out both;
 }
-
 .modal-fade-enter-active,
 .modal-fade-leave-active {
   transition: opacity 0.2s ease;
 }
-
 .modal-fade-enter-from,
 .modal-fade-leave-to {
   opacity: 0;
 }
-
 @media (prefers-reduced-motion: reduce) {
-  .animate-fade-in-up {
-    animation: none;
-  }
+  .animate-fade-in-up { animation: none; }
 }
 </style>
