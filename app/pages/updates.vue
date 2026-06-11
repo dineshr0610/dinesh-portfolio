@@ -1,7 +1,8 @@
 <template>
-  <section class="prose mx-auto py-8">
-    <h1>Dinesh Now</h1>
-    <p class="text-slate-600">This feed shows daily / weekly updates.</p>
+  <section class="prose mx-auto py-8 text-ctext">
+    <h1 class="text-ctext">Dinesh Now</h1>
+    <p class="text-slate-300">This feed shows daily / weekly updates.</p>
+
 
     <div class="mt-6 space-y-6">
       <div v-if="loading" class="text-center text-slate-500 py-8">Loading updates…</div>

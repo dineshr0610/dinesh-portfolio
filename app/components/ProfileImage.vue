@@ -46,7 +46,7 @@ function react(type: 'resume' | 'idle') {
   <!-- Profile image wrapper -->
   <picture
     v-bind="attrs"
-    class="inline-block"
+    class="inline-flex aspect-square overflow-hidden rounded-full flex-shrink-0"
     @mouseenter="react('resume')"
     @mouseleave="react('idle')"
   >

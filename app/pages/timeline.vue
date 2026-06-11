@@ -72,7 +72,7 @@ function openStory() {
 </script>
 
 <template>
-  <section class="relative">
+<section class="relative text-ctext">
     <div class="flex items-center justify-between mb-8">
         <div>
             <h2 class="text-2xl font-semibold">Timeline</h2>
@@ -102,8 +102,8 @@ function openStory() {
     </Teleport>
 
     <div class="mt-6">
-      <div v-if="pending" class="py-8 text-center text-slate-500">Loading timeline…</div>
-      <div v-else-if="error" class="py-8 text-center text-red-600">Failed to load timeline: {{ error }}</div>
+<div v-if="pending" class="py-8 text-center text-slate-400">Loading timeline…</div>
+<div v-else-if="error" class="py-8 text-center text-red-400">Failed to load timeline: {{ error }}</div>
       
       <div v-else class="space-y-12">
         <section v-for="[year, items] in grouped" :key="year">

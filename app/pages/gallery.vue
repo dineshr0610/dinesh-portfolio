@@ -1,23 +1,24 @@
 <template>
-  <section class="min-h-screen py-12 bg-slate-50">
+<section class="min-h-screen py-10 md:py-14 bg-[#0b0f1a]">
     <div class="container mx-auto px-4 lg:px-8">
-      
-      <div class="flex flex-col md:flex-row items-center justify-between mb-12 animate-fade-in-up gap-6">
+
+      <div class="flex flex-col md:flex-row items-center justify-between mb-8 md:mb-10 animate-fade-in-up gap-4 md:gap-6">
         <div class="text-center md:text-left">
-            <h1 class="text-4xl md:text-5xl font-black text-slate-900 tracking-tight">Gallery</h1>
-            <p class="mt-2 text-lg text-slate-600 max-w-2xl">
+          <h1 class="text-4xl md:text-5xl font-black text-slate-100 tracking-tight">Gallery</h1>
+          <p class="mt-2 text-lg text-slate-300/95 max-w-2xl">
             A visual collection of highlights, prototypes, and moments.
-            </p>
+          </p>
         </div>
 
-        <button 
-            @click="openStory"
-            class="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 hover:scale-105 transition-all duration-300 font-medium group"
+        <button
+          @click="openStory"
+          class="flex items-center gap-2 px-6 py-3 rounded-full bg-indigo-500/[0.08] text-slate-100 border border-white/[0.06] backdrop-blur-sm shadow-[0_20px_80px_rgba(99,102,241,0.12)] hover:bg-indigo-500/[0.12] hover:scale-[1.02] transition-all duration-250 font-medium group"
         >
-            <span class="text-lg group-hover:animate-pulse">▶</span>
-            <span>Watch Gallery</span>
+          <span class="text-lg group-hover:animate-pulse">▶</span>
+          <span>Watch Gallery</span>
         </button>
       </div>
+
 
       <Teleport to="body">
         <Transition name="fade">
@@ -31,11 +32,11 @@
         </Transition>
       </Teleport>
 
-      <div v-if="loading" class="flex justify-center py-20">
-         <div class="animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-indigo-600"></div>
+<div v-if="loading" class="flex justify-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-white/10 border-t-indigo-500/70" />
       </div>
 
-      <div v-else-if="error" class="text-center py-12 text-red-600 bg-red-50 rounded-lg">
+<div v-else-if="error" class="text-center py-12 text-slate-300/95 bg-white/[0.03] border border-white/[0.06] rounded-xl">
         Failed to load gallery: {{ error }}
       </div>
 
@@ -44,25 +45,25 @@
         <p>No photos yet.</p>
       </div>
 
-      <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+      <div v-else class="columns-1 sm:columns-2 lg:columns-3 gap-4 md:gap-5 space-y-4 md:space-y-5">
         <div 
           v-for="item in items" 
           :key="item.id" 
-          class="tilt-card break-inside-avoid group cursor-pointer transform-gpu transition-all duration-500 hover:-translate-y-3 hover:rotate-[0.3deg] hover:scale-[1.02]"
+          class="tilt-card break-inside-avoid group cursor-pointer transform-gpu transition-all duration-400 hover:-translate-y-2 hover:rotate-[0.2deg] hover:scale-[1.01]"
           @click="openLightbox(item)"
         >
-          <div class="relative rounded-2xl overflow-hidden bg-white shadow-sm hover:shadow-2xl transition-all duration-500 transform-gpu border border-white/60">
-            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.22),transparent_45%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
-            <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-500/0 via-transparent to-fuchsia-500/10 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></div>
+<div class="relative rounded-2xl overflow-hidden bg-white/[0.04] hover:shadow-xl transition-all duration-400 transform-gpu border border-white/10">
+            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(99,102,241,0.18),transparent_45%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
+            <div class="pointer-events-none absolute inset-0 bg-gradient-to-br from-indigo-500/0 via-transparent to-fuchsia-500/8 opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
 
             <img 
               :src="getThumbnail(item)" 
               loading="lazy"
-              class="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.06]"
+              class="w-full h-auto object-cover transition-transform duration-600 group-hover:scale-[1.03]"
               :alt="item.title"
             />
             
-            <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex flex-col justify-end p-6">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-transparent opacity-0 transition-opacity duration-250 group-hover:opacity-100 flex flex-col justify-end p-5 md:p-6">
               <span v-if="item.type === 'video'" class="absolute top-4 right-4 bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1">
                  ▶ Video
               </span>
@@ -83,11 +84,11 @@
       <Transition name="fade">
         <div 
           v-if="active" 
-          class="fixed inset-0 z-[100] flex items-center justify-center overflow-hidden bg-black/95 backdrop-blur-sm p-4 md:p-8"
-          @click.self="closeLightbox"
+          class="fixed inset-0 z-[100] overflow-y-auto bg-black/95 backdrop-blur-sm"
           @touchstart.passive="onTouchStart"
           @touchend.passive="onTouchEnd"
         >
+          <div class="min-h-full flex items-start lg:items-center justify-center p-3 md:p-6" @click.self="closeLightbox">
           <div class="absolute inset-0 pointer-events-none overflow-hidden">
             <div class="absolute -top-24 -left-20 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl animate-pulse"></div>
             <div class="absolute top-1/3 -right-24 h-80 w-80 rounded-full bg-fuchsia-500/15 blur-3xl animate-pulse [animation-delay:900ms]"></div>
@@ -107,16 +108,16 @@
             </div>
           </div>
 
-          <div class="relative w-full max-w-7xl h-full max-h-[86vh] transform-gpu perspective-[2000px] pt-14 sm:pt-16">
-            <div class="grid h-full grid-cols-1 lg:grid-cols-[minmax(0,1.35fr)_360px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl">
-              <div class="relative flex items-center justify-center bg-black/80 p-3 sm:p-5 lg:p-6">
+          <div class="relative w-full max-w-7xl lg:max-h-[92vh] min-h-0 pt-12 sm:pt-14">
+            <div class="grid min-h-0 grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] rounded-3xl lg:overflow-hidden border border-white/10 bg-white/5 shadow-2xl ring-1 ring-white/10 backdrop-blur-2xl">
+              <div class="relative flex min-h-0 min-w-0 items-center justify-center bg-black/80 p-3 sm:p-5 lg:p-6 overflow-hidden">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_55%)]"></div>
-                <div class="relative flex h-full w-full items-center justify-center rounded-2xl border border-white/10 bg-black/40 p-2 shadow-[0_30px_100px_rgba(0,0,0,0.45)] transition-transform duration-500 hover:scale-[1.02] hover:rotate-[0.2deg]">
+                <div class="relative flex min-h-0 min-w-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-2 shadow-[0_30px_100px_rgba(0,0,0,0.45)] transition-transform duration-400">
                   <div v-if="!activeMediaReady" class="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/5 via-white/15 to-white/5 bg-[length:200%_100%] animate-pulse"></div>
                   <img 
                     v-if="active.type === 'image'" 
                     :src="active.src" 
-                    class="max-h-[76vh] w-full rounded-xl object-contain transition-all duration-700"
+                    class="max-w-full max-h-full w-auto h-auto rounded-xl object-contain transition-all duration-600"
                     :alt="active.title"
                     @load="activeMediaReady = true"
                     :class="activeMediaReady ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-xl scale-[1.02]'"
@@ -127,27 +128,27 @@
                     :poster="active.poster" 
                     controls 
                     autoplay
-                    class="max-h-[76vh] w-full rounded-xl object-contain transition-all duration-700"
+                    class="max-w-full max-h-full w-auto h-auto rounded-xl object-contain transition-all duration-600"
                     @loadeddata="activeMediaReady = true"
                     :class="activeMediaReady ? 'opacity-100 blur-0 scale-100' : 'opacity-0 blur-xl scale-[1.02]'"
                   ></video>
                 </div>
               </div>
 
-              <aside class="flex min-h-0 flex-col border-t border-white/10 bg-slate-950/75 p-5 sm:p-6 lg:border-t-0 lg:border-l lg:p-7 text-white overflow-y-auto">
+              <aside class="flex min-h-0 flex-col border-t border-white/10 bg-slate-950/90 p-5 sm:p-6 lg:border-t-0 lg:border-l lg:p-7 text-white overflow-y-auto min-w-0">
                 <div class="flex items-center justify-between gap-3">
-                  <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/70">
+                  <span class="inline-flex items-center rounded-full border border-white/10 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-100/90">
                     {{ active.type }}
                   </span>
 
-                  <div class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-white/70">
+                  <div class="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-slate-100/90">
                     {{ activeIndex + 1 }} / {{ items.length }}
                   </div>
 
                 </div>
 
                 <div class="mt-5">
-                  <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                  <h2 class="text-3xl sm:text-[2.1rem] font-black tracking-tight text-slate-100 leading-tight">
                     {{ active.title }}
                   </h2>
                   <p class="mt-4 text-sm sm:text-base leading-7 text-slate-300">
@@ -157,8 +158,8 @@
 
                 <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
                   <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Published</div>
-                    <div class="mt-2 text-sm font-medium text-white">
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300">Published</div>
+                    <div class="mt-2 text-sm font-medium text-slate-100">
                       {{
                         active.date
                           ? new Date(active.date).toLocaleDateString(undefined, {
@@ -172,39 +173,47 @@
                   </div>
 
                   <div v-if="active.tags && active.tags.length" class="rounded-2xl border border-white/10 bg-white/5 p-4">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Technologies / Tags</div>
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300">Technologies / Tags</div>
                     <div class="mt-3 flex flex-wrap gap-2">
-                      <span v-for="tag in active.tags" :key="tag" class="rounded-full bg-white/10 px-3 py-1 text-sm text-white/80">#{{ tag }}</span>
+                      <span v-for="tag in active.tags" :key="tag" class="rounded-full bg-white/10 px-3 py-1 text-sm text-slate-100/90">#{{ tag }}</span>
                     </div>
                   </div>
 
                   <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 to-white/5 p-4 sm:col-span-2 lg:col-span-1">
-                    <div class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">Story</div>
+                    <div class="text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-300">Story</div>
                     <p class="mt-2 text-sm leading-7 text-slate-300">
                       {{ getStory(active) }}
                     </p>
                   </div>
                 </div>
 
-                <div class="mt-6 flex items-center gap-3 pt-4 border-t border-white/10">
-                  <button
-                    @click="prevItem"
-                    class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white"
-                  >
-                    <span aria-hidden="true">←</span>
-                    Previous
-                  </button>
-                  <button
-                    @click="nextItem"
-                    class="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-3 text-sm font-semibold text-white/80 transition hover:bg-white/10 hover:text-white"
-                  >
-                    Next
-                    <span aria-hidden="true">→</span>
-                  </button>
-                </div>
+
               </aside>
+
+              <!-- Cinematic fixed overlay navigation (always visible above media) -->
+              <div class="pointer-events-none fixed inset-0 z-[205]">
+                <button
+                  @click="prevItem"
+                  class="pointer-events-auto fixed left-3 top-1/2 -translate-y-1/2 z-[206] flex h-12 w-12 items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-slate-100 shadow-[0_20px_70px_rgba(0,0,0,0.55)] hover:bg-indigo-500/20 focus-visible:ring-2 focus-visible:ring-indigo-500/40 transition"
+                  aria-label="Previous gallery item"
+                >
+                  <span class="text-xl leading-none" aria-hidden="true">←</span>
+                </button>
+
+                <button
+                  @click="nextItem"
+                  class="pointer-events-auto fixed right-3 top-1/2 -translate-y-1/2 z-[206] flex h-12 w-12 items-center justify-center rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-slate-100 shadow-[0_20px_70px_rgba(0,0,0,0.55)] hover:bg-indigo-500/20 focus-visible:ring-2 focus-visible:ring-indigo-500/40 transition"
+                  aria-label="Next gallery item"
+                >
+                  <span class="text-xl leading-none" aria-hidden="true">→</span>
+                </button>
+              </div>
+
+
+
             </div>
           </div>
+          </div><!-- /inner center wrapper -->
         </div>
       </Transition>
     </div>

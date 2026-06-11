@@ -1,13 +1,17 @@
 <template>
-  <section class="min-h-screen py-12 md:py-20 bg-slate-50 relative overflow-hidden">
+  <section class="min-h-screen w-screen relative left-1/2 -translate-x-1/2 pt-8 pb-12 md:pt-16 md:pb-20 bg-slate-50 overflow-hidden">
+    <ClientOnly>
+      <HeroScene />
+    </ClientOnly>
+
     <!-- Background Decor -->
     <div class="absolute top-0 right-0 w-[300px] h-[300px] md:w-[500px] md:h-[500px] bg-indigo-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
     <div class="absolute top-20 left-0 w-[250px] h-[250px] md:w-[400px] md:h-[400px] bg-purple-200/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
 
     <div class="container mx-auto px-4 lg:px-8 relative z-10">
       <!-- HERO -->
-      <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-10 md:mb-24">
-        <div class="order-2 md:order-1 text-center md:text-left">
+      <div class="grid md:grid-cols-2 gap-6 md:gap-12 items-center mb-8 md:mb-20">
+        <div class="text-center md:text-left">
           <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/80 backdrop-blur border border-indigo-100 rounded-full text-xs font-bold tracking-wide uppercase text-indigo-600 mb-6 shadow-sm hover:shadow transition-shadow cursor-default">
              <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
              Welcome to my portfolio
@@ -42,12 +46,18 @@
         </div>
 
         <!-- Hero Image -->
-        <div class="relative flex justify-center md:justify-end order-1 md:order-2 mb-8 md:mb-0">
-            <div class="relative z-10 w-64 h-64 md:w-96 md:h-96 group perspective-1000">
+        <div class="relative flex justify-center md:justify-end mb-8 md:mb-0">
+          <div class="relative z-10 w-56 h-56 sm:w-64 sm:h-64 md:w-96 md:h-96 group perspective-1000">
                <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-full blur-3xl opacity-20 animate-pulse group-hover:opacity-30 transition-opacity"></div>
-               <!-- Image Container -->
-               <div class="relative z-10 w-full h-full rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl ring-4 ring-white transition-transform duration-500 transform group-hover:rotate-y-12 group-hover:rotate-x-6 preserve-3d">
-                   <ProfileImage class="w-full h-full object-cover" alt="Dinesh R Pattern" />
+               <!-- Image Container (premium portrait card; no circular crop) -->
+               <div
+                   class="relative z-10 w-full h-full overflow-hidden rounded-[28px] md:rounded-[32px] border border-white/10 shadow-[0_0_80px_rgba(99,102,241,0.15)] bg-black/10 transition-transform duration-500 transform group-hover:rotate-y-12 group-hover:rotate-x-6 preserve-3d"
+               >
+                   <img
+                     src="/images/profile.jpeg"
+                     alt="Dinesh R"
+                     class="w-full h-full object-cover block"
+                   />
                </div>
                
                <!-- Floating Badge -->
@@ -63,7 +73,7 @@
       </div>
 
       <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch mt-2 md:mt-6">
         
         <!-- Row 1 Left: Featured Projects -->
         <div class="h-full flex flex-col">
@@ -309,6 +319,7 @@
 
 <script setup>
 import { computed } from 'vue'
+import HeroScene from '~/components/three/scenes/HeroScene.vue'
 import ProfileImage from '~/components/ProfileImage.vue'
 
 // Data Fetching

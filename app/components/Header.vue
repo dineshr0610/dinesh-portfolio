@@ -1,6 +1,6 @@
 <template>
-  <header
-    class="py-3 border-b bg-white/70 backdrop-blur-sm sticky top-0 z-50"
+<header
+    class="py-3 border-b border-white/[0.06] bg-[#0b0f1a]/85 backdrop-blur-xl sticky top-0 z-50"
     @mouseleave="react('idle')"
   >
     <div class="container mx-auto flex items-center justify-between px-4 lg:px-8">
@@ -9,39 +9,37 @@
 
       <!-- Desktop nav -->
       <nav class="hidden md:flex items-center gap-6 text-sm">
-        <NuxtLink to="/" class="hover:underline">Home</NuxtLink>
-        <NuxtLink to="/about" class="hover:underline">About</NuxtLink>
-        <NuxtLink to="/achievements" class="hover:underline">Achievements</NuxtLink>
-        <NuxtLink to="/timeline" class="hover:underline">Timeline</NuxtLink>
-        <NuxtLink to="/gallery" class="hover:underline">Gallery</NuxtLink>
+        <NuxtLink to="/" class="nav-link">Home</NuxtLink>
+
+        <NuxtLink to="/about" class="nav-link">About</NuxtLink>
+        <NuxtLink to="/achievements" class="nav-link">Achievements</NuxtLink>
+        <NuxtLink to="/timeline" class="nav-link">Timeline</NuxtLink>
+        <NuxtLink to="/gallery" class="nav-link">Gallery</NuxtLink>
+
 
         <button
           type="button"
           @mouseenter="react('resume')"
           @click.stop="goUpdates"
-          class="hover:underline"
+          class="nav-link"
         >
           Dinesh Now
         </button>
 
+
         <NuxtLink
           to="/contact"
-          class="hover:underline"
+          class="nav-link"
           @mouseenter="react('contact')"
         >
           Contact
         </NuxtLink>
+
       </nav>
 
       <!-- Desktop actions -->
       <div class="hidden md:flex items-center gap-3 relative">
-        <NuxtLink
-          to="/contact"
-          class="text-sm px-3 py-1 rounded bg-indigo-600 text-white hover:opacity-95"
-          @mouseenter="react('contact')"
-        >
-          Hire
-        </NuxtLink>
+
 
         <button
           ref="avatarBtn"
@@ -60,20 +58,23 @@
             v-if="menuOpen"
             ref="menu"
             :style="popoverStyle"
-            class="fixed w-72 bg-white rounded-xl shadow-2xl ring-1 ring-black/5 p-4 z-[9999]"
+            class="fixed w-72 bg-[#0b0f1a]/90 backdrop-blur-xl rounded-xl shadow-[0_30px_90px_rgba(0,0,0,0.55)] ring-1 ring-white/[0.06] p-4 z-[9999] border border-white/[0.06]"
           >
             <div class="flex items-start gap-3">
               <ProfileImage class="w-14 h-14 rounded-full ring-2 ring-slate-100" />
-              <div class="flex-1">
+          <div class="flex-1 text-slate-300">
                 <div class="flex items-center justify-between">
                   <div>
-                    <div class="text-sm font-semibold">Dinesh R</div>
-                    <div class="text-xs text-slate-500">Frontend • Full-Stack • AI</div>
+                    <div class="text-sm font-semibold text-slate-100">Dinesh R</div>
+                    <div class="text-xs text-slate-400">Frontend • Full-Stack • AI</div>
                   </div>
-                  <button @click="menuOpen = false">✕</button>
+                  <button
+                    @click="menuOpen = false"
+                    class="rounded hover:bg-white/[0.06] hover:text-slate-100 transition-colors text-slate-300"
+                  >✕</button>
                 </div>
 
-                <p class="mt-2 text-xs text-slate-600">
+                <p class="mt-2 text-xs text-slate-400">
                   I build responsive web apps and experiment with applied AI.
                 </p>
 
@@ -118,9 +119,11 @@
 
     <!-- ✅ MOBILE MENU (RESTORED) -->
     <transition name="slide">
-      <div v-if="mobileOpen" class="md:hidden bg-white border-t pt-2 pb-4 px-4">
+      <div v-if="mobileOpen" class="md:hidden bg-[#0b0f1a]/85 border-t border-white/[0.06] backdrop-blur-xl pt-2 pb-4 px-4">
         <ul class="flex flex-col gap-2 text-sm">
+
           <NuxtLink @click="closeMobile" to="/" class="mobile-item">Home</NuxtLink>
+
           <NuxtLink @click="closeMobile" to="/about" class="mobile-item">About</NuxtLink>
           <NuxtLink @click="closeMobile" to="/achievements" class="mobile-item">Achievements</NuxtLink>
           <NuxtLink @click="closeMobile" to="/timeline" class="mobile-item">Timeline</NuxtLink>
@@ -138,8 +141,8 @@
 
           <hr class="my-2" />
 
-          <div class="flex items-center gap-3 px-1">
-            <ProfileImage class="w-10 h-10 rounded-full ring-1 ring-slate-200" />
+            <div class="flex items-center gap-3 px-1">
+            <ProfileImage class="w-10 h-10 rounded-full ring-1 ring-white/[0.06]" />
             <div>
               <div class="text-sm font-medium">Dinesh R</div>
               <div class="text-xs text-slate-500">Frontend • AI</div>
@@ -226,19 +229,19 @@ onBeforeUnmount(() => {
 <style scoped>
 
 .nav-link {
-  @apply px-4 py-2 rounded-full text-sm font-medium text-slate-600 hover:text-brand-600 hover:bg-brand-50 transition-all duration-200;
+  @apply px-4 py-2 rounded-full text-sm font-medium text-slate-300 hover:text-indigo-200 hover:bg-white/5 hover:border-white/10 transition-all duration-200 border border-transparent;
 }
 
 .nav-link.router-link-active {
-  @apply text-brand-700 bg-brand-50 font-semibold;
+  @apply text-indigo-200 bg-white/5 border-white/10 font-semibold;
 }
 
 .mobile-item {
-  @apply block px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-brand-600 transition-colors;
+  @apply block px-4 py-3 rounded-lg text-slate-300 hover:bg-white/5 hover:text-indigo-200 border border-transparent hover:border-white/10 transition-colors;
 }
 
 .mobile-item.router-link-active {
-  @apply bg-brand-50 text-brand-700 font-semibold;
+  @apply bg-white/5 text-indigo-200 border-white/10 font-semibold;
 }
 
 .fade-enter-active, .fade-leave-active { transition: opacity .12s, transform .12s ease-out; }

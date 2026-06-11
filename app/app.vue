@@ -11,7 +11,7 @@ html, body {
 </style>
 
 <template>
-  <div class="min-h-screen font-sans text-slate-900 bg-slate-50 selection:bg-indigo-100 selection:text-indigo-700">
+<div class="min-h-screen font-sans bg-cbase text-ctext selection:bg-indigo-500 selection:text-white">
     <div class="bg-noise"></div>
     <NuxtLayout>
       <NuxtPage />
