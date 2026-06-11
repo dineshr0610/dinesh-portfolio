@@ -1,21 +1,33 @@
 <template>
-  <!-- Full-width section anchored to the dark base -->
-  <section class="min-h-[100svh] w-screen relative left-1/2 -translate-x-1/2 pt-8 pb-16 md:pt-16 md:pb-24 bg-[#0b0f1a] overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/20 via-transparent to-[#0b0f1a] pointer-events-none"></div>
+  <!--
+    ✅ FIX: section is w-full with NO margin/padding here.
+    The layout's <main> no longer adds px-4 (see default.vue fix).
+    HeroScene (absolute inset-0) now perfectly covers this section.
+    The content container inside uses max-w-[1600px] mx-auto px-4 lg:px-8
+    so text/cards still have readable margins — independent of the 3D canvas.
+  -->
+  <section class="relative w-full min-h-[100svh] bg-[#0b0f1a] overflow-hidden">
 
+    <!-- Atmospheric radial gradients (behind 3D canvas) -->
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(67,56,202,0.22),transparent_55%),radial-gradient(ellipse_at_center,rgba(37,99,235,0.10),transparent_60%)] pointer-events-none z-0"></div>
+
+    <!-- 3D HeroScene — fills section exactly -->
     <ClientOnly>
       <HeroScene />
     </ClientOnly>
 
-    <!-- Dark atmospheric orbs — replace the light blobs -->
-    <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-900/20 rounded-full filter blur-3xl opacity-60 pointer-events-none"></div>
-    <div class="absolute top-20 left-0 w-[300px] h-[300px] bg-violet-900/15 rounded-full filter blur-3xl opacity-50 pointer-events-none"></div>
+    <!-- Atmospheric orbs -->
+    <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-indigo-900/15 rounded-full filter blur-3xl opacity-50 pointer-events-none z-0"></div>
+    <div class="absolute top-20 left-0 w-[300px] h-[300px] bg-violet-900/10 rounded-full filter blur-3xl opacity-40 pointer-events-none z-0"></div>
 
-    <div class="container mx-auto px-4 lg:px-8 relative z-10">
+    <!-- Content layer — sits above 3D canvas -->
+    <div class="max-w-[1600px] mx-auto px-4 lg:px-8 relative z-10">
 
       <!-- ═══ HERO ═══ -->
       <div class="grid md:grid-cols-2 gap-8 md:gap-16 items-center mb-16 md:mb-24">
-        <div class="text-center md:text-left">
+
+        <!-- Left: Text + CTA -->
+        <div class="text-center md:text-left pt-24 md:pt-28 lg:pt-32">
           <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-white/[0.04] backdrop-blur border border-white/[0.08] rounded-full text-xs font-bold tracking-wide uppercase text-indigo-300 mb-6 cursor-default">
             <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
             Welcome to my portfolio
@@ -31,13 +43,23 @@
           </p>
 
           <div class="flex flex-wrap gap-3 justify-center md:justify-start">
-            <NuxtLink to="/about" class="px-7 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-indigo-900/40">
+            <NuxtLink
+              to="/about"
+              class="px-7 py-3 rounded-xl bg-indigo-600 text-white font-semibold hover:bg-indigo-700 hover:-translate-y-0.5 transition-all shadow-lg shadow-indigo-900/40"
+            >
               About Me
             </NuxtLink>
-            <NuxtLink to="/ask" class="px-7 py-3 rounded-xl bg-white/[0.06] border border-white/[0.10] text-slate-300 font-semibold hover:bg-white/[0.10] hover:text-slate-100 transition-all group">
+            <NuxtLink
+              to="/ask"
+              class="px-7 py-3 rounded-xl bg-white/[0.06] border border-white/[0.10] text-slate-300 font-semibold hover:bg-white/[0.10] hover:text-slate-100 transition-all group"
+            >
               Ask My AI <span class="group-hover:translate-x-1 inline-block transition-transform">🤖</span>
             </NuxtLink>
-            <a href="/Dinesh_Resume.pdf" target="_blank" class="px-7 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 font-semibold hover:text-slate-200 hover:bg-white/[0.08] transition-all">
+            <a
+              href="/Dinesh_Resume.pdf"
+              target="_blank"
+              class="px-7 py-3 rounded-xl bg-white/[0.04] border border-white/[0.08] text-slate-400 font-semibold hover:text-slate-200 hover:bg-white/[0.08] transition-all"
+            >
               Resume
             </a>
           </div>
@@ -50,33 +72,53 @@
           </div>
         </div>
 
-        <!-- Hero portrait — premium card, not circular -->
-        <div class="relative flex justify-center md:justify-end mb-8 md:mb-0">
-          <div class="relative z-10 w-56 h-72 sm:w-64 sm:h-80 md:w-80 md:h-[420px]">
+        <!-- Right: Chitti AI label + floating identity card -->
+        <!--
+          On desktop the 3D scene renders its neural dashboard in this right column.
+          We overlay a minimal label so the viewer knows what they're seeing,
+          plus a floating identity card (portrait + status) anchored to the bottom.
+          On mobile the scene is centred and the card stacks below the text.
+        -->
+        <div class="relative flex flex-col items-center justify-end md:justify-center pt-16 md:pt-28 lg:pt-32 pb-10 min-h-[340px] md:min-h-0">
+
+          <!-- Chitti AI title label — floats above the 3D scene area -->
+          <div class="hidden md:flex flex-col items-center mb-4 self-center mt-auto">
+            <div class="px-4 py-1.5 bg-indigo-600/[0.12] backdrop-blur-sm border border-indigo-500/25 rounded-full text-xs font-bold tracking-widest uppercase text-indigo-300 mb-2">
+              ✦ CHITTI AI
+            </div>
+            <p class="text-[11px] text-slate-500 tracking-wider uppercase font-semibold">Holographic Neural Dashboard</p>
+          </div>
+
+          <!-- Floating identity card (portrait + status badge) -->
+          <div class="relative z-10 w-48 h-60 sm:w-56 sm:h-72 md:w-60 md:h-[300px] animate-float">
             <!-- Glow -->
-            <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/20 to-violet-600/20 rounded-[28px] blur-2xl opacity-60 animate-pulse-slow"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/15 to-violet-600/15 rounded-[24px] blur-2xl opacity-70 animate-pulse-slow"></div>
 
             <!-- Portrait card -->
-            <div class="relative z-10 w-full h-full overflow-hidden rounded-[24px] border border-white/[0.10] shadow-[0_0_60px_rgba(99,102,241,0.12)] bg-black/20">
+            <div class="relative z-10 w-full h-full overflow-hidden rounded-[20px] border border-white/[0.10] shadow-[0_0_50px_rgba(99,102,241,0.10)] bg-black/25">
               <img
                 src="/images/profile.jpeg"
                 alt="Dinesh R"
                 class="w-full h-full object-cover object-top block"
               />
-              <!-- Subtle gradient overlay at bottom -->
-              <div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent"></div>
+              <div class="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/65 to-transparent"></div>
+              <!-- Name overlay -->
+              <div class="absolute bottom-3 left-0 right-0 text-center">
+                <span class="text-xs font-bold text-slate-200 tracking-wide">Dinesh R</span>
+              </div>
             </div>
 
-            <!-- Floating Badge -->
-            <div class="absolute -bottom-4 -left-4 md:-left-8 z-20 bg-[#0e1220]/95 backdrop-blur-md p-3.5 rounded-xl shadow-xl border border-white/[0.08] animate-bounce-slow flex items-center gap-3 pr-5">
-              <div class="w-8 h-8 rounded-full bg-green-900/40 border border-green-500/30 flex items-center justify-center text-base shadow-inner">⚡</div>
+            <!-- Status badge -->
+            <div class="absolute -bottom-4 -left-4 md:-left-6 z-20 bg-[#0e1220]/95 backdrop-blur-md p-3 rounded-xl shadow-xl border border-white/[0.08] animate-bounce-slow flex items-center gap-2.5 pr-4">
+              <div class="w-7 h-7 rounded-full bg-green-900/40 border border-green-500/30 flex items-center justify-center text-sm shadow-inner flex-shrink-0">⚡</div>
               <div>
                 <div class="text-[9px] text-slate-500 font-bold uppercase tracking-wider">Status</div>
-                <div class="text-sm font-bold text-slate-100">Open to Work</div>
+                <div class="text-xs font-bold text-slate-100">Open to Work</div>
               </div>
             </div>
           </div>
         </div>
+
       </div>
 
       <!-- ═══ CONTENT GRID ═══ -->
@@ -104,7 +146,6 @@
                   <img v-if="p.image" :src="p.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div v-else class="w-full h-full flex items-center justify-center text-slate-600 text-2xl">🖼️</div>
                 </div>
-
                 <div class="p-3 md:p-4 flex-1 flex flex-col justify-center min-w-0">
                   <div class="flex justify-between items-start gap-2 mb-1">
                     <h3 class="font-bold text-sm text-slate-100 group-hover:text-indigo-300 truncate transition-colors leading-tight">{{ p.title }}</h3>
@@ -115,7 +156,6 @@
                   </div>
                   <div class="text-[10px] text-slate-500 font-medium tracking-wide mb-2">{{ formatDuration(p) }}</div>
                   <p class="text-slate-400 text-xs mb-3 line-clamp-2 leading-relaxed" v-html="p.short"></p>
-
                   <div class="flex items-center justify-between mt-auto">
                     <div class="flex gap-1 overflow-hidden">
                       <span v-for="t in (p.tech || []).slice(0, 3)" :key="t" class="px-1.5 py-0.5 bg-white/[0.04] text-slate-500 text-[10px] rounded border border-white/[0.06] whitespace-nowrap">{{ t }}</span>
@@ -145,7 +185,6 @@
                 Full Story
               </NuxtLink>
             </div>
-
             <div class="bg-white/[0.03] rounded-2xl border border-white/[0.06] p-5 flex-1">
               <div class="relative pl-4 border-l border-white/[0.08] space-y-6 py-1">
                 <div v-for="(item, index) in (timeline || []).slice(0, 3)" :key="item.id || index" class="relative">
@@ -169,7 +208,6 @@
                 View All
               </NuxtLink>
             </div>
-
             <div class="bg-white/[0.03] rounded-2xl border border-white/[0.06] p-5 flex-1">
               <div class="space-y-3">
                 <div v-for="ach in (achievements || []).slice(0, 3)" :key="ach.id" class="flex gap-3 p-3 rounded-xl hover:bg-white/[0.04] transition-colors items-start">
@@ -211,7 +249,6 @@
                 View All
               </NuxtLink>
             </div>
-
             <div class="bg-white/[0.03] rounded-2xl border border-white/[0.06] p-5 flex-1">
               <div class="grid grid-cols-2 gap-3">
                 <template v-if="galleryThumbs.length">
@@ -239,7 +276,6 @@
                 History
               </NuxtLink>
             </div>
-
             <div class="bg-white/[0.03] p-5 rounded-2xl border border-white/[0.06] flex-1 flex flex-col">
               <div class="flex items-center gap-2 mb-4 flex-shrink-0">
                 <span class="relative flex h-2.5 w-2.5">
@@ -248,7 +284,6 @@
                 </span>
                 <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Latest Status</span>
               </div>
-
               <div v-if="updateLoading" class="py-6 flex justify-center flex-1 items-center">
                 <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500"></div>
               </div>
@@ -267,16 +302,16 @@
       </div>
 
       <!-- ═══ CTA BAND ═══ -->
-      <div class="mt-10 bg-gradient-to-br from-indigo-900/60 to-violet-900/50 rounded-3xl p-7 md:p-10 border border-indigo-500/20 relative overflow-hidden group">
+      <div class="mt-10 bg-gradient-to-br from-indigo-900/60 to-violet-900/50 rounded-3xl p-7 md:p-10 border border-indigo-500/20 relative overflow-hidden group mb-10">
+
         <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/[0.06] rounded-full blur-3xl group-hover:bg-indigo-500/[0.10] transition-colors duration-700"></div>
         <div class="absolute bottom-0 left-0 w-48 h-48 bg-violet-500/[0.08] rounded-full blur-3xl"></div>
-
         <div class="relative z-10 grid md:grid-cols-2 gap-8 items-center">
           <div class="text-center md:text-left space-y-5">
             <div class="text-5xl inline-block animate-bounce-slow">👋</div>
             <div>
               <h3 class="font-bold text-3xl md:text-4xl mb-3 tracking-tight text-slate-100">Let's Work Together</h3>
-          <p class="text-slate-300 text-lg leading-relaxed max-w-lg">
+              <p class="text-slate-300 text-lg leading-relaxed max-w-lg">
                 I'm currently open for new opportunities. Whether you have a question or just want to say hi, I'll get back to you.
               </p>
             </div>
@@ -284,7 +319,6 @@
               Get In Touch
             </NuxtLink>
           </div>
-
           <!-- AI Robot embed -->
           <div class="relative h-[360px] w-full flex items-center justify-center">
             <div class="w-full h-full relative rounded-2xl overflow-hidden border border-white/[0.08] bg-black/20 backdrop-blur-sm group/ai cursor-pointer">
@@ -368,4 +402,11 @@ function formatDuration(p) {
   50%       { opacity: 0.9; }
 }
 .animate-pulse-slow { animation: pulseSlow 4s ease-in-out infinite; }
+
+/* ✅ NEW: smooth float for the portrait card */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+.animate-float { animation: float 5s ease-in-out infinite; }
 </style>

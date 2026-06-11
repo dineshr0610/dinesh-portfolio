@@ -44,10 +44,22 @@
 html,
 body {
   height: 100%;
+  background: #0b0f1a;
+  overscroll-behavior-y: none;
+}
+
+#__nuxt {
+  background: #0b0f1a;
+}
+
+[data-v-app] {
+  background: #0b0f1a;
+  overscroll-behavior-y: none;
 }
 
 
 body {
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
