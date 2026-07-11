@@ -45,11 +45,41 @@
 
               <!-- Answer -->
               <div v-else class="prose prose-invert prose-sm max-w-none prose-p:leading-relaxed prose-a:text-indigo-400 text-slate-300">
+                <div class="not-prose mb-4 flex flex-wrap items-center gap-3">
+                  <button
+                    v-if="answer"
+                    @click="speak(answer)"
+                    type="button"
+                    class="text-sm text-indigo-300 hover:text-indigo-200 font-medium transition-colors"
+                  >
+                    🔊 Replay Voice
+                  </button>
+                  <button
+                    v-if="isSpeaking"
+                    @click="stopSpeaking"
+                    type="button"
+                    class="text-sm text-red-300 hover:text-red-200 font-medium transition-colors"
+                  >
+                    ⏹ Stop Voice
+                  </button>
+                </div>
                 <div v-html="renderedAnswer"></div>
                 <RelatedItems :items="related" />
               </div>
             </div>
           </Transition>
+
+          <div class="flex items-center gap-2 mb-4 text-sm text-slate-400">
+            <input
+              id="voice-toggle"
+              v-model="voiceEnabled"
+              type="checkbox"
+              class="accent-indigo-500"
+            />
+            <label for="voice-toggle">
+              Enable voice response
+            </label>
+          </div>
 
           <!-- Input -->
           <div class="relative">
@@ -132,8 +162,50 @@ const related = ref([])
 const loading = ref(false)
 const error = ref('')
 const needsEmail = ref(false)
+const voiceEnabled = ref(false)
+const isSpeaking = ref(false)
 
 const renderedAnswer = computed(() => answer.value ? marked.parse(answer.value) : '')
+
+function speak(text: string) {
+  if (typeof window === 'undefined') return
+  if (!window.speechSynthesis) return
+
+  window.speechSynthesis.cancel()
+
+  const utterance = new SpeechSynthesisUtterance(text)
+
+  utterance.lang = 'en-US'
+  utterance.rate = 1
+  utterance.pitch = 1
+  utterance.volume = 1
+
+  const voices = window.speechSynthesis.getVoices()
+  const voice =
+    voices.find(v => v.lang.includes('en') && v.name.includes('Google')) ||
+    voices.find(v => v.lang.includes('en'))
+
+  if (voice) utterance.voice = voice
+
+  utterance.onstart = () => {
+    isSpeaking.value = true
+  }
+  utterance.onend = () => {
+    isSpeaking.value = false
+  }
+  utterance.onerror = () => {
+    isSpeaking.value = false
+  }
+
+  window.speechSynthesis.speak(utterance)
+}
+
+function stopSpeaking() {
+  if (typeof window === 'undefined') return
+
+  window.speechSynthesis.cancel()
+  isSpeaking.value = false
+}
 
 async function askQuestion() {
   if (!q.value.trim() || loading.value) return
@@ -159,6 +231,10 @@ async function askQuestion() {
     if (res.type === 'answer') {
       answer.value = res.message
       related.value = res.related || []
+
+      if (voiceEnabled.value) {
+        speak(res.message)
+      }
     }
   } catch (e) {
     const msg = 'My brain is currently offline. Please try again later.'
@@ -202,6 +278,8 @@ async function submitEmail() {
 }
 
 function clear() {
+  stopSpeaking()
+
   q.value = ''
   email.value = ''
   answer.value = ''

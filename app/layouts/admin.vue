@@ -47,7 +47,7 @@ watch(() => route.path, () => {
           <div class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 mt-6">Content</div>
           <NuxtLink to="/admin/ai-knowledge" class="nav" active-class="active-nav">AI Knowledge</NuxtLink>
           <NuxtLink to="/admin/questions" class="nav" active-class="active-nav">AI Questions</NuxtLink>
-          <NuxtLink to="/admin/updates" class="nav" active-class="active-nav">Dinesh Now</NuxtLink>
+
           <NuxtLink to="/admin/social-highlights" class="nav" active-class="active-nav">Social Highlights</NuxtLink>
           <NuxtLink to="/admin/timeline" class="nav" active-class="active-nav">Timeline</NuxtLink>
           <NuxtLink to="/admin/achievements" class="nav" active-class="active-nav">Achievements</NuxtLink>

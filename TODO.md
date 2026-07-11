@@ -1,8 +1,7 @@
 # TODO
-
-- [ ] Create/confirm edit plan for fixing HeroScene.vue TypeScript errors
-- [ ] Update `app/components/three/scenes/HeroScene.vue` to eliminate:
-  - [ ] `Vector3 refers to a value, but is being used as a type here`
-  - [ ] `... is possibly 'undefined'` (including `next`, `base`)
-- [ ] Run Nuxt/TypeScript build or typecheck to verify errors are gone
+- [ ] Remove public updates page + all references to `/updates` (Header, Home)
+- [ ] Remove admin updates pages (index/[id]/create)
+- [ ] Remove server endpoints for public updates and admin updates
+- [ ] Ensure no remaining links/calls to `/updates` or `/api/public/updates` or `/api/admin/updates`
+- [ ] Build/test run (npm run build / npm run dev) to confirm no broken imports
 
