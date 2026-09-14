@@ -1,5 +1,6 @@
 // server/utils/admin is auto-imported
 import { requireAdmin } from '../_guard'
+import { syncRagRecord } from '../../../utils/rag/sync'
 
 
 export default defineEventHandler(async (event) => {
@@ -24,5 +25,5 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, statusMessage: error.message })
     }
 
-    return { success: true }
+    return { success: true, index: await syncRagRecord(supabase, config, 'gallery', id, true) }
 })

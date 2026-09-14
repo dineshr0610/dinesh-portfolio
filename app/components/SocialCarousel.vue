@@ -1,8 +1,8 @@
 <template>
   <div class="relative group h-full flex flex-col" @mouseenter="pause" @mouseleave="resume" ref="container">
 
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-5 px-1 flex-shrink-0">
+    <!-- Header now lives inside the Carousel Window -->
+    <div class="hidden">
       <h3 class="font-bold text-slate-100 flex items-center gap-2 font-display text-lg">
         <span class="relative flex h-3 w-3">
           <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
@@ -37,7 +37,42 @@
     </div>
 
     <!-- Carousel Window -->
-    <div class="overflow-hidden bg-white/[0.03] rounded-2xl border border-white/[0.06] min-h-[300px] md:min-h-[450px] relative flex-1 flex flex-col">
+    <div class="overflow-hidden bg-white/[0.03] rounded-2xl border border-white/[0.06] min-h-[780px] relative flex-1 flex flex-col">
+
+      <!-- Header (inside container) -->
+      <div class="flex items-center justify-between px-4 pt-4 pb-2 flex-shrink-0">
+        <h3 class="font-bold text-slate-100 flex items-center gap-2 font-display text-lg">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+          </span>
+          Social Highlights
+        </h3>
+
+        <!-- Controls -->
+        <div class="flex gap-2">
+          <button
+            @click="prev"
+            class="p-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-slate-100 hover:bg-white/[0.08] transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+            :disabled="items.length <= 1"
+            aria-label="Previous Highlight"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+              <path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" />
+            </svg>
+          </button>
+          <button
+            @click="next"
+            class="p-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-slate-400 hover:text-slate-100 hover:bg-white/[0.08] transition-all disabled:opacity-20 disabled:cursor-not-allowed"
+            :disabled="items.length <= 1"
+            aria-label="Next Highlight"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+              <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </div>
 
       <div v-if="pending" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 text-sm gap-3">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
@@ -58,11 +93,11 @@
             v-for="(item, index) in items"
             v-show="index === currentIndex"
             :key="item.id || index"
-            class="w-full flex-shrink-0 p-5 flex flex-col items-center justify-center min-h-[300px] md:min-h-[450px] h-full overflow-y-auto absolute inset-0"
+            class="w-full flex-shrink-0 px-3 py-3 flex flex-col items-center min-h-[720px] h-full overflow-y-auto absolute inset-0"
             @touchstart="touchStart"
             @touchend="touchEnd"
           >
-            <div class="mb-4 text-center w-full px-4">
+            <div class="mb-2 text-center w-full">
               <div class="flex items-center justify-center gap-2 mb-1">
                 <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-white/[0.06] text-slate-400 uppercase tracking-wider border border-white/[0.06]">{{ item.platform }}</span>
               </div>
@@ -70,7 +105,7 @@
             </div>
 
             <div
-              class="w-full max-w-[400px] overflow-hidden rounded-xl social-embed-container border border-white/[0.06] bg-black/20 relative"
+              class="w-full max-w-[700px] overflow-hidden rounded-xl social-embed-container border border-white/[0.06] relative"
               v-html="item.embed_html"
             ></div>
           </div>

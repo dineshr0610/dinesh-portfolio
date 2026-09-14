@@ -1,4 +1,5 @@
 // server/utils/admin is auto-imported
+import { syncRagRecord } from '../../../utils/rag/sync'
 // server/utils/admin is auto-imported
 
 
@@ -19,5 +20,5 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 400, statusMessage: error.message })
     }
 
-    return { success: true }
+    return { success: true, index: await syncRagRecord(supabase, useRuntimeConfig(), 'achievements', id, true) }
 })

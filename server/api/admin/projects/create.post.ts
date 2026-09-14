@@ -1,5 +1,6 @@
 // server/utils/admin is auto-imported
 import { requireAdmin } from '../../../utils/admin'
+import { syncRagRecord } from '../../../utils/rag/sync'
 
 export default defineEventHandler(async (event) => {
     await requireAdmin(event)
@@ -9,7 +10,7 @@ export default defineEventHandler(async (event) => {
 
     const supabase = getServerSupabase()
 
-    const { error } = await supabase.from('projects').insert({
+    const { data, error } = await supabase.from('projects').insert({
         title: body.title,
         short: body.short,
         long: body.long,
@@ -21,11 +22,11 @@ export default defineEventHandler(async (event) => {
         started_at: body.started_at,
         ongoing: body.ongoing,
         ended_at: body.ongoing ? null : body.ended_at
-    })
+    }).select('id').single()
 
     if (error) {
         throw createError({ statusCode: 400, statusMessage: error.message })
     }
 
-    return { success: true }
+    return { success: true, index: await syncRagRecord(supabase, config, 'projects', data.id) }
 })

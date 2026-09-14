@@ -1,7 +1,9 @@
 import { sendAutoReply } from '../../utils/email'
-import { formatters } from '../../utils/ai-normalization'
+import { indexOne } from '../../utils/rag/indexer'
+import { requireAdmin } from './_guard'
 
 export default defineEventHandler(async (event) => {
+  await requireAdmin(event)
   const body = await readBody(event)
 
   const questionId = body.id
@@ -47,20 +49,8 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Failed to save answer' })
   }
 
-  if (!isReopen && answer) {
-    try {
-      const { error: indexError } = await supabase.from('documents').insert({
-        source: 'q_and_a',
-        source_id: questionId,
-        title: questionRow.question,
-        text_content: formatters.question({ question: questionRow.question, answer }),
-        metadata: { confidence: 'high', verified: true }
-      })
-      if (indexError) console.error('Auto-index error:', indexError)
-    } catch (e) {
-      console.error('Auto-index failed:', e)
-    }
-  }
+  const indexResult = await indexOne(supabase, useRuntimeConfig(), 'ai_unanswered_questions', questionId)
+  if (!indexResult.ok) console.error('Q&A index synchronization failed:', indexResult.error)
 
   let emailSent = false
   if (!isReopen && answer && questionRow.user_email) {
@@ -79,5 +69,5 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  return { success: true, emailSent }
+  return { success: true, emailSent, index: indexResult }
 })

@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from('dinesh_updates')
         .insert({
             title,
@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) => {
             tags: tags || [],
             published: finalPublished,
             published_at: finalPublishedAt
-        })
+        }).select('id').single()
 
     if (error) {
         throw createError({

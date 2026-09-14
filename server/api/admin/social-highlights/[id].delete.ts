@@ -1,6 +1,7 @@
 
 import { serverSupabaseClient } from '#supabase/server'
 import { requireAdmin } from '../_guard'
+import { syncRagRecord } from '../../../utils/rag/sync'
 
 export default defineEventHandler(async (event) => {
     await requireAdmin(event)
@@ -28,5 +29,5 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    return { success: true }
+    return { success: true, index: await syncRagRecord(getServerSupabase(), useRuntimeConfig(), 'social_highlights', id, true) }
 })

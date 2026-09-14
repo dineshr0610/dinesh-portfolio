@@ -1,6 +1,8 @@
 // server/utils/admin is auto-imported
+import { requireAdmin } from './_guard'
 
 export default defineEventHandler(async (event) => {
+    await requireAdmin(event)
     const config = useRuntimeConfig()
 
     const supabase = getServerSupabase()

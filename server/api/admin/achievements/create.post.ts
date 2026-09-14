@@ -1,4 +1,5 @@
 // server/utils/admin is auto-imported
+import { syncRagRecord } from '../../../utils/rag/sync'
 // server/utils/admin is auto-imported
 
 
@@ -18,7 +19,7 @@ export default defineEventHandler(async (event) => {
 
     const supabase = getServerSupabase()
 
-    const { error } = await supabase.from('achievements').insert({
+    const { data, error } = await supabase.from('achievements').insert({
         title: body.title,
         short: body.short,
         long: body.long,
@@ -29,11 +30,11 @@ export default defineEventHandler(async (event) => {
         tags: body.tags, // Already an array from frontend or handle transformation here if needed
         media: body.media,
         published: body.published ?? true
-    })
+    }).select('id').single()
 
     if (error) {
         throw createError({ statusCode: 400, statusMessage: error.message })
     }
 
-    return { success: true }
+    return { success: true, index: await syncRagRecord(supabase, config, 'achievements', data.id) }
 })

@@ -41,12 +41,11 @@ M.Tech (Integrated) CSE student passionate about building modern web application
 ## Projects  
 
 ### 🧠 **Personal Portfolio + AI Assistant (Nuxt + RAG)** *(Ongoing Major Project)*  
-A full-stack personal portfolio built using Nuxt and Tailwind with an integrated AI assistant that answers questions about my skills, projects, experience, achievements, and daily updates.
+A full-stack personal portfolio built using Nuxt and Tailwind with an integrated AI assistant that answers questions about my skills, projects, experience, and achievements.
 
 **Key Features:**  
 - AI chatbot powered by RAG (Retrieval Augmented Generation)  
 - Dynamic pages: About, Timeline, Achievements, Gallery, Contact  
-- “Dinesh Now” page for daily/weekly updates  
 - Admin dashboard (in progress) for managing content  
 - JSON + Markdown content system  
 - Clean, responsive UI with Tailwind CSS  

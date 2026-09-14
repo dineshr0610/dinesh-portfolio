@@ -1,5 +1,6 @@
 // server/utils/admin is auto-imported
 import { requireAdmin } from '../_guard'
+import { syncRagRecord } from '../../../utils/rag/sync'
 
 export default defineEventHandler(async (event) => {
     await requireAdmin(event)
@@ -29,5 +30,5 @@ export default defineEventHandler(async (event) => {
         })
     }
 
-    return { success: true }
+    return { success: true, index: await syncRagRecord(supabase, config, 'ai_unanswered_questions', id, true) }
 })
